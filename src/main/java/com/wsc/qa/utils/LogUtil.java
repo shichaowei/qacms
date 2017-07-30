@@ -2,14 +2,14 @@ package com.wsc.qa.utils;
 
 
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 
 public class LogUtil {
-    private static Logger log;
+    private final  Logger log;
 
 
 	public  LogUtil(final Class<?> loggerName) {
@@ -21,7 +21,7 @@ public class LogUtil {
      *
      * @param message the message object.
      */
-    public static void logInfo(Object message) {
+    public  void logInfo(Object message) {
         log.info("[INFO] " + message);
     }
     

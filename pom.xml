@@ -124,7 +124,7 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.12</version>
 		</dependency>
-		
+
 		<!-- 增加aspectj面向切面 -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -135,6 +135,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>4.2.1.RELEASE</version>
+		</dependency>
+
+		<!-- 增加源码分析代码 -->
+		<dependency>
+			<groupId>org.wsc.testbcel</groupId>
+			<artifactId>testbcel</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

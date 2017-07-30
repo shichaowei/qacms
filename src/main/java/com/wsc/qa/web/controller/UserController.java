@@ -1,7 +1,7 @@
 package com.wsc.qa.web.controller;
 
 import java.io.IOException;
-
+import java.util.HashSet;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -16,17 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fengdai.qa.util.parseSrcUtil;
+import com.wsc.qa.annotation.Log;
 import com.wsc.qa.meta.User;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
-import com.wsc.qa.service.impl.ChangeTimeServiceImpl;
-import com.wsc.qa.service.impl.DealEnvServiceImpl;
-import com.wsc.qa.service.impl.OperLogServiceImpl;
-import com.wsc.qa.service.impl.UserServiceImpl;
 import com.wsc.qa.utils.LogUtil;
-import com.wsc.qa.annotation.Log;
 
 
 
@@ -49,12 +46,12 @@ public class UserController {
 	public void login(@RequestParam("userName") String userName, @RequestParam("userPassword") String userPassword
 			,HttpServletResponse response,HttpServletRequest request) throws IOException{
 		logger.logInfo("username is:"+userName);
-		User user=userServiceImpl.getUserInfo(userName);
+		final User user=userServiceImpl.getUserInfo(userName);
 		if(user != null){
 				if(user.getUserPassword().equals(userPassword)){
-					HttpSession session = request.getSession();
-					Cookie userNameCookie = new Cookie("userName", userName);
-					Cookie pwdCookie = new Cookie("pwd", userPassword);
+					final HttpSession session = request.getSession();
+					final Cookie userNameCookie = new Cookie("userName", userName);
+					final Cookie pwdCookie = new Cookie("pwd", userPassword);
 					userNameCookie.setMaxAge(10 * 60);
 					pwdCookie.setMaxAge(10 * 60);
 					
@@ -75,12 +72,13 @@ public class UserController {
 	}
 	
 	
+	
 	@RequestMapping({"user/{userName}"})
 	@Log(operationType="getInfo操作:",operationName="获取用户信息")  
 	public String getInfo(@PathVariable("userName") String userNameRe,HttpServletRequest request,ModelMap map,
 			HttpServletResponse response){
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
+		final HttpSession session = request.getSession();
+		final String userName = (String) session.getAttribute("userName");
 		if(userName !=null && userName.equals(userNameRe)){
 			map.addAttribute("userName", userNameRe);
 			map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
@@ -92,11 +90,24 @@ public class UserController {
 		}
 	}
 	
+	@RequestMapping({"parseSrc"})
+	@Log(operationType="parseSrc操作:",operationName="分析代码信息")  
+	public String parseSrc(@PathVariable("classRootDir") String classRootDir,@PathVariable("modifyclass") String modifyclass,@PathVariable("modifymethod") String modifymethod,
+			HttpServletRequest request,ModelMap map,HttpServletResponse response){
+		final HttpSession session = request.getSession();
+		final String userName = (String) session.getAttribute("userName");
+		map.addAttribute("userName", userName);
+		final HashSet<String> varchange=new HashSet();
+		varchange.add(modifyclass+"的方法"+modifymethod);
+		parseSrcUtil.parseMetriscs(classRootDir,varchange);
+		return "user";
+	}
+	
 	@RequestMapping({"fixenv"})
 	public String fixenv(@RequestParam("zkAddress") String zkAddress,HttpServletRequest request,ModelMap map,HttpServletResponse response){
 		dealEnvServiceImpl.fixenv(zkAddress);
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
+		final HttpSession session = request.getSession();
+		final String userName = (String) session.getAttribute("userName");
 		map.addAttribute("userName", userName);
 		map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
 		map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
@@ -109,27 +120,27 @@ public class UserController {
 	@RequestMapping({"changedubbotime"})
 	public String changetime(@RequestParam("changetimetype") String changetimetype,@RequestParam("date") String date,
 		@RequestParam("time") String time,HttpServletRequest request,ModelMap map,HttpServletResponse response){
-		String cmd="date -s '"+date+" "+time+"'";
+		final String cmd="date -s '"+date+" "+time+"'";
 		switch (changetimetype) {
 		
 			case "changeDubbotime":{
-				String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243"};
+				final String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243"};
 				
 				changeTimeImpl.changeServerTime(ipaddress, cmd);
 				break;
 			}
 			case "changDubboDbtime":{
-				String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243","172.30.249.242"};
+				final String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243","172.30.249.242"};
 				changeTimeImpl.changeServerTime(ipaddress, cmd);
 				break;
 			}
 			case "changDubboResttime":{
-				String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243","172.30.250.25","172.30.248.218","172.30.251.190"};
+				final String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243","172.30.250.25","172.30.248.218","172.30.251.190"};
 				changeTimeImpl.changeServerTime(ipaddress, cmd);
 				break;
 			}
 			case "changDubboRestDbtime":{
-				String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243","172.30.250.25","172.30.248.218","172.30.251.190","172.30.249.242"};
+				final String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243","172.30.250.25","172.30.248.218","172.30.251.190","172.30.249.242"};
 				changeTimeImpl.changeServerTime(ipaddress, cmd);
 				break;
 			}
@@ -137,8 +148,8 @@ public class UserController {
 				break;
 		}
 		//插入最後操作的數據
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
+		final HttpSession session = request.getSession();
+		final String userName = (String) session.getAttribute("userName");
 		operaLogServiceImpl.insertOperLog(userName, changetimetype);
 
 		map.addAttribute("userName", userName);

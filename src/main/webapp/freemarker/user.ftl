@@ -23,5 +23,15 @@
 			<input type="text" name="zkAddress" placeholder="172.30.249.243">
 			<input type="submit" value="Submit">
 		</form> 
+		
+	   <form action="/fengdaiqacms/cms/parseSrc" method="post">
+			<input type="radio" name="parseSrc" value="parseSrc" >源码分析
+			<input type="text" name="classRootDir" placeholder="class的根目录">
+			<input type="text" name="modifyclass" placeholder="修改的classname:com.wsc.testbcel.testbcel.BaseProgrammer">
+			<input type="text" name="modifymethod" placeholder="修改的methodname:docoding">
+			<input type="submit" value="Submit">
+		</form> 
+		
+		
     </body>
 </html>
