@@ -1,4 +1,4 @@
-package com.fengdai.qa.mockmode;
+package com.wsc.qa.mockmode;
 
 public class modeExports {
 	

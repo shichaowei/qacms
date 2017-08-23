@@ -1,6 +1,6 @@
-package com.fengdai.qa.mockmode;
+package com.wsc.qa.mockmode;
 
-import com.fengdai.qa.mockmode.modeLocalResponse.headerDetail;
+import com.wsc.qa.mockmode.modeLocalResponse.headerDetail;
 
 public class modeLocalResponse {
 	

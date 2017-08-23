@@ -30,5 +30,20 @@
 			<input type="submit" value="Submit">
 		</form>
 		
+		<br />
+		<form action="/mockMessage" method="post">
+			<input type="radio" name="mockMessage" value="mockMessage" >mock数据
+			<input type="text" name="mockserverip" placeholder="mockServerIp">
+			<select name="ContentType">
+			  <option value="application/json">application/json</option>
+			  <option value="text/xml">text/xml</option>
+			</select>
+			<input type="text" name="checkUrl" placeholder="checkUrl">
+			<input type="text" name="checkPostParams" placeholder="checkPostParams">
+			<input type="text" name="checkGetParams" placeholder="checkGetParams">
+			<input type="text" name="responseBody" placeholder="responseBody">
+			<input type="submit" value="Submit">
+		</form>
+		
     </body>
 </html>

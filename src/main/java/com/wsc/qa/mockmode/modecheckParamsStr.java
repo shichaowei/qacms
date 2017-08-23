@@ -1,14 +1,15 @@
-package com.fengdai.qa.mockmode;
+package com.wsc.qa.mockmode;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
 public class modecheckParamsStr {
 	
 	private String checkUrl;
-	private ArrayList<String> checkPostParams;
-	private ArrayList<String> checkGetParams;
+	private List<String> checkPostParams;
+	private List<String> checkGetParams;
 	public String getCheckUrl() {
 		return checkUrl;
 	}
@@ -16,17 +17,17 @@ public class modecheckParamsStr {
 		this.checkUrl = checkUrl;
 		return this;
 	}
-	public ArrayList<String> getCheckPostParams() {
+	public List<String> getCheckPostParams() {
 		return checkPostParams;
 	}
-	public modecheckParamsStr setCheckPostParams(ArrayList<String> checkPostParams) {
+	public modecheckParamsStr setCheckPostParams(List<String> checkPostParams) {
 		this.checkPostParams = checkPostParams;
 		return this;
 	}
-	public ArrayList<String> getCheckGetParams() {
+	public List<String> getCheckGetParams() {
 		return checkGetParams;
 	}
-	public modecheckParamsStr setCheckGetParams(ArrayList<String> checkGetParams) {
+	public modecheckParamsStr setCheckGetParams(List<String> checkGetParams) {
 		this.checkGetParams = checkGetParams;
 		return this;
 	}

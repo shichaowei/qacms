@@ -4,12 +4,15 @@
 <#include "/include/header.ftl">
 	<#if callbackStr?has_content>
 		    <div class="n-result">
-		        <pre id="callbackStr"></pre>
+		        <pre id="callbackStr">${callbackStr}</pre>
+		    </div>
+	</#if>
+	<#if mockRuleStr?has_content>
+		    <div class="n-result">
+		        <pre id="mockRuleStr">${mockRuleStr}</pre>
 		    </div>
 	</#if>
 
 </body>
 </html>
-<script language="javascript">  
-document.getElementById('callbackStr').innerHTML = JSON.stringify(${callbackStr},null,2);    
-</script>
+

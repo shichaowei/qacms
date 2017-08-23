@@ -1,6 +1,8 @@
 package com.wsc.qa.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -20,9 +22,12 @@ import com.wsc.qa.meta.User;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.DealEnvService;
+import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
 import com.wsc.qa.service.impl.CreateCallbackServiceImpl;
+import com.wsc.qa.service.impl.MockMessServiceImpl;
+import com.wsc.qa.utils.ForMatJSONUtil;
 import com.wsc.qa.utils.LogUtil;
 
 
@@ -42,6 +47,8 @@ public class UserController {
 	private DealEnvService dealEnvServiceImpl;
 	@Autowired
 	private CreateCallbackService createCallbackServiceImpl;
+	@Autowired
+	private MockMessService mockMessServiceImpl;
 
 	
 	@RequestMapping({"/"})
@@ -136,7 +143,40 @@ public class UserController {
 	public String createCallbackStr(@RequestParam("remark") String remark,HttpServletRequest request,ModelMap map,HttpServletResponse response){
 		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
 		System.out.println(callbackStr);
-		map.addAttribute("callbackStr", callbackStr);
+		map.addAttribute("callbackStr", ForMatJSONUtil.format(callbackStr));
+		return "display";
+	}
+	
+	/**
+	 * 根據要mock的數據，在指定的服務器上啟動anyproxy，mock相關數據
+	 * checkPostParams checkGetParams 以分隔符；為單位
+	 * @param mockserverip
+	 * @param ContentType
+	 * @param checkUrl
+	 * @param checkPostParams
+	 * @param checkGetParams
+	 * @param responseBody
+	 * @param request
+	 * @param map
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping({"mockMessage"})
+	public String mockMessage(@RequestParam("mockserverip") String mockserverip,@RequestParam("ContentType") String ContentType,@RequestParam("checkUrl") String checkUrl,
+			@RequestParam("checkPostParams") String checkPostParams,@RequestParam("checkGetParams") String checkGetParams,@RequestParam("responseBody") String responseBody,
+			HttpServletRequest request,ModelMap map,HttpServletResponse response){
+		List<String> checkPostParamsList = new ArrayList<>();
+		List<String> checkGetParamsList = new ArrayList<>();
+		if(checkPostParams != null && !checkPostParams.isEmpty() && !checkPostParams.equals("checkPostParams")) {
+			checkPostParamsList = java.util.Arrays.asList(checkPostParams.split(";"));
+		}else {
+			checkPostParams=null;
+		}
+		if(checkGetParams != null && !checkGetParams.isEmpty() && !checkGetParams.equals("checkGetParams")) {
+			checkGetParamsList =  java.util.Arrays.asList(checkGetParams.split(";"));
+		}
+		String mockRule = mockMessServiceImpl.mockProcess(mockserverip, ContentType, responseBody, checkUrl, checkPostParamsList, checkGetParamsList);
+		map.addAttribute("mockRuleStr", ForMatJSONUtil.format(mockRule));
 		return "display";
 	}
 	

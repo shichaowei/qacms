@@ -152,6 +152,13 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.35</version>
 		</dependency>
+		
+		<!--  增加scp支持-->
+		<dependency>
+    <groupId>ch.ethz.ganymed</groupId>
+    <artifactId>ganymed-ssh2</artifactId>
+    <version>build210</version>
+</dependency>
 
 	</dependencies>
 
