@@ -136,12 +136,21 @@
 			<artifactId>spring-aop</artifactId>
 			<version>4.2.1.RELEASE</version>
 		</dependency>
-
-		<!-- 增加源码分析代码 -->
 		<dependency>
-			<groupId>org.wsc.testbcel</groupId>
-			<artifactId>testbcel</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>com.fengdai.qa</groupId>
+			<artifactId>sourcecheck</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.35</version>
 		</dependency>
 
 	</dependencies>
