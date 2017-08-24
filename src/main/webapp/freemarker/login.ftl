@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
+<#include "/include/head.ftl">
     <head>
         <meta charset="UTF-8">
         <title>登录</title>
