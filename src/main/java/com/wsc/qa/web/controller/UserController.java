@@ -9,11 +9,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -95,8 +98,10 @@ public class UserController {
 
 	@RequestMapping({ "login" })
 	@Log(operationType = "login操作:", operationName = "登录")
-	public void login(@RequestParam("userName") String userName, @RequestParam("userPassword") String userPassword,
+	public void login(@ModelAttribute @Valid User userRe   ,
 			HttpServletResponse response, HttpServletRequest request) throws IOException {
+		String userName=userRe.getUserName();
+		String userPassword = userRe.getUserPassword();
 		logger.logInfo("username is:" + userName);
 		User user = userServiceImpl.getUserInfo(userName);
 		if (user != null) {
