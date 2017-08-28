@@ -98,7 +98,7 @@ public class UserController {
 
 	@RequestMapping({ "login" })
 	@Log(operationType = "login操作:", operationName = "登录")
-	public void login(@ModelAttribute @Valid User userRe   ,
+	public void login(@ModelAttribute @Valid User userRe,
 			HttpServletResponse response, HttpServletRequest request) throws IOException {
 		String userName=userRe.getUserName();
 		String userPassword = userRe.getUserPassword();
