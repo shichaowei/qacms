@@ -25,7 +25,7 @@
 			
 			<#if item=="fixenv">
 		   <form action="/fixenv" method="post">
-				<input type="radio" name="fixenv" value="fixenv" >修复环境（针对蜂贷一个服务多个provider问题）
+				<label>修复环境（针对蜂贷一个服务多个provider问题）</label>
 				<input type="text" name="zkAddress" placeholder="172.30.249.243">
 				<input type="submit" value="Submit">
 			</form> 
@@ -33,7 +33,7 @@
 			
 			<#if item=="createCallbackStr">
 			<form action="/createCallbackStr" method="post">
-				<input type="radio" name="createCallbackStr" value="createCallbackStr" >生成回调报文
+				<label >生成回调报文</label>
 				<input type="text" name="remark" placeholder="remark字段">
 				<input type="submit" value="Submit">
 			</form>
@@ -41,14 +41,24 @@
 			
 			<#if item=="mock">
 			<form action="/mockMessage" method="post">
-				<input type="text" name="mockserverip" placeholder="mockServerIp"><br /> 
+				<label >mockServer的地址：</label>
+				<input type="text" name="mockserverip" placeholder="mockServerIp"><br />
+				<label >mock的类型：</label>
+				<select name="mockType">
+				  <option value="get">get请求</option>
+				  <option value="post">post请求</option>
+				</select><br />
+				<label >mock数据的返回类型：</label>				 			 
 				<select name="ContentType">
 				  <option value="application/json">application/json</option>
 				  <option value="text/xml">text/xml</option>
 				</select><br /> 
+				
+				<label >mock的url：</label>	
 				<input type="text" name="checkUrl" placeholder="checkUrl"><br /> 
-				<input type="text" name="checkPostParams" placeholder="checkPostParams"><br /> 
-				<input type="text" name="checkGetParams" placeholder="checkGetParams"><br /> 
+				<label >mock的数据所含特征值：</label>	
+				<input type="text" name="checkParams" placeholder="checkParams"><br /> 
+				<label >mock返回的数据：</label>
 				<input type="text" name="responseBody" placeholder="responseBody"><br /> 
 				<input type="submit" value="Submit">
 			</form>

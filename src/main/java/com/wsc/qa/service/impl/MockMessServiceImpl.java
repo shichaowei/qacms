@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fengdai.qa.util.WriteToFile;
 import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.mockmode.*;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.utils.Scpclient;
 import com.wsc.qa.utils.SshUtil;
+import com.wsc.qa.utils.WriteToFile;
 
 @Service
 public class MockMessServiceImpl implements MockMessService{
