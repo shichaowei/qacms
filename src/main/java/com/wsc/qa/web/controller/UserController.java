@@ -1,6 +1,7 @@
 package com.wsc.qa.web.controller;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.constants.IndexNav;
+import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.User;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
@@ -29,10 +31,9 @@ import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
-import com.wsc.qa.service.impl.CreateCallbackServiceImpl;
-import com.wsc.qa.service.impl.MockMessServiceImpl;
 import com.wsc.qa.utils.ForMatJSONUtil;
 import com.wsc.qa.utils.LogUtil;
+import com.wsc.qa.constants.CommonConstants.ErrorCode;
 
 @Controller
 public class UserController {
@@ -67,8 +68,10 @@ public class UserController {
 			return "login";
 		}
 	}
+	
 
-	@RequestMapping({ "/index" })
+
+	@RequestMapping({ "index" })
 	public String getIndexInfo(@RequestParam("item") String item, HttpServletRequest request,
 			HttpServletResponse response, ModelMap map) {
 		HttpSession session = request.getSession();
@@ -87,19 +90,22 @@ public class UserController {
 				session.invalidate();
 				return "login";
 			}
+			if(item.equals("login")){
+				return "login";
+			}
 			map.addAttribute("userName", userName);
 			
 			return "index";
 		} else {
-			return "error";
+			return "login";
 		}
 
 	}
 
-	@RequestMapping({ "login" })
+	@RequestMapping({ "/api/login" })
 	@Log(operationType = "login操作:", operationName = "登录")
-	public void login(@ModelAttribute @Valid User userRe,
-			HttpServletResponse response, HttpServletRequest request) throws IOException {
+	public String login(@ModelAttribute @Valid User userRe,
+			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
 		String userName=userRe.getUserName();
 		String userPassword = userRe.getUserPassword();
 		logger.logInfo("username is:" + userName);
@@ -115,33 +121,37 @@ public class UserController {
 				session.setAttribute("userName", userName);
 				response.addCookie(userNameCookie);
 				response.addCookie(pwdCookie);
-
-				response.sendRedirect("user/" + userName);
+//				response.sendRedirect("user/" + userName);
+				map.addAttribute("userName", user.getUserName());
 			} else {
-				response.sendRedirect("user/error");
+//				throw new BusinessException("sfsdfsdfd");
+				throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 			}
 
 		} else {
-			response.sendRedirect("user/error");
+//			throw new BusinessException("sfsdfsdfd");
+//			response.sendRedirect("user/error");
+			throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 		}
+		return "index";
 	}
 
-	@RequestMapping({ "user/{userName}" })
-	@Log(operationType = "getInfo操作:", operationName = "获取用户信息")
-	public String getInfo(@PathVariable("userName") String userNameRe, HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) {
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
-		if (userName != null && userName.equals(userNameRe)) {
-			map.addAttribute("userName", userNameRe);
-			// map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
-			// map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
-			// map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
-			return "index";
-		} else {
-			return "error";
-		}
-	}
+//	@RequestMapping({ "user/{userName}" })
+//	@Log(operationType = "getInfo操作:", operationName = "获取用户信息")
+//	public String getInfo(@PathVariable("userName") String userNameRe, HttpServletRequest request, ModelMap map,
+//			HttpServletResponse response) {
+//		HttpSession session = request.getSession();
+//		String userName = (String) session.getAttribute("userName");
+//		if (userName != null && userName.equals(userNameRe)) {
+//			map.addAttribute("userName", userNameRe);
+//			// map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
+//			// map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
+//			// map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
+//			return "index";
+//		} else {
+//			return "error";
+//		}
+//	}
 
 	@RequestMapping({ "fixenv" })
 	public String fixenv(@RequestParam("zkAddress") String zkAddress, HttpServletRequest request, ModelMap map,

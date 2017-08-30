@@ -21,7 +21,7 @@ public class LogUtil {
      *
      * @param message the message object.
      */
-    public static void logInfo(Object message) {
+    public void logInfo(Object message) {
         log.info("[INFO] " + message);
     }
     

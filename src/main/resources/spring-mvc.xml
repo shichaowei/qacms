@@ -62,7 +62,7 @@
 	<!-- 增加aop -->
 	<aop:aspectj-autoproxy />
 	<bean id="loggingAspect" class="com.wsc.qa.aop.SystemLogAspect"></bean>
-
+	
 
 	<bean id="freemarkerConfig"
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">

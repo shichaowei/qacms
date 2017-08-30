@@ -58,6 +58,7 @@
         <!--借出连接时不要测试，否则很影响性能  -->
         <property name="testOnBorrow" value="false" />      
 	</bean>
+	<bean id="exceptionHandler" class="com.wsc.qa.exception.MyExceptionHandler"/> 
 
 	<context:property-placeholder location="classpath:db.properties" />
 	

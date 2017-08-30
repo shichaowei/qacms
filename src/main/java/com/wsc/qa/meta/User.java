@@ -1,11 +1,11 @@
 package com.wsc.qa.meta;
 
-import org.hibernate.validator.constraints.NotBlank;
+import com.wsc.qa.constraint.NotBlank;
 
 public class User {
-	@NotBlank(message="username不能为空")
+	@NotBlank
 	String userName ;
-	@NotBlank(message="usrPasswd不能为空")
+	@NotBlank
 	String userPassword ;
 	
 	public String getUserName() {

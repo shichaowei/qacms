@@ -6,7 +6,7 @@
         <title>登录</title>
     </head>
     <body>
-    		<form action="login" method="post">
+    		<form action="api/login" method="post">
 	  			<p>userName: <input type="text" name="userName" /></p>
 	  			<p>userPassword: <input type="password" name="userPassword" /></p>
 	  			<input type="submit" value="Submit" />
