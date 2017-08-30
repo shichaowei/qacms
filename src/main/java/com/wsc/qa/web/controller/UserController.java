@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wsc.qa.annotation.Log;
+import com.wsc.qa.annotation.OperaLog;
 import com.wsc.qa.constants.IndexNav;
 import com.wsc.qa.exception.BusinessException;
+import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.meta.User;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
@@ -60,9 +62,9 @@ public class UserController {
 		String userName = (String) session.getAttribute("userName");
 		if (null != userName && !userName.isEmpty()) {
 			map.addAttribute("userName", userName);
-			// map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
-			// map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
-			// map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
+			map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
+			map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
+			map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
 			return "index";
 		} else {
 			return "login";
@@ -76,22 +78,28 @@ public class UserController {
 			HttpServletResponse response, ModelMap map) {
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
-		if (userName != null && userName.equals(userName)) {
-			
-			if(item.equals("createCallbackStr"))
+		if (null !=userName  && userName.equals(userName)) {
+			switch (item) {
+			case "createCallbackStr":
 				map.addAttribute("item", IndexNav.createCallbackStr);
-			if(item.equals("changetime"))
+				break;
+			case "changetime":
 				map.addAttribute("item", IndexNav.changetime);
-			if(item.equals("fixenv"))
-				map.addAttribute("item", IndexNav.fixenv);
-			if(item.equals("mock"))
+				break;
+			
+			case "mock":
 				map.addAttribute("item", IndexNav.mock);
-			if(item.equals("logout")){
+				break;
+			case "fixenv":
+				map.addAttribute("item", IndexNav.fixenv);
+				break;
+			case "login":
+				return "login";
+			case "logout":
 				session.invalidate();
 				return "login";
-			}
-			if(item.equals("login")){
-				return "login";
+			default:
+				break;
 			}
 			map.addAttribute("userName", userName);
 			
@@ -117,52 +125,35 @@ public class UserController {
 				Cookie pwdCookie = new Cookie("pwd", userPassword);
 				userNameCookie.setMaxAge(10 * 60);
 				pwdCookie.setMaxAge(10 * 60);
-
 				session.setAttribute("userName", userName);
 				response.addCookie(userNameCookie);
 				response.addCookie(pwdCookie);
 //				response.sendRedirect("user/" + userName);
 				map.addAttribute("userName", user.getUserName());
 			} else {
-//				throw new BusinessException("sfsdfsdfd");
 				throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 			}
 
 		} else {
-//			throw new BusinessException("sfsdfsdfd");
-//			response.sendRedirect("user/error");
+
 			throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 		}
 		return "index";
 	}
 
-//	@RequestMapping({ "user/{userName}" })
-//	@Log(operationType = "getInfo操作:", operationName = "获取用户信息")
-//	public String getInfo(@PathVariable("userName") String userNameRe, HttpServletRequest request, ModelMap map,
-//			HttpServletResponse response) {
-//		HttpSession session = request.getSession();
-//		String userName = (String) session.getAttribute("userName");
-//		if (userName != null && userName.equals(userNameRe)) {
-//			map.addAttribute("userName", userNameRe);
-//			// map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
-//			// map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
-//			// map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
-//			return "index";
-//		} else {
-//			return "error";
-//		}
-//	}
+
 
 	@RequestMapping({ "fixenv" })
+	@OperaLog(operUsername="",operType="")
 	public String fixenv(@RequestParam("zkAddress") String zkAddress, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		dealEnvServiceImpl.fixenv(zkAddress);
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
 		map.addAttribute("userName", userName);
-		// map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
-		// map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
-		// map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
+		map.addAttribute("lastoperaName", operaLogServiceImpl.getLastOper().getUsername());
+		map.addAttribute("lastoperaType", operaLogServiceImpl.getLastOper().getOpertype());
+		map.addAttribute("lastoperaTime", operaLogServiceImpl.getLastOper().getOpertime());
 		// 插入最後操作的數據
 		operaLogServiceImpl.insertOperLog(userName, "fixenv");
 		return "index";
@@ -202,23 +193,9 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "mockMessage" })
-	public String mockMessage(@RequestParam("mockserverip") String mockserverip,
-			@RequestParam("ContentType") String ContentType, @RequestParam("checkUrl") String checkUrl,
-			@RequestParam("checkPostParams") String checkPostParams,
-			@RequestParam("checkGetParams") String checkGetParams, @RequestParam("responseBody") String responseBody,
+	public String mockMessage(MockInfo mockinfo,
 			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
-		List<String> checkPostParamsList = new ArrayList<>();
-		List<String> checkGetParamsList = new ArrayList<>();
-		if (checkPostParams != null && !checkPostParams.isEmpty() && !checkPostParams.equals("checkPostParams")) {
-			checkPostParamsList = java.util.Arrays.asList(checkPostParams.split(";"));
-		} else {
-			checkPostParams = null;
-		}
-		if (checkGetParams != null && !checkGetParams.isEmpty() && !checkGetParams.equals("checkGetParams")) {
-			checkGetParamsList = java.util.Arrays.asList(checkGetParams.split(";"));
-		}
-		String mockRule = mockMessServiceImpl.mockProcess(mockserverip, ContentType, responseBody, checkUrl,
-				checkPostParamsList, checkGetParamsList);
+		String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
 		map.addAttribute("mockRuleStr", ForMatJSONUtil.format(mockRule));
 		return "display";
 	}
@@ -261,9 +238,9 @@ public class UserController {
 		operaLogServiceImpl.insertOperLog(userName, changetimetype);
 
 		map.addAttribute("userName", userName);
-		// map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
-		// map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
-		// map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
+		map.addAttribute("lastoperaName", operaLogServiceImpl.getLastOper().getUsername());
+		map.addAttribute("lastoperaType", operaLogServiceImpl.getLastOper().getOpertype());
+		map.addAttribute("lastoperaTime", operaLogServiceImpl.getLastOper().getOpertime());
 		return "index";
 
 	}

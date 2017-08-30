@@ -1,9 +1,14 @@
 package com.wsc.qa.meta;
 
+import com.wsc.qa.constraint.NotBlank;
+
 public class OperaLog {
 
+	@NotBlank
 	String username;
+	@NotBlank
 	String opertype;
+	@NotBlank
 	String opertime;
 	public String getUsername() {
 		return username;

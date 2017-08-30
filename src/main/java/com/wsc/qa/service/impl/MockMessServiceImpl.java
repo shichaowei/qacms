@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.wsc.qa.constants.ServerInfo;
+import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.mockmode.*;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.utils.Scpclient;
@@ -23,7 +24,24 @@ public class MockMessServiceImpl implements MockMessService{
 	 * 4.构造modeExports
 	 * 
 	 */
-	public String mockProcess(String mockServerIp,String ContentType,String responseBody,String checkUrl,List<String> checkPostParams,List<String> checkGetParams) {
+	public String mockProcess(MockInfo mockInfo) {
+		String mockServerIp=mockInfo.getMockserverip();
+		String ContentType=mockInfo.getContentType();
+		String responseBody=mockInfo.getResponseBody();
+		String checkUrl=mockInfo.getCheckUrl();
+		List<String> checkPostParams =null;
+		List<String> checkGetParams = null;
+		switch (mockInfo.getMockType()) {
+		case "get":
+			checkGetParams= java.util.Arrays.asList( mockInfo.getCheckParams().split(";"));
+			break;
+		case "post":
+			checkPostParams= java.util.Arrays.asList( mockInfo.getCheckParams().split(";"));
+			break;
+		default:
+			break;
+		}
+		
 		modeLocalResponse localResponse = new modeLocalResponse();
     	modeLocalResponse.headerDetail headers= localResponse.new headerDetail();
     	headers.setContentType(ContentType);

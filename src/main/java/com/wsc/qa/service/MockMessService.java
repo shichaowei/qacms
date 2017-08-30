@@ -4,7 +4,9 @@ package com.wsc.qa.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wsc.qa.meta.MockInfo;
+
 public interface MockMessService {
 
-	public String mockProcess(String mockServerIp,String ContentType,String responseBody,String checkUrl,java.util.List<String> checkPostParams,List<String> checkGetParams);
+	public String mockProcess(MockInfo mockInfo);
 }
