@@ -96,11 +96,12 @@ public class SystemLogAspect {
              for (Method method : methods) {  
                  if (method.getName().equals(methodName)) {  
                     Class[] clazzs = method.getParameterTypes();  
-                     if (clazzs.length == arguments.length) {  
+                     if (clazzs.length == arguments.length && null != method.getAnnotation(Log.class)) {
                          operationType = method.getAnnotation(Log.class).operationType();
                          operationName = method.getAnnotation(Log.class).operationName();
-                         break;  
-                    }  
+                        
+                    } 
+                     break;  
                 }  
             }
             //*========控制台输出=========*//  
@@ -112,7 +113,7 @@ public class SystemLogAspect {
         }  catch (Exception e) {  
             //记录本地异常日志  
             logger.error("==后置通知异常==");  
-            logger.error("异常信息:{}", e.getMessage());  
+            logger.error("异常信息:{}", e);  
         }  
     } 
     
@@ -171,7 +172,7 @@ public class SystemLogAspect {
              /*========控制台输出=========*/  
             System.out.println("=====异常通知开始=====");  
             System.out.println("异常代码:" + e.getClass().getName());  
-            System.out.println("异常信息:" + e.getMessage());  
+            System.out.println("异常信息:" + e);  
             System.out.println("异常方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);  
             System.out.println("方法描述:" + operationName);  
             System.out.println("请求IP:" + ip);  
@@ -180,7 +181,7 @@ public class SystemLogAspect {
         }  catch (Exception ex) {  
             //记录本地异常日志  
             logger.error("==异常通知异常==");  
-            logger.error("异常信息:{}", ex.getMessage());  
+            logger.error("异常信息:{}", ex);  
         }  
          /*==========记录本地异常日志==========*/  
         logger.error("异常方法:{}异常代码:{}异常信息:{}参数:{}", new Object[]{joinPoint.getTarget().getClass().getName() + joinPoint.getSignature().getName(), e.getClass().getName(), e.getMessage(), params});  

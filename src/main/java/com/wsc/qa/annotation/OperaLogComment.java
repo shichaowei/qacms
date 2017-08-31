@@ -9,10 +9,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.METHOD})  
 @Retention(RetentionPolicy.RUNTIME)  
 @Documented  
-public @interface OperaLog {
-	/** 要执行的操作类型比如：add操作 **/  
-    public String operUsername() default "";  
-     
-    /** 要执行的具体操作比如：添加用户 **/  
-    public String operType() default "";
+public @interface OperaLogComment {
+	/** 要执行的操作比如：add操作 **/  
+    public String remark() default "";  
+
 }

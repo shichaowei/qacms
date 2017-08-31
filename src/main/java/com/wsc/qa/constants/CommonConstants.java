@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 
 public class CommonConstants {
 
+	// 通过格式化输出日期
+	public static java.text.SimpleDateFormat TIMEFORMART = new java.text.SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
     /**
      * @Description 错误代码
      */

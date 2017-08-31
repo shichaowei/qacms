@@ -2,7 +2,12 @@
     <div class="g-doc f-cb">
      	<#if userName?exists>
 		    <div class="n-result">
-	    	    <p>welcome ${userName}</p>
+	    	   <p>welcome ${userName}</p>
+	    	   <#if lastoperaInfo?exists>
+			   <p>last operationUserName is :${lastoperaInfo.username}</p>
+			   <p>last operationOperaType is :${lastoperaInfo.opertype}</p>
+			   <p>last operationTime is :${lastoperaInfo.opertime}</p>
+			   </#if>
 	    	    <ul class="nav">
 		            <li><a href="/index?item=fixenv">修复环境</a></li>
 		            <li><a href="/index?item=createCallbackStr">通过remark字段构造回调报文</a></li>

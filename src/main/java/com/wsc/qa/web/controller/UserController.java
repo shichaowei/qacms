@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wsc.qa.annotation.Log;
-import com.wsc.qa.annotation.OperaLog;
+import com.wsc.qa.annotation.OperaLogComment;
 import com.wsc.qa.constants.IndexNav;
 import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.MockInfo;
@@ -34,6 +34,7 @@ import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
 import com.wsc.qa.utils.ForMatJSONUtil;
+import com.wsc.qa.utils.GetUserUitl;
 import com.wsc.qa.utils.LogUtil;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
 
@@ -62,9 +63,7 @@ public class UserController {
 		String userName = (String) session.getAttribute("userName");
 		if (null != userName && !userName.isEmpty()) {
 			map.addAttribute("userName", userName);
-			map.addAttribute("lastoperaName",operaLogServiceImpl.getLastOper().getUsername());
-			map.addAttribute("lastoperaType",operaLogServiceImpl.getLastOper().getOpertype());
-			map.addAttribute("lastoperaTime",operaLogServiceImpl.getLastOper().getOpertime());
+			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 			return "index";
 		} else {
 			return "login";
@@ -74,6 +73,7 @@ public class UserController {
 
 
 	@RequestMapping({ "index" })
+	@Log(operationType = "index操作:", operationName = "index")
 	public String getIndexInfo(@RequestParam("item") String item, HttpServletRequest request,
 			HttpServletResponse response, ModelMap map) {
 		HttpSession session = request.getSession();
@@ -102,6 +102,8 @@ public class UserController {
 				break;
 			}
 			map.addAttribute("userName", userName);
+			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+		
 			
 			return "index";
 		} else {
@@ -138,24 +140,23 @@ public class UserController {
 
 			throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 		}
+		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		return "index";
 	}
 
 
 
 	@RequestMapping({ "fixenv" })
-	@OperaLog(operUsername="",operType="")
+	@OperaLogComment(remark="fixenv")
 	public String fixenv(@RequestParam("zkAddress") String zkAddress, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		dealEnvServiceImpl.fixenv(zkAddress);
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
 		map.addAttribute("userName", userName);
-		map.addAttribute("lastoperaName", operaLogServiceImpl.getLastOper().getUsername());
-		map.addAttribute("lastoperaType", operaLogServiceImpl.getLastOper().getOpertype());
-		map.addAttribute("lastoperaTime", operaLogServiceImpl.getLastOper().getOpertime());
+		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		// 插入最後操作的數據
-		operaLogServiceImpl.insertOperLog(userName, "fixenv");
+//		operaLogServiceImpl.insertOperLog(userName, "fixenv");
 		return "index";
 	}
 
@@ -169,11 +170,12 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "createCallbackStr" })
+	@OperaLogComment(remark="remark字段生成回调报文")
 	public String createCallbackStr(@RequestParam("remark") String remark, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
-		System.out.println(callbackStr);
 		map.addAttribute("callbackStr", ForMatJSONUtil.format(callbackStr));
+		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		return "display";
 	}
 
@@ -193,6 +195,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "mockMessage" })
+	@OperaLogComment(remark="mock數據")
 	public String mockMessage(MockInfo mockinfo,
 			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
 		String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
@@ -201,6 +204,7 @@ public class UserController {
 	}
 
 	@RequestMapping({ "changetime" })
+	@OperaLogComment(remark="修改時間")
 	public String changetime(@RequestParam("changetimetype") String changetimetype, @RequestParam("date") String date,
 			@RequestParam("time") String time, HttpServletRequest request, ModelMap map, HttpServletResponse response) {
 		String cmd = "date -s '" + date + " " + time + "'";
@@ -232,15 +236,13 @@ public class UserController {
 		default:
 			break;
 		}
-		// 插入最後操作的數據
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
-		operaLogServiceImpl.insertOperLog(userName, changetimetype);
+//		// 插入最後操作的數據
+//		HttpSession session = request.getSession();
+//		String userName = (String) session.getAttribute("userName");
+//		operaLogServiceImpl.insertOperLog(userName, changetimetype);
 
-		map.addAttribute("userName", userName);
-		map.addAttribute("lastoperaName", operaLogServiceImpl.getLastOper().getUsername());
-		map.addAttribute("lastoperaType", operaLogServiceImpl.getLastOper().getOpertype());
-		map.addAttribute("lastoperaTime", operaLogServiceImpl.getLastOper().getOpertime());
+		map.addAttribute("userName", GetUserUitl.getUserName(request));
+		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		return "index";
 
 	}

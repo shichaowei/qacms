@@ -16,6 +16,7 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
             Exception ex) {  
         Map<String, Object> model = new HashMap<String, Object>();  
         model.put("ex", ex.getMessage());  
+        System.out.println(ex.getCause());
           
         // 根据不同错误转向不同页面  
         if(ex instanceof BusinessException) {  

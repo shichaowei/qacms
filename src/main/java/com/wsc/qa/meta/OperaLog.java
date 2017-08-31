@@ -8,7 +8,6 @@ public class OperaLog {
 	String username;
 	@NotBlank
 	String opertype;
-	@NotBlank
 	String opertime;
 	public String getUsername() {
 		return username;
