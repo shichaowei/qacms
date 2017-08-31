@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.wsc.qa.utils.ExceptionUtil;
+
 public class MyExceptionHandler implements HandlerExceptionResolver {  
   
 	@Override
@@ -16,7 +18,8 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
             Exception ex) {  
         Map<String, Object> model = new HashMap<String, Object>();  
         model.put("ex", ex.getMessage());  
-        System.out.println(ex.getCause());
+        System.out.println("栈信息："+ExceptionUtil.printStackTraceToString(ex));
+//        ex.printStackTrace();
           
         // 根据不同错误转向不同页面  
         if(ex instanceof BusinessException) {  

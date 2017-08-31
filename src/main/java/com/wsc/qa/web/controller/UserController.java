@@ -1,7 +1,7 @@
 package com.wsc.qa.web.controller;
 
 import java.io.IOException;
-
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +24,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.annotation.OperaLogComment;
 import com.wsc.qa.constants.IndexNav;
+import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.MockInfo;
+import com.wsc.qa.meta.OperaLog;
 import com.wsc.qa.meta.User;
+import com.wsc.qa.mockmode.modecheckParamsStr;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.DealEnvService;
@@ -34,7 +37,7 @@ import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
 import com.wsc.qa.utils.ForMatJSONUtil;
-import com.wsc.qa.utils.GetUserUitl;
+import com.wsc.qa.utils.GetUserUtil;
 import com.wsc.qa.utils.LogUtil;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
 
@@ -62,18 +65,24 @@ public class UserController {
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
 		if (null != userName && !userName.isEmpty()) {
-			map.addAttribute("userName", userName);
-			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+//			map.addAttribute("userName", userName);
+//			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 			return "index";
 		} else {
 			return "login";
 		}
 	}
 	
+	@RequestMapping({ "/register" })
+	@Log(operationType = "注册操作:", operationName = "注册")
+	public String register(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
+		return "register";
+	}
+	
 
 
 	@RequestMapping({ "index" })
-	@Log(operationType = "index操作:", operationName = "index")
+	@Log(operationType = "目录操作:", operationName = "目录")
 	public String getIndexInfo(@RequestParam("item") String item, HttpServletRequest request,
 			HttpServletResponse response, ModelMap map) {
 		HttpSession session = request.getSession();
@@ -101,8 +110,8 @@ public class UserController {
 			default:
 				break;
 			}
-			map.addAttribute("userName", userName);
-			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+//			map.addAttribute("userName", userName);
+//			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		
 			
 			return "index";
@@ -113,7 +122,7 @@ public class UserController {
 	}
 
 	@RequestMapping({ "/api/login" })
-	@Log(operationType = "login操作:", operationName = "登录")
+	@Log(operationType = "login的api操作:", operationName = "登录")
 	public String login(@ModelAttribute @Valid User userRe,
 			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
 		String userName=userRe.getUserName();
@@ -123,7 +132,8 @@ public class UserController {
 		if (user != null) {
 			if (user.getUserPassword().equals(userPassword)) {
 				HttpSession session = request.getSession();
-				Cookie userNameCookie = new Cookie("userName", userName);
+				//cookie取中文需要 URLEncoder.encode 
+				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode (user.getUserName(),"utf-8"));
 				Cookie pwdCookie = new Cookie("pwd", userPassword);
 				userNameCookie.setMaxAge(10 * 60);
 				pwdCookie.setMaxAge(10 * 60);
@@ -131,7 +141,7 @@ public class UserController {
 				response.addCookie(userNameCookie);
 				response.addCookie(pwdCookie);
 //				response.sendRedirect("user/" + userName);
-				map.addAttribute("userName", user.getUserName());
+//				map.addAttribute("userName", user.getUserName());
 			} else {
 				throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 			}
@@ -140,7 +150,26 @@ public class UserController {
 
 			throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 		}
-		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+//		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+		return "index";
+	}
+	
+	@RequestMapping({ "/api/register" })
+	@Log(operationType = "register的api操作:", operationName = "注册")
+	public String registerApi(@ModelAttribute @Valid User user,
+			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
+		userServiceImpl.insertUserInfo(user);
+		String userName=URLEncoder.encode (user.getUserName(),"utf-8");
+		String userPassword = user.getUserPassword();
+		HttpSession session = request.getSession();
+		Cookie userNameCookie = new Cookie("userName", userName);
+		Cookie pwdCookie = new Cookie("pwd", userPassword);
+		userNameCookie.setMaxAge(10 * 60);
+		pwdCookie.setMaxAge(10 * 60);
+		session.setAttribute("userName", userName);
+		response.addCookie(userNameCookie);
+		response.addCookie(pwdCookie);
+		map.addAttribute("userName",GetUserUtil.getUserName(request));
 		return "index";
 	}
 
@@ -148,13 +177,14 @@ public class UserController {
 
 	@RequestMapping({ "fixenv" })
 	@OperaLogComment(remark="fixenv")
+	@Log(operationType = "修复环境操作:", operationName = "修复环境")
 	public String fixenv(@RequestParam("zkAddress") String zkAddress, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		dealEnvServiceImpl.fixenv(zkAddress);
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
-		map.addAttribute("userName", userName);
-		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+//		map.addAttribute("userName", userName);
+//		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		// 插入最後操作的數據
 //		operaLogServiceImpl.insertOperLog(userName, "fixenv");
 		return "index";
@@ -175,7 +205,7 @@ public class UserController {
 			HttpServletResponse response) {
 		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
 		map.addAttribute("callbackStr", ForMatJSONUtil.format(callbackStr));
-		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+//		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		return "display";
 	}
 
@@ -211,40 +241,34 @@ public class UserController {
 		switch (changetimetype) {
 
 		case "changeDubbotime": {
-			String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243" };
-
-			changeTimeImpl.changeServerTime(ipaddress, cmd);
+			changeTimeImpl.changeServerTime(ServerInfo.changeDubbotimeIps, cmd);
 			break;
 		}
 		case "changDubboDbtime": {
-			String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243", "172.30.249.242" };
-			changeTimeImpl.changeServerTime(ipaddress, cmd);
+			changeTimeImpl.changeServerTime(ServerInfo.changDubboDbtimeIps, cmd);
 			break;
 		}
 		case "changDubboResttime": {
-			String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243", "172.30.250.25",
-					"172.30.248.218", "172.30.251.190" };
-			changeTimeImpl.changeServerTime(ipaddress, cmd);
+			changeTimeImpl.changeServerTime(ServerInfo.changDubboResttimeIps, cmd);
 			break;
 		}
 		case "changDubboRestDbtime": {
-			String ipaddress[] = { "172.30.248.31", "172.30.248.217", "172.30.249.243", "172.30.250.25",
-					"172.30.248.218", "172.30.251.190", "172.30.249.242" };
-			changeTimeImpl.changeServerTime(ipaddress, cmd);
+			changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
 			break;
 		}
 		default:
 			break;
 		}
-//		// 插入最後操作的數據
-//		HttpSession session = request.getSession();
-//		String userName = (String) session.getAttribute("userName");
-//		operaLogServiceImpl.insertOperLog(userName, changetimetype);
-
-		map.addAttribute("userName", GetUserUitl.getUserName(request));
-		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
-		return "index";
+		map.addAttribute("servernowtime", date+" "+time);
+		return "display";
 
 	}
-
+//	@RequestMapping("/test")
+//	public String hehe(HttpSession session,ModelMap map,HttpServletRequest request) {
+//		session.setAttribute("haha", "nini");
+//		map.addAttribute("haha", "map1");
+//		request.setAttribute("haha", "request");
+//		request.setAttribute("reqqqqqq", request);
+//		return "hehe";
+//	}
 }

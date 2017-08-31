@@ -13,6 +13,11 @@
 		        <pre id="mockRuleStr">${mockRuleStr}</pre>
 		    </div>
 	</#if>
+	<#if servernowtime?has_content>
+		    <div class="n-result">
+		        <pre id="servernowtime">${servernowtime}</pre>
+		    </div>
+	</#if>
 
 </body>
 </html>

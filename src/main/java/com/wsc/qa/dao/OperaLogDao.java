@@ -13,8 +13,11 @@ public interface OperaLogDao {
 	@Select("select * FROM fengdaioperlog ORDER BY opertime DESC LIMIT 1")
 	public OperaLog getLastOper();
 	
-	@Insert("INSERT into fengdaioperlog(username,opertype,opertime) VALUES (#{username},#{opertype},now())")
-	public void insertOper(@Param("username") String username,@Param("opertype") String opertype);
+//	@Insert("INSERT into fengdaioperlog(username,opertype,opertime) VALUES (#{username},#{opertype},now())")
+//	public void insertOper(@Param("username") String username,@Param("opertype") String opertype);
+	
+	@Insert("INSERT into fengdaioperlog(username,opertype,opertime) VALUES (#{operLog.username},#{operLog.opertype},now())")
+	public void insertOper(@Param("operLog") OperaLog operlog);
 	
 	
 }

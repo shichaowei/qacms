@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,7 +23,7 @@ import com.wsc.qa.annotation.OperaLogComment;
 import com.wsc.qa.constants.CommonConstants;
 import com.wsc.qa.meta.OperaLog;
 import com.wsc.qa.service.OperLogService;
-import com.wsc.qa.utils.GetUserUitl;
+import com.wsc.qa.utils.GetUserUtil;
 
 
 @Aspect
@@ -61,7 +63,7 @@ public class OperLogAspect {
 					if (methodCache != null && !("").equals(methodCache.remark())) {
 						Calendar cal = Calendar.getInstance();// 取当前日期
 						operaLog.setOpertype(methodCache.remark());
-						operaLog.setUsername(GetUserUitl.getUserName(getRequest(joinPoint)));
+						operaLog.setUsername(GetUserUtil.getUserName(getRequest(joinPoint)));
 						operaLog.setOpertime(CommonConstants.TIMEFORMART.format(cal.getTime()));
 						return operaLog;
 					}
@@ -69,8 +71,21 @@ public class OperLogAspect {
 				}
 			}
 		}
-		System.out.println("sfdfd");
 		return null;
+	}
+	
+	/**
+	 * 对返回去的modemap加上username lastoperaInfo属性（header.ftl有username属性 index有lastoperaInfo）
+	 * 
+	 * @param joinPoint
+	 * @return
+	 * @throws Exception
+	 */
+	private void addmodeHeader(JoinPoint joinPoint) throws Exception {
+		logger.info("username::"+GetUserUtil.getUserName(getRequest(joinPoint)));
+		getModelMap(joinPoint).addAttribute("userName",GetUserUtil.getUserName(getRequest(joinPoint)));
+		getModelMap(joinPoint).addAttribute("lastoperaInfo",operLogServiceImpl.getLastOper());
+		
 	}
 
 	/**
@@ -90,7 +105,36 @@ public class OperLogAspect {
 		HttpServletRequest request = sra.getRequest();
 		return request;
 	}
+	
+	/**
+	 * 获取参数ModelMap
+	 * 
+	 * @param point
+	 * @return
+	 */
+	private ModelMap getModelMap(JoinPoint point) {
+		Object[] args = point.getArgs();
+		for (Object obj : args) {
+			if (obj instanceof ModelMap)
+				return (ModelMap) obj;
+		}
+		return null;
+	}
 
+	
+	   /** 
+     * 前置通知 用于拦截Controller层记录用户的操作 
+     * 
+     * @param joinPoint 切点 
+	 * @throws Exception 
+     */ 
+    @Before("controllerAspect()")
+    public void doBefore(JoinPoint joinPoint) throws Exception {
+        logger.info("==========执行controller-operlog前置通知===============");
+//        addmodeHeader(joinPoint);
+        logger.info("==========执行controller-operlog前置通知结束===============");
+    }
+    
 
 
 	/**
@@ -102,12 +146,13 @@ public class OperLogAspect {
 	 */
 	@After("controllerAspect()")
 	public void after(JoinPoint joinPoint) throws Exception {
-		
+		 logger.info("==========执行controller-operlog后置通知===============");
 		OperaLog operaLog = getOperaRemark(joinPoint);
 		if(null != operaLog) {
+			operLogServiceImpl.insertOperLog(operaLog);
 			
-			operLogServiceImpl.insertOperLog(operaLog.getUsername(), operaLog.getOpertype());
 		}
+		logger.info("=====controller-operlog后置通知结束=====");  
 	}
 
 }

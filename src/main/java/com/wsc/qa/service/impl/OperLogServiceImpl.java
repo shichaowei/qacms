@@ -16,9 +16,14 @@ public class OperLogServiceImpl implements OperLogService{
 	public OperaLog getLastOper(){
 		return operaLogDao.getLastOper();
 	}
-	
-	public void insertOperLog(String username,String opertype){
-		operaLogDao.insertOper(username, opertype);
+//	@Deprecated
+//	public void insertOperLog(String username,String opertype){
+//		operaLogDao.insertOper(username, opertype);
+//	}
+
+	@Override
+	public void insertOperLog(OperaLog operaLog) {
+		operaLogDao.insertOper(operaLog);
 	}
 	
 }
