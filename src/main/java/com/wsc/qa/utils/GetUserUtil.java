@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 
 
-public class GetUserUitl {
+public class GetUserUtil {
 	
 	public static String getUserName(HttpServletRequest request) {
 		HttpSession session = request.getSession();
