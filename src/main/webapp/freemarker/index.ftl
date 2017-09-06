@@ -35,6 +35,7 @@
 			<#if item=="createCallbackStr">
 			<form action="/createCallbackStr" method="post">
 				<label >生成回调报文</label>
+				<input type="text" name="callbackUrl" placeholder="回调地址">
 				<input type="text" name="remark" placeholder="remark字段">
 				<input type="submit" value="Submit">
 			</form>

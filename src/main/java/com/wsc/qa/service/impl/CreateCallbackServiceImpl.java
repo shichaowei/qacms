@@ -66,7 +66,7 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 
 	@Override
 	public String genCallbackStr(String remark) {
-		System.out.println(remark);
+//		System.out.println(remark);
 		List<String> orderId = JsonPath.read(remark, "$..billId");
 		List<Double> amount = JsonPath.read(remark, "$..outAmount");
 		List<String> userParams = JsonPath.read(remark, "$..customJson");
@@ -79,6 +79,7 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 				items.add(new item(amount.get(i), "PAY_SUCCESS"));
 			}
 		}
+		System.out.println(items);
 		return JSON.toJSONString(items);
 	}
 

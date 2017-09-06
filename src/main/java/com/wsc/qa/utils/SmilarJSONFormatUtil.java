@@ -1,9 +1,16 @@
 package com.wsc.qa.utils;
-public class ForMatJSONUtil {
+/**
+ * 主要用于类json的格式化
+ * module.exports = {
+	 *beforeSendRequest(requestDetail){k:v}}
+ * @author hzweisc
+ *
+ */
+public class SmilarJSONFormatUtil {
   
     public static void main(String[] args) {
         String jsonStr = "{\"id\":\"1\",\"name\":\"a1\",\"obj\":{\"id\":11,\"name\":\"a11\",\"array\":[{\"id\":111,\"name\":\"a111\"},{\"id\":112,\"name\":\"a112\"}]}}";
-        String fotmatStr = ForMatJSONUtil.format(jsonStr);
+        String fotmatStr = SmilarJSONFormatUtil.format(jsonStr);
 //      fotmatStr = fotmatStr.replaceAll("\n", "<br/>");
 //      fotmatStr = fotmatStr.replaceAll("\t", "    ");
         System.out.println(fotmatStr);

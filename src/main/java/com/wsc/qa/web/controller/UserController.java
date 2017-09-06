@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.squareup.okhttp.OkHttpClient;
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.annotation.OperaLogComment;
 import com.wsc.qa.constants.IndexNav;
@@ -29,16 +30,17 @@ import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.meta.OperaLog;
 import com.wsc.qa.meta.User;
-import com.wsc.qa.mockmode.modecheckParamsStr;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
-import com.wsc.qa.utils.ForMatJSONUtil;
 import com.wsc.qa.utils.GetUserUtil;
+import com.wsc.qa.utils.JsonFormatUtil;
 import com.wsc.qa.utils.LogUtil;
+import com.wsc.qa.utils.OkHttpUtil;
+import com.wsc.qa.utils.SmilarJSONFormatUtil;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
 
 @Controller
@@ -198,21 +200,29 @@ public class UserController {
 	 * @param map
 	 * @param response
 	 * @return
+	 *  
 	 */
 	@RequestMapping({ "createCallbackStr" })
 	@OperaLogComment(remark="remark字段生成回调报文")
-	public String createCallbackStr(@RequestParam("remark") String remark, HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) {
+	public String createCallbackStr(@RequestParam("callbackUrl") String callbackUrl,@RequestParam("remark") String remark, HttpServletRequest request, ModelMap map,
+			HttpServletResponse response)   {
 		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
-		map.addAttribute("callbackStr", ForMatJSONUtil.format(callbackStr));
+		map.addAttribute("callbackStr", JsonFormatUtil.jsonFormatter(callbackStr));
 //		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+		try {
+			OkHttpUtil.post(callbackUrl, callbackStr);
+		} catch (IOException e) {
+			throw new BusinessException(ErrorCode.ERROR_OTHER_MSG.customDescription("post请求失败"), e);
+		}
+		
 		return "display";
 	}
 
 	/**
 	 * 根據要mock的數據，在指定的服務器上啟動anyproxy，mock相關數據 checkPostParams checkGetParams
 	 * 以分隔符；為單位
-	 * 
+	 * test
+	 * curl -d "{"name" : "魏士超"}" http://172.30.251.176/credit-thirdparty-rest/api/auto/fill/factor --proxy http://127.0.0.1:8001
 	 * @param mockserverip
 	 * @param ContentType
 	 * @param checkUrl
@@ -229,7 +239,7 @@ public class UserController {
 	public String mockMessage(MockInfo mockinfo,
 			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
 		String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
-		map.addAttribute("mockRuleStr", ForMatJSONUtil.format(mockRule));
+		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
 		return "display";
 	}
 

@@ -55,6 +55,10 @@ public class WriteToFile {
 			}
 		}
 	}
+	
+	public static void main(String[] args) {
+		clearWriteFile("sdfdfdfd", "rule1504681290392.txt");
+	}
 
 
 
