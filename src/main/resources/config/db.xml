@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databases>
+	
+	<!-- 公用数据 -->
+	<database dbname="qa_auto_test" url="jdbc:mysql://10.200.130.103/qa_auto_test?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true"
+		username="root" password="Mysqltest@123098">
+	</database>
+	
+</databases>
