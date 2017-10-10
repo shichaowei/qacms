@@ -4,10 +4,12 @@ import com.wsc.qa.constraint.NotBlank;
 
 public class User {
 
+	@NotBlank
 	String userName ;
 
+	@NotBlank
 	String userPassword ;
-	
+
 	public String getUserName() {
 		return userName;
 	}

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -33,7 +34,8 @@ public class OperLogAspect {
 	private static final Logger logger = LoggerFactory.getLogger(OperLogAspect.class);
 	@Resource
 	private OperLogService operLogServiceImpl;
-	
+
+	private OperaLog operaLog ;
 
 	// Controller层切点
 	@Pointcut("execution (* com.wsc.qa.web.controller..*(..))")
@@ -42,7 +44,7 @@ public class OperLogAspect {
 
 	/**
 	 * 获取方法的中文备注____用于记录用户的操作日志描述
-	 * 
+	 *
 	 * @param joinPoint
 	 * @return
 	 * @throws Exception
@@ -65,6 +67,7 @@ public class OperLogAspect {
 						operaLog.setOpertype(methodCache.remark());
 						operaLog.setUsername(GetUserUtil.getUserName(getRequest(joinPoint)));
 						operaLog.setOpertime(CommonConstants.TIMEFORMART.format(cal.getTime()));
+						operaLog.setStatus("SUCCESS");
 						return operaLog;
 					}
 					break;
@@ -73,24 +76,24 @@ public class OperLogAspect {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 对返回去的modemap加上username lastoperaInfo属性（header.ftl有username属性 index有lastoperaInfo）
-	 * 
+	 *
 	 * @param joinPoint
 	 * @return
 	 * @throws Exception
 	 */
-	private void addmodeHeader(JoinPoint joinPoint) throws Exception {
-		logger.info("username::"+GetUserUtil.getUserName(getRequest(joinPoint)));
-		getModelMap(joinPoint).addAttribute("userName",GetUserUtil.getUserName(getRequest(joinPoint)));
-		getModelMap(joinPoint).addAttribute("lastoperaInfo",operLogServiceImpl.getLastOper());
-		
-	}
+//	private void addmodeHeader(JoinPoint joinPoint) throws Exception {
+//		logger.info("username::"+GetUserUtil.getUserName(getRequest(joinPoint)));
+//		getModelMap(joinPoint).addAttribute("userName",GetUserUtil.getUserName(getRequest(joinPoint)));
+//		getModelMap(joinPoint).addAttribute("lastoperaInfo",operLogServiceImpl.getLastOper());
+//
+//	}
 
 	/**
 	 * 获取参数request
-	 * 
+	 *
 	 * @param point
 	 * @return
 	 */
@@ -105,10 +108,10 @@ public class OperLogAspect {
 		HttpServletRequest request = sra.getRequest();
 		return request;
 	}
-	
+
 	/**
 	 * 获取参数ModelMap
-	 * 
+	 *
 	 * @param point
 	 * @return
 	 */
@@ -121,38 +124,58 @@ public class OperLogAspect {
 		return null;
 	}
 
-	
-	   /** 
-     * 前置通知 用于拦截Controller层记录用户的操作 
-     * 
-     * @param joinPoint 切点 
-	 * @throws Exception 
-     */ 
+
+	   /**
+     * 前置通知 用于拦截Controller层记录用户的操作
+     *
+     * @param joinPoint 切点
+	 * @throws Exception
+     */
     @Before("controllerAspect()")
     public void doBefore(JoinPoint joinPoint) throws Exception {
         logger.info("==========执行controller-operlog前置通知===============");
 //        addmodeHeader(joinPoint);
+        operaLog = getOperaRemark(joinPoint);
         logger.info("==========执行controller-operlog前置通知结束===============");
     }
-    
+
 
 
 	/**
 	 * 后置通知 用于拦截Controller层记录用户的操作
-	 * 
+	 *
 	 * @param joinPoint
 	 *            切点
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@After("controllerAspect()")
 	public void after(JoinPoint joinPoint) throws Exception {
-		 logger.info("==========执行controller-operlog后置通知===============");
-		OperaLog operaLog = getOperaRemark(joinPoint);
+		logger.info("==========执行controller-operlog后置通知===============");
 		if(null != operaLog) {
 			operLogServiceImpl.insertOperLog(operaLog);
-			
 		}
-		logger.info("=====controller-operlog后置通知结束=====");  
+		logger.info("=====controller-operlog后置通知结束=====");
 	}
+
+	 /**
+     * 异常通知 用于拦截记录异常日志
+     *
+     * @param joinPoint
+     * @param e
+     */
+     @AfterThrowing(pointcut = "controllerAspect()", throwing="e")
+     public  void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
+    	 /*========控制台输出=========*/
+         logger.info("=====执行controller-operlog异常通知=====");
+         if(null != operaLog) {
+        	 operaLog.setStatus("FAILED");
+//        	 logger.info("id is :{}",operaLog.getId());
+ 			operLogServiceImpl.updateOperLogStatus(operaLog);
+ 		}
+         logger.info("=====执行controller-operlog异常通知结束=====");
+
+    }
+
+
 
 }

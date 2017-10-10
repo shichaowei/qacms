@@ -17,6 +17,7 @@
 				  <option value="changeDubboDbtime">修改dubbo/db时间</option>
 				  <option value="changeDubboResttime">修改dubbo/rest时间</option>
 				  <option value="changeDubboRestDbtime">修改dubbo/rest/db时间</option>
+				  <option value="restAllTime">重置dubbo/rest/db时间</option>
 				</select>
 				<input type="text" name="date" placeholder="2017/07/04">
 				<input type="text" name="time" placeholder="9:00:00">
@@ -35,8 +36,12 @@
 			<#if item=="createCallbackStr">
 			<form action="/createCallbackStr" method="post">
 				<label >生成回调报文</label>
+				<select name="type">
+				  <option value="virRemark">通过remark字段模拟回调</option>
+				  <option value="virRelateId ">通过relateId字段模拟回调</option>
+				</select>
 				<input type="text" name="callbackUrl" placeholder="回调地址">
-				<input type="text" name="remark" placeholder="remark字段">
+				<input type="text" name="fieldDetail" placeholder="字段内容">
 				<input type="submit" value="Submit">
 			</form>
 			</#if>

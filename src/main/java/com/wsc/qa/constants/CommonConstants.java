@@ -6,12 +6,15 @@ public class CommonConstants {
 
 	// 通过格式化输出日期
 	public static java.text.SimpleDateFormat TIMEFORMART = new java.text.SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+
+
     /**
      * @Description 错误代码
      */
     public static enum ErrorCode {
         ERROR_ACCOUTWRONG(0x00001, "账户密码不正确"),
         ERROR_REPEAT_REQUEST(0x00003, "重复申请"),
+        ERROR_PARAMS_INVALIED(0x00003, "参数非法"),
         ERROR_REQUEST_TIMEOUT(0x00005, "请求过期"),
         ERROR_IP_BLOCKED(0xFF000, "您的 ip 被限制访问"),
         ERROR_ILLEGAL_PARAMTER(0xFF001, "缺少参数或参数不合法"),
@@ -39,7 +42,7 @@ public class CommonConstants {
         public String getDescription() {
             return description;
         }
-        
+
         public ErrorCode customDescription(String customError) {
             ERROR_TEMP.code = code;
             ERROR_TEMP.description = description;
@@ -57,7 +60,8 @@ public class CommonConstants {
 
 
 
-        public String toString() {
+        @Override
+		public String toString() {
             return toString(null);
         }
 
@@ -81,5 +85,5 @@ public class CommonConstants {
             return json.toString();
         }
     }
-    
+
 }

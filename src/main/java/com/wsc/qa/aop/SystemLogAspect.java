@@ -1,18 +1,13 @@
 package com.wsc.qa.aop;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -32,8 +27,8 @@ import com.wsc.qa.utils.GetUserUtil;
 /**
  * @author weishichao
  * @E-mail: email
- * @version 
- * @desc 切点类 
+ * @version
+ * @desc 切点类
  */
 
 @Aspect
@@ -43,47 +38,48 @@ public class SystemLogAspect {
 
 	@Resource
 	private OperLogService operLogServiceImpl;
-	
-    private  static  final Logger logger = LoggerFactory.getLogger(SystemLogAspect.class);  
-    
-    //Controller层切点  
-    @Pointcut("execution (* com.wsc.qa.web.controller..*(..))")  
-    public  void controllerAspect() {  
-    }  
-    
-    /** 
-     * 前置通知 用于拦截Controller层记录用户的操作 
-     * 
-     * @param joinPoint 切点 
-     * @throws Throwable 
-     */ 
+
+    private  static  final Logger logger = LoggerFactory.getLogger(SystemLogAspect.class);
+
+    //Controller层切点
+    @Pointcut("execution (* com.wsc.qa.web.controller..*(..))")
+    public  void controllerAspect() {
+    }
+
+    /**
+     * 前置通知 用于拦截Controller层记录用户的操作
+     *
+     * @param joinPoint 切点
+     * @throws Throwable
+     */
     @Before("controllerAspect()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
         logger.info("==========执行controller-syslog前置通知===============");
         if(logger.isInfoEnabled()){
             logger.info("before " + joinPoint);
         }
-        addmodeHeader(joinPoint);
-        
-    } 
-    
+        getOperLog2modeHeader(joinPoint);
+
+    }
+
 	/**
 	 * 对返回去的modemap加上username lastoperaInfo属性（header.ftl有username属性 index有lastoperaInfo）
-	 * 
+	 *
 	 * @param joinPoint
 	 * @return
 	 * @throws Exception
 	 */
-	private void addmodeHeader(JoinPoint joinPoint) throws Exception {
+	private void getOperLog2modeHeader(JoinPoint joinPoint) throws Exception {
 		logger.info("username::"+GetUserUtil.getUserName(getRequest(joinPoint)));
 		//map中不指定username，freemarker从session中取
 //		getModelMap(joinPoint).addAttribute("userName",GetUserUtil.getUserName(getRequest(joinPoint)));
 		getModelMap(joinPoint).addAttribute("lastoperaInfo",operLogServiceImpl.getLastOper());
-		
+		logger.info("operlog is ::"+operLogServiceImpl.getLastOper().getUsername());
+
 	}
 	/**
 	 * 获取参数request
-	 * 
+	 *
 	 * @param point
 	 * @return
 	 */
@@ -100,7 +96,7 @@ public class SystemLogAspect {
 	}
 	/**
 	 * 获取参数ModelMap
-	 * 
+	 *
 	 * @param point
 	 * @return
 	 */
@@ -112,8 +108,8 @@ public class SystemLogAspect {
 		}
 		return null;
 	}
-	
-    
+
+
     //配置controller环绕通知,使用在方法aspect()上注册的切入点
    /*   @Around("controllerAspect()")
       public void around(JoinPoint joinPoint){
@@ -134,120 +130,114 @@ public class SystemLogAspect {
           }
       }
     */
-    /** 
-     * 后置通知 用于拦截Controller层记录用户的操作 
-     * 
-     * @param joinPoint 切点 
-     */  
-    @After("controllerAspect()")  
-    public  void after(JoinPoint joinPoint) {  
+    /**
+     * 后置通知 用于拦截Controller层记录用户的操作
+     *
+     * @param joinPoint 切点
+     */
+    @After("controllerAspect()")
+    public  void after(JoinPoint joinPoint) {
         String ip = "127.0.0.1";
-         try {  
-            
-            String targetName = joinPoint.getTarget().getClass().getName();  
-            String methodName = joinPoint.getSignature().getName();  
-            Object[] arguments = joinPoint.getArgs();  
-            Class targetClass = Class.forName(targetName);  
+         try {
+
+            String targetName = joinPoint.getTarget().getClass().getName();
+            String methodName = joinPoint.getSignature().getName();
+            Object[] arguments = joinPoint.getArgs();
+            Class targetClass = Class.forName(targetName);
             Method[] methods = targetClass.getMethods();
             String operationType = "";
             String operationName = "";
-             for (Method method : methods) {  
-                 if (method.getName().equals(methodName)) {  
-                    Class[] clazzs = method.getParameterTypes();  
+             for (Method method : methods) {
+                 if (method.getName().equals(methodName)) {
+                    Class[] clazzs = method.getParameterTypes();
                      if (clazzs.length == arguments.length && null != method.getAnnotation(Log.class)) {
                     	 if (null != method.getAnnotation(Log.class)) {
                              operationType = method.getAnnotation(Log.class).operationType();
                              operationName = method.getAnnotation(Log.class).operationName();
-                        } 
-                         break;  
-                    } 
-                     
-                }  
+                        }
+                         break;
+                    }
+
+                }
             }
-            //*========控制台输出=========*//  
-            logger.info("=====controller后置通知开始=====");  
-            logger.info("请求方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);  
-            logger.info("方法描述:" + operationName);  
-            logger.info("请求IP:" + ip);  
-            logger.info("=====controller后置通知结束=====");  
-        }  catch (Exception e) {  
-            //记录本地异常日志  
-            logger.error("==后置通知异常==");  
-            logger.error("异常信息:{}", e);  
-        }  
-    } 
-    
+            //*========控制台输出=========*//
+            logger.info("=====controller后置通知开始=====");
+            logger.info("请求方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);
+            logger.info("方法描述:" + operationName);
+            logger.info("请求IP:" + ip);
+            logger.info("=====controller后置通知结束=====");
+        }  catch (Exception e) {
+            //记录本地异常日志
+            logger.error("==后置通知异常==");
+            logger.error("异常信息:{}", e);
+        }
+    }
+
 /*    //配置后置返回通知,使用在方法aspect()上注册的切入点
       @AfterReturning("controllerAspect()")
       public void afterReturn(JoinPoint joinPoint){
-          logger.info("=====执行controller-syslog后置返回通知=====");  
+          logger.info("=====执行controller-syslog后置返回通知=====");
               if(logger.isInfoEnabled()){
                   logger.info("afterReturn " + joinPoint);
               }
       }*/
-    
-    /** 
-     * 异常通知 用于拦截记录异常日志 
-     * 
-     * @param joinPoint 
-     * @param e 
-     */  
-     @AfterThrowing(pointcut = "controllerAspect()", throwing="e")  
-     public  void doAfterThrowing(JoinPoint joinPoint, Throwable e) {  
-        /*HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();  
-        HttpSession session = request.getSession();  
-        //读取session中的用户  
-        User user = (User) session.getAttribute(WebConstants.CURRENT_USER);  
-        //获取请求ip  
-        String ip = request.getRemoteAddr(); */ 
-        //获取用户请求方法的参数并序列化为JSON格式字符串  
 
-        String ip = "127.0.0.1";
-        
-        String params = "";  
-         if (joinPoint.getArgs() !=  null && joinPoint.getArgs().length > 0) {  
-             for ( int i = 0; i < joinPoint.getArgs().length; i++) {  
-                params += joinPoint.getArgs()[i].toString() + ";";  
-            }  
-        }  
-         try {  
-             
-             String targetName = joinPoint.getTarget().getClass().getName();  
-             String methodName = joinPoint.getSignature().getName();  
-             Object[] arguments = joinPoint.getArgs();  
-             Class targetClass = Class.forName(targetName);  
+    /**
+     * 异常通知 用于拦截记录异常日志
+     *
+     * @param joinPoint
+     * @param e
+     */
+     @AfterThrowing(pointcut = "controllerAspect()", throwing="e")
+     public  void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        //获取请求ip
+        String ip = request.getRemoteAddr();
+
+        String params = "";
+         if (joinPoint.getArgs() !=  null && joinPoint.getArgs().length > 0) {
+             for ( int i = 0; i < joinPoint.getArgs().length; i++) {
+                params += joinPoint.getArgs()[i].toString() + ";";
+            }
+        }
+         try {
+             String targetName = joinPoint.getTarget().getClass().getName();
+             String methodName = joinPoint.getSignature().getName();
+             Object[] arguments = joinPoint.getArgs();
+             Class targetClass = Class.forName(targetName);
              Method[] methods = targetClass.getMethods();
              String operationType = "";
              String operationName = "";
-              for (Method method : methods) {  
-                  if (method.getName().equals(methodName)) {  
-                     Class[] clazzs = method.getParameterTypes();  
-                      if (clazzs.length == arguments.length) {  
+              for (Method method : methods) {
+                  if (method.getName().equals(methodName)) {
+                     Class[] clazzs = method.getParameterTypes();
+                      if (clazzs.length == arguments.length) {
                     	  if (clazzs.length == arguments.length && null != method.getAnnotation(Log.class)) {
                               operationType = method.getAnnotation(Log.class).operationType();
                               operationName = method.getAnnotation(Log.class).operationName();
-                         } 
-                          break;  
-                     }  
-                 }  
+                         }
+                          break;
+                     }
+                 }
              }
-             /*========控制台输出=========*/  
-            logger.info("=====异常通知开始=====");  
-            logger.info("异常代码:" + e.getClass().getName());  
-            logger.info("异常信息:" + e.getStackTrace());  
-            logger.info("异常方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);  
-            logger.info("方法描述:" + operationName);  
-            logger.info("请求IP:" + ip);  
-            logger.info("请求参数:" + params);  
-            logger.info("=====异常通知结束=====");  
-        }  catch (Exception ex) {  
-            //记录本地异常日志  
-            logger.error("==异常通知异常==");  
-            logger.error("异常信息:{}", ex);  
-        }  
-         /*==========记录本地异常日志==========*/  
-//        logger.error("异常方法:{}异常代码:{}异常信息:{}参数:{}", new Object[]{joinPoint.getTarget().getClass().getName() + joinPoint.getSignature().getName(), e.getClass().getName(), e.getMessage(), params});  
-  
-    }  
-    
+             /*========控制台输出=========*/
+            logger.info("=====异常通知开始=====");
+            logger.info("异常代码:" + e.getClass().getName());
+            logger.info("异常信息:" + e.getStackTrace());
+            logger.info("异常方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);
+            logger.info("方法描述:" + operationName);
+            logger.info("请求IP:" + ip);
+            logger.info("请求参数:" + params);
+            logger.info("=====异常通知结束=====");
+        }  catch (Exception ex) {
+            //记录本地异常日志
+            logger.error("==异常通知异常==");
+            logger.error("异常信息:{}", ex);
+        }
+         /*==========记录本地异常日志==========*/
+        logger.error("异常方法:{}异常代码:{}异常信息:{}参数:{}", new Object[]{joinPoint.getTarget().getClass().getName() + joinPoint.getSignature().getName(), e.getClass().getName(), e.getMessage(), params});
+
+    }
+
 }

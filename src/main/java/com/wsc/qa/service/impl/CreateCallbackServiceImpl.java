@@ -3,10 +3,13 @@ package com.wsc.qa.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
+import com.wsc.qa.constants.CommonConstants.ErrorCode;
+import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.service.CreateCallbackService;
 
 @Service
@@ -67,6 +70,9 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 	@Override
 	public String genCallbackStr(String remark) {
 //		System.out.println(remark);
+		if (StringUtils.isEmpty(remark)) {
+			throw new BusinessException(ErrorCode.ERROR_ILLEGAL_PARAMTER, "remark为空数据非法");
+		}
 		List<String> orderId = JsonPath.read(remark, "$..billId");
 		List<Double> amount = JsonPath.read(remark, "$..outAmount");
 		List<String> userParams = JsonPath.read(remark, "$..customJson");

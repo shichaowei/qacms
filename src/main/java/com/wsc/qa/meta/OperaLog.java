@@ -9,6 +9,20 @@ public class OperaLog {
 	@NotBlank
 	String opertype;
 	String opertime;
+	String status;
+	int id;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -27,5 +41,5 @@ public class OperaLog {
 	public void setOpertime(String opertime) {
 		this.opertime = opertime;
 	}
-	
+
 }

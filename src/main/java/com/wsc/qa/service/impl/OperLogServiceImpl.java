@@ -12,7 +12,8 @@ import com.wsc.qa.service.OperLogService;
 public class OperLogServiceImpl implements OperLogService{
 	@Resource
 	private OperaLogDao operaLogDao;
-	
+
+	@Override
 	public OperaLog getLastOper(){
 		return operaLogDao.getLastOper();
 	}
@@ -22,8 +23,13 @@ public class OperLogServiceImpl implements OperLogService{
 //	}
 
 	@Override
-	public void insertOperLog(OperaLog operaLog) {
-		operaLogDao.insertOper(operaLog);
+	public int insertOperLog(OperaLog operaLog) {
+		return operaLogDao.insertOper(operaLog);
 	}
-	
+
+	@Override
+	public void updateOperLogStatus(OperaLog operaLog) {
+		operaLogDao.updateStatus(operaLog);
+	}
+
 }

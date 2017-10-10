@@ -1,12 +1,11 @@
 package com.wsc.qa.service.impl;
 
-import java.io.BufferedReader;
+import static com.wsc.qa.utils.SshUtil.remoteRunCmd;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,11 +18,9 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.springframework.stereotype.Service;
 
+import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.utils.SendmailUtil;
-import static com.wsc.qa.utils.SshUtil.remoteRunCmd;
-import ch.ethz.ssh2.Connection;
-import ch.ethz.ssh2.Session;
 
 /**
  * Hello world!
@@ -54,7 +51,7 @@ public class DealEnvServiceImpl implements DealEnvService{
 		}
 	}
 
-	
+
 
 	public  void writefile(String data) {
 		try {
@@ -74,6 +71,7 @@ public class DealEnvServiceImpl implements DealEnvService{
 		}
 	}
 
+	@Override
 	public  void fixenv(String zkAddress) {
 		try {
 			ZooKeeper zk = new ZooKeeper(zkAddress, 3000, new Watcher() {
@@ -99,7 +97,7 @@ public class DealEnvServiceImpl implements DealEnvService{
 						}
 						checkproviderClassset.add(provider);
 					}
-					
+
 				}
 			}
 			writefile(data);
@@ -120,8 +118,8 @@ public class DealEnvServiceImpl implements DealEnvService{
 					chongfuFengdaiDubboSet.add("com.fengdai." + servicename.split("\\.")[2]);
 				}
 			}
-			
-			
+
+
 			System.out.println("重复的蜂贷dubbo服务是：");
 			emailbody += "<span class=\"test\">测试环境蜂贷dubbo重复服务</span><br />";
 			for (String temp : chongfuFengdaiDubboSet) {
@@ -129,7 +127,7 @@ public class DealEnvServiceImpl implements DealEnvService{
 				emailbody += temp;
 				emailbody += "<br/>";
 			}
-			
+
 			emailbody += "<span class=\"test\">测试环境解决方法</span><br />";
 			emailbody += "砸了它<br/>";
 			emailbody += "关机重启<br/>";
@@ -150,7 +148,7 @@ public class DealEnvServiceImpl implements DealEnvService{
 			receviedAccouts.add("794440052@qq.com");
 			// receviedAccouts.add("hzzyl@*.com");
 			SendmailUtil.sendmail(emailcontent.toString(), receviedAccouts);
-			
+
 			resetDubboService(chongfuFengdaiDubboSet, dubboAllclasses, zk);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -163,7 +161,7 @@ public class DealEnvServiceImpl implements DealEnvService{
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * 重启相关服务
 	 */
@@ -178,88 +176,88 @@ public class DealEnvServiceImpl implements DealEnvService{
 					}
 				}
 				if (temp.contains("quartz")) {
-					remoteRunCmd("172.30.248.31", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.38", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-quartz-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("activity")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-activity-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("channel")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-channel-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("finance")) {
 					System.out.println("finance");
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-finance-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("mqnotify")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-mqnotify-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("mqserver")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-mqserver-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("operation")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-operation-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 
 				if (temp.contains("riskcontrol")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-riskcontrol-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("shop")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-shop-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("thirdparty")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-thirdparty-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("transaction-distributed")) {
-					remoteRunCmd("172.30.249.243", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.33", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-transaction-distributed-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("authority")) {
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-authority-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("activiti")) {
 					System.out.println("activiti");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-fdactiviti-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("electricseal")) {
 					System.out.println("electricseal");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-electricseal-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("product")) {
 					System.out.println("product");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-product-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("report")) {
 					System.out.println("report");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-report-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("system")) {
 					System.out.println("system");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-system-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("transaction")) {
 					System.out.println("transaction");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-transaction-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 				if (temp.contains("user")) {
 					System.out.println("user");
-					remoteRunCmd("172.30.248.217", "root", "Tairantest@123098",
+					remoteRunCmd("10.200.141.44", ServerInfo.sshname, ServerInfo.sshpwd,
 							"/usr/local/dubbo-user-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart");
 				}
 
@@ -268,11 +266,11 @@ public class DealEnvServiceImpl implements DealEnvService{
 			}
 			if(!chongfuFengdaiDubboSet.isEmpty()){
 				System.out.println("input restart tomcats");
-				remoteRunCmd("172.30.250.25", "root", "Tairantest@123098","/usr/local/restartapachetomcat.sh");
-				remoteRunCmd("172.30.251.190", "root", "Tairantest@123098","/usr/local/restartapachetomcat.sh");
-				remoteRunCmd("172.30.248.218", "root", "Tairantest@123098","/usr/local/restartapachetomcat.sh");
+				remoteRunCmd("172.30.250.25", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
+				remoteRunCmd("172.30.251.190", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
+				remoteRunCmd("172.30.248.218", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
 			}
-		
+
 	}
 
 

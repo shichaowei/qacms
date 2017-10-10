@@ -2,8 +2,6 @@ package com.wsc.qa.web.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -16,19 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.squareup.okhttp.OkHttpClient;
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.annotation.OperaLogComment;
+import com.wsc.qa.constants.CommonConstants.ErrorCode;
 import com.wsc.qa.constants.IndexNav;
 import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.MockInfo;
-import com.wsc.qa.meta.OperaLog;
 import com.wsc.qa.meta.User;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
@@ -41,7 +36,6 @@ import com.wsc.qa.utils.JsonFormatUtil;
 import com.wsc.qa.utils.LogUtil;
 import com.wsc.qa.utils.OkHttpUtil;
 import com.wsc.qa.utils.SmilarJSONFormatUtil;
-import com.wsc.qa.constants.CommonConstants.ErrorCode;
 
 @Controller
 public class UserController {
@@ -74,13 +68,13 @@ public class UserController {
 			return "login";
 		}
 	}
-	
+
 	@RequestMapping({ "/register" })
 	@Log(operationType = "注册操作:", operationName = "注册")
 	public String register(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
 		return "register";
 	}
-	
+
 
 
 	@RequestMapping({ "index" })
@@ -97,7 +91,7 @@ public class UserController {
 			case "changetime":
 				map.addAttribute("item", IndexNav.changetime);
 				break;
-			
+
 			case "mock":
 				map.addAttribute("item", IndexNav.mock);
 				break;
@@ -114,8 +108,8 @@ public class UserController {
 			}
 //			map.addAttribute("userName", userName);
 //			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
-		
-			
+
+
 			return "index";
 		} else {
 			return "login";
@@ -124,6 +118,7 @@ public class UserController {
 	}
 
 	@RequestMapping({ "/api/login" })
+//	@OperaLogComment(remark="login")
 	@Log(operationType = "login的api操作:", operationName = "登录")
 	public String login(@ModelAttribute @Valid User userRe,
 			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
@@ -134,11 +129,11 @@ public class UserController {
 		if (user != null) {
 			if (user.getUserPassword().equals(userPassword)) {
 				HttpSession session = request.getSession();
-				//cookie取中文需要 URLEncoder.encode 
+				//cookie取中文需要 URLEncoder.encode
 				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode (user.getUserName(),"utf-8"));
 				Cookie pwdCookie = new Cookie("pwd", userPassword);
-				userNameCookie.setMaxAge(10 * 60);
-				pwdCookie.setMaxAge(10 * 60);
+				userNameCookie.setMaxAge(1 * 10);
+				pwdCookie.setMaxAge(1 * 10);
 				session.setAttribute("userName", userName);
 				response.addCookie(userNameCookie);
 				response.addCookie(pwdCookie);
@@ -155,9 +150,10 @@ public class UserController {
 //		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		return "index";
 	}
-	
+
 	@RequestMapping({ "/api/register" })
 	@Log(operationType = "register的api操作:", operationName = "注册")
+//	@OperaLogComment(remark="register")
 	public String registerApi(@ModelAttribute @Valid User user,
 			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
 		userServiceImpl.insertUserInfo(user);
@@ -194,18 +190,28 @@ public class UserController {
 
 	/**
 	 * remark字段生成回调报文
-	 * 
+	 *
 	 * @param remark
 	 * @param request
 	 * @param map
 	 * @param response
 	 * @return
-	 *  
+	 *
 	 */
 	@RequestMapping({ "createCallbackStr" })
 	@OperaLogComment(remark="remark字段生成回调报文")
-	public String createCallbackStr(@RequestParam("callbackUrl") String callbackUrl,@RequestParam("remark") String remark, HttpServletRequest request, ModelMap map,
+	public String createCallbackStr(@RequestParam("callbackUrl") String callbackUrl,@RequestParam("type") String type,
+			@RequestParam("fieldDetail") String fieldDetail, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response)   {
+		String remark="";
+		if(type.equals("virRelateId")) {
+			String sqlMode ="select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='%s' ORDER BY create_date DESC ";
+			remark = new com.tairan.framework.utils.DBUtil("fengdai").executeQueryGetMap(String.format(sqlMode, fieldDetail)).get("remarks").get(0);
+		}else if (type.equals("virRemark")) {
+			remark = fieldDetail;
+		}else {
+			throw new BusinessException(ErrorCode.ERROR_PARAMS_INVALIED, "参数非法");
+		}
 		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
 		map.addAttribute("callbackStr", JsonFormatUtil.jsonFormatter(callbackStr));
 //		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
@@ -214,7 +220,7 @@ public class UserController {
 		} catch (IOException e) {
 			throw new BusinessException(ErrorCode.ERROR_OTHER_MSG.customDescription("post请求失败"), e);
 		}
-		
+
 		return "display";
 	}
 
