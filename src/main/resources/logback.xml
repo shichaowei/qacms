@@ -4,7 +4,7 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%-4relative [%thread] %-5level %F %L %logger{35} - %msg %n
+			<pattern>%-4relative %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %F %L %logger{35} - %msg %n
 			</pattern>
 		</encoder>
 	</appender>
@@ -19,7 +19,7 @@
 		<file>logs/testFile.log</file> 
 		<append>true</append> 
 		<encoder>
-			<pattern>%-4relative [%thread] %-5level %F %L %logger{35} - %msg %n
+			<pattern>%-4relative %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %F %L %logger{35} - %msg %n
 			</pattern>
 		</encoder>
 	</appender>

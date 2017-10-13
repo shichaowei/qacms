@@ -56,7 +56,7 @@ public class SystemLogAspect {
     public void doBefore(JoinPoint joinPoint) throws Throwable {
         logger.info("==========执行controller-syslog前置通知===============");
         if(logger.isInfoEnabled()){
-            logger.info("before " + joinPoint);
+            logger.info("controller执行的方法名:" + joinPoint);
         }
         getOperLog2modeHeader(joinPoint);
 
@@ -74,7 +74,7 @@ public class SystemLogAspect {
 		//map中不指定username，freemarker从session中取
 //		getModelMap(joinPoint).addAttribute("userName",GetUserUtil.getUserName(getRequest(joinPoint)));
 		getModelMap(joinPoint).addAttribute("lastoperaInfo",operLogServiceImpl.getLastOper());
-		logger.info("operlog is ::"+operLogServiceImpl.getLastOper().getUsername());
+//		logger.info("operlog is ::"+operLogServiceImpl.getLastOper().getUsername());
 
 	}
 	/**
@@ -137,7 +137,8 @@ public class SystemLogAspect {
      */
     @After("controllerAspect()")
     public  void after(JoinPoint joinPoint) {
-        String ip = "127.0.0.1";
+    	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    	String ip = request.getRemoteAddr();
          try {
 
             String targetName = joinPoint.getTarget().getClass().getName();
@@ -161,11 +162,11 @@ public class SystemLogAspect {
                 }
             }
             //*========控制台输出=========*//
-            logger.info("=====controller后置通知开始=====");
-            logger.info("请求方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);
+            logger.info("=====controller-syslog后置通知开始=====");
+            logger.info("请求方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()"));
             logger.info("方法描述:" + operationName);
             logger.info("请求IP:" + ip);
-            logger.info("=====controller后置通知结束=====");
+            logger.info("=====controller-syslog后置通知结束=====");
         }  catch (Exception e) {
             //记录本地异常日志
             logger.error("==后置通知异常==");
@@ -222,14 +223,14 @@ public class SystemLogAspect {
                  }
              }
              /*========控制台输出=========*/
-            logger.info("=====异常通知开始=====");
+            logger.info("=====controller-syslog异常通知开始=====");
             logger.info("异常代码:" + e.getClass().getName());
             logger.info("异常信息:" + e.getStackTrace());
-            logger.info("异常方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()")+"."+operationType);
+            logger.info("异常方法:" + (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()"));
             logger.info("方法描述:" + operationName);
             logger.info("请求IP:" + ip);
             logger.info("请求参数:" + params);
-            logger.info("=====异常通知结束=====");
+            logger.info("=====controller-syslog异常通知结束=====");
         }  catch (Exception ex) {
             //记录本地异常日志
             logger.error("==异常通知异常==");

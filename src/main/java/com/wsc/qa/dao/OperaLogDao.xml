@@ -18,6 +18,13 @@
 		where status='SUCCESS' ORDER BY opertime DESC LIMIT
 		1
 	</select>
+	
+	<select id="getLastOperByType" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from fengdaioperlog
+		where status='SUCCESS' and opertype=#{opertype} ORDER BY opertime DESC LIMIT 1
+	</select>
 
 	<insert id="insertOper" parameterType="com.wsc.qa.meta.OperaLog"
 		useGeneratedKeys="true" keyProperty="id">

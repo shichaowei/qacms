@@ -67,7 +67,7 @@ public class OperLogAspect {
 					OperaLogComment methodCache = method.getAnnotation(OperaLogComment.class);
 					if (methodCache != null && !("").equals(methodCache.remark())) {
 						Calendar cal = Calendar.getInstance();// 取当前日期
-						operaLog.setOpertype(methodCache.remark());
+						operaLog.setOpertype(methodCache.remark().getValue());
 						operaLog.setUsername(GetUserUtil.getUserName(getRequest(joinPoint)));
 						operaLog.setOpertime(FormateDateUtil.format(cal.getTime()));
 						operaLog.setStatus("SUCCESS");

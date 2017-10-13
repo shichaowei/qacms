@@ -22,6 +22,22 @@ public class CommonConstants {
 		}
 	}
 
+	public static enum opertype{
+		mockdata("mock数据"),
+		changtime("修改时间"),
+		fixfengdaienv("修复环境"),
+		deletefengdaidata("删除蜂贷数据"),
+		fundscallbackfengdai("资金服回调fengdai业务");
+		private final String value;
+		opertype(String value) {
+			this.value=value;
+		}
+		public String getValue(){
+			return value;
+		}
+	}
+
+
 
 	public static void main(String[] args) {
 		System.out.println(deleteCode.valueOf("deleteAllLoanByLoginname").getValue());

@@ -32,4 +32,9 @@ public class OperLogServiceImpl implements OperLogService{
 		operaLogDao.updateStatus(operaLog);
 	}
 
+	@Override
+	public OperaLog getLastOperByType(String opertype) {
+		return operaLogDao.getLastOperByType(opertype);
+	}
+
 }

@@ -2,6 +2,8 @@ package com.wsc.qa.web.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -21,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.annotation.OperaLogComment;
+import com.wsc.qa.constants.CommonConstants;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
 import com.wsc.qa.constants.CommonConstants.deleteCode;
+import com.wsc.qa.constants.CommonConstants.opertype;
 import com.wsc.qa.constants.IndexNav;
 import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.datasource.DataSourceContextHolder;
@@ -35,6 +39,7 @@ import com.wsc.qa.service.ActivityBannerService;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.DealEnvService;
+import com.wsc.qa.service.FengdaiService;
 import com.wsc.qa.service.FengdaiUserInfoService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
@@ -66,6 +71,14 @@ public class UserController {
 	private ActivityBannerService activityBannerServiceImpl;
 	@Autowired
 	private FengdaiUserInfoService fengdaiUserInfoServiceImpl;
+	@Autowired
+	private FengdaiService fengdaiServiceImpl;
+	//修改时间需要用到锁，同一时间只有一个人在修改，如果在方法中的lock变量是局部变量，每个线程执行该方法时都会保存一个副本，
+	//那么每个线程执行到lock.lock()处获取的是不同的锁，所以就不会对临界资源形成同步互斥访问。因此，我们只需要将lock声明为成员变量即可
+	Lock changetimelock = new ReentrantLock();
+	Lock mocklock = new ReentrantLock();
+
+
 
 	@RequestMapping({ "/" })
 	@Log(operationType = "首页操作:", operationName = "首页")
@@ -73,8 +86,8 @@ public class UserController {
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
 		if (null != userName && !userName.isEmpty()) {
-//			map.addAttribute("userName", userName);
-//			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+			// map.addAttribute("userName", userName);
+			// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 			return "index";
 		} else {
 			return "login";
@@ -82,20 +95,18 @@ public class UserController {
 	}
 
 	@RequestMapping({ "/register" })
-	@Log(operationType = "注册操作:", operationName = "注册")
+	@Log(operationType = "操作:", operationName = "注册操作：")
 	public String register(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
 		return "register";
 	}
 
-
-
 	@RequestMapping({ "index" })
-	@Log(operationType = "目录操作:", operationName = "目录")
+	@Log(operationType = "操作:", operationName = "点击目录操作")
 	public String getIndexInfo(@RequestParam("item") String item, HttpServletRequest request,
 			HttpServletResponse response, ModelMap map) {
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
-		if (null !=userName  && userName.equals(userName)) {
+		if (null != userName && userName.equals(userName)) {
 			switch (item) {
 			case "createCallbackStr":
 				map.addAttribute("item", IndexNav.createCallbackStr);
@@ -121,9 +132,8 @@ public class UserController {
 			default:
 				break;
 			}
-//			map.addAttribute("userName", userName);
-//			map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
-
+			// map.addAttribute("userName", userName);
+			// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 
 			return "index";
 		} else {
@@ -133,27 +143,27 @@ public class UserController {
 	}
 
 	@RequestMapping({ "/api/login" })
-//	@OperaLogComment(remark="login")
+	// @OperaLogComment(remark="login")
 	@Log(operationType = "login的api操作:", operationName = "登录")
-	public String login(@ModelAttribute @Valid User userRe,
-			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
-		String userName=userRe.getUserName();
+	public String login(@ModelAttribute @Valid User userRe, HttpServletResponse response, HttpServletRequest request,
+			ModelMap map, Error errors) throws IOException, BusinessException {
+		String userName = userRe.getUserName();
 		String userPassword = userRe.getUserPassword();
 		logger.info("username is:" + userName);
 		User user = userServiceImpl.getUserInfo(userName);
 		if (user != null) {
 			if (user.getUserPassword().equals(userPassword)) {
 				HttpSession session = request.getSession();
-				//cookie取中文需要 URLEncoder.encode
-				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode (user.getUserName(),"utf-8"));
+				// cookie取中文需要 URLEncoder.encode
+				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode(user.getUserName(), "utf-8"));
 				Cookie pwdCookie = new Cookie("pwd", userPassword);
 				userNameCookie.setMaxAge(1 * 10);
 				pwdCookie.setMaxAge(1 * 10);
 				session.setAttribute("userName", userName);
 				response.addCookie(userNameCookie);
 				response.addCookie(pwdCookie);
-//				response.sendRedirect("user/" + userName);
-//				map.addAttribute("userName", user.getUserName());
+				// response.sendRedirect("user/" + userName);
+				// map.addAttribute("userName", user.getUserName());
 			} else {
 				throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 			}
@@ -162,12 +172,13 @@ public class UserController {
 
 			throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 		}
-//		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+		// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		return "index";
 	}
 
 	/**
 	 * 注册
+	 *
 	 * @param user
 	 * @param response
 	 * @param request
@@ -179,11 +190,11 @@ public class UserController {
 	 */
 	@RequestMapping({ "/api/register" })
 	@Log(operationType = "register的api操作:", operationName = "注册")
-//	@OperaLogComment(remark="register")
-	public String registerApi(@ModelAttribute @Valid User user,
-			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
+	// @OperaLogComment(remark="register")
+	public String registerApi(@ModelAttribute @Valid User user, HttpServletResponse response,
+			HttpServletRequest request, ModelMap map, Error errors) throws IOException, BusinessException {
 		userServiceImpl.insertUserInfo(user);
-		String userName=URLEncoder.encode (user.getUserName(),"utf-8");
+		String userName = URLEncoder.encode(user.getUserName(), "utf-8");
 		String userPassword = user.getUserPassword();
 		HttpSession session = request.getSession();
 		Cookie userNameCookie = new Cookie("userName", userName);
@@ -193,10 +204,9 @@ public class UserController {
 		session.setAttribute("userName", userName);
 		response.addCookie(userNameCookie);
 		response.addCookie(pwdCookie);
-		map.addAttribute("userName",GetUserUtil.getUserName(request));
+		map.addAttribute("userName", GetUserUtil.getUserName(request));
 		return "index";
 	}
-
 
 	/**
 	 *
@@ -208,17 +218,17 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "fixenv" })
-	@OperaLogComment(remark="fixenv")
+	@OperaLogComment(remark = opertype.fixfengdaienv)
 	@Log(operationType = "修复环境操作:", operationName = "修复环境")
 	public String fixenv(@RequestParam("zkAddress") String zkAddress, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		dealEnvServiceImpl.fixenv(zkAddress);
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
-//		map.addAttribute("userName", userName);
-//		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+		// map.addAttribute("userName", userName);
+		// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		// 插入最後操作的數據
-//		operaLogServiceImpl.insertOperLog(userName, "fixenv");
+		// operaLogServiceImpl.insertOperLog(userName, "fixenv");
 		return "index";
 	}
 
@@ -233,22 +243,26 @@ public class UserController {
 	 *
 	 */
 	@RequestMapping({ "createCallbackStr" })
-	@OperaLogComment(remark="remark字段生成回调报文")
-	public String createCallbackStr(@RequestParam("callbackUrl") String callbackUrl,@RequestParam("type") String type,
+	@OperaLogComment(remark = opertype.fundscallbackfengdai)
+	public String createCallbackStr(@RequestParam("callbackUrl") String callbackUrl, @RequestParam("type") String type,
 			@RequestParam("fieldDetail") String fieldDetail, HttpServletRequest request, ModelMap map,
-			HttpServletResponse response)   {
-		String remark="";
-		if(type.equals("virRelateId")) {
-			String sqlMode ="select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='%s' ORDER BY create_date DESC ";
-			remark = new com.tairan.framework.utils.DBUtil("fengdai").executeQueryGetMap(String.format(sqlMode, fieldDetail)).get("remarks").get(0);
-		}else if (type.equals("virRemark")) {
+			HttpServletResponse response) {
+		String remark = "";
+		if (type.equals("virRelateId")) {
+//			String sqlMode = "select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='%s' ORDER BY create_date DESC ";
+//			remark = new com.tairan.framework.utils.DBUtil("fengdai")
+//					.executeQueryGetMap(String.format(sqlMode, fieldDetail)).get("remarks").get(0);
+			// 切换数据库
+			DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
+			remark = fengdaiServiceImpl.getremark(fieldDetail);
+		} else if (type.equals("virRemark")) {
 			remark = fieldDetail;
-		}else {
+		} else {
 			throw new BusinessException(ErrorCode.ERROR_PARAMS_INVALIED, "参数非法");
 		}
 		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
 		map.addAttribute("callbackStr", JsonFormatUtil.jsonFormatter(callbackStr));
-//		map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
+		// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 		try {
 			OkHttpUtil.post(callbackUrl, callbackStr);
 		} catch (IOException e) {
@@ -260,9 +274,10 @@ public class UserController {
 
 	/**
 	 * 根據要mock的數據，在指定的服務器上啟動anyproxy，mock相關數據 checkPostParams checkGetParams
-	 * 以分隔符；為單位
-	 * test
-	 * curl -d "{"name" : "魏士超"}" http://172.30.251.176/credit-thirdparty-rest/api/auto/fill/factor --proxy http://127.0.0.1:8001
+	 * 以分隔符；為單位 test curl -d "{"name" : "魏士超"}"
+	 * http://172.30.251.176/credit-thirdparty-rest/api/auto/fill/factor --proxy
+	 * http://127.0.0.1:8001
+	 *
 	 * @param mockserverip
 	 * @param ContentType
 	 * @param checkUrl
@@ -275,12 +290,20 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "mockMessage" })
-	@OperaLogComment(remark="mock數據")
-	public String mockMessage(MockInfo mockinfo,
-			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
-		String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
-		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
+	@OperaLogComment(remark = opertype.mockdata)
+	public String mockMessage(MockInfo mockinfo, HttpServletRequest request, ModelMap map,
+			HttpServletResponse response) {
+		if(mocklock.tryLock()) {
+			try {
+				String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
+				map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
+			} finally {
+				mocklock.unlock();
+			}
 
+		}else {
+			map.addAttribute("resultmsg", "有人正在mock数据，请稍等或者与相关人员"+operaLogServiceImpl.getLastOperByType(CommonConstants.opertype.mockdata.getValue()).getUsername()+"联系");
+		}
 		return "display";
 	}
 
@@ -294,49 +317,49 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "deleteUserInfo" })
-	@OperaLogComment(remark="删除用户数据")
-	public String deleteUserInfo(String deleteType, String param,
-			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
+	@OperaLogComment(remark = opertype.deletefengdaidata)
+	public String deleteUserInfo(String deleteType, String param, HttpServletRequest request, ModelMap map,
+			HttpServletResponse response) {
 
-		//切换数据库
+		// 切换数据库
 		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
 		switch (deleteCode.valueOf(deleteType)) {
-			case deleteAllLoanByLoginname:
-				fengdaiUserInfoServiceImpl.deleteAllLoanByLoginname(param);
-				map.addAttribute("resultmsg", "删除用户申请单与资金流水所有数据");
-				break;
-			case deleteUserByLoginname:
-				fengdaiUserInfoServiceImpl.deleteUserByLoginname(param);
-				map.addAttribute("resultmsg", "从数据库删除整个用户");
-				break;
-			case deleteLoanByLoanName:
-				fengdaiUserInfoServiceImpl.deleteLoanByLoanName(param);
-				map.addAttribute("resultmsg", "根据借款名称删除指定的申请单");
-				break;
-			case deleteLoanByLoanId:
-				fengdaiUserInfoServiceImpl.deleteLoanByLoanId(param);
-				map.addAttribute("resultmsg", "根据借款申请id删除指定的申请单");
-				break;
-			case changeSQDToLoanning:
-				fengdaiUserInfoServiceImpl.changeSQDToLoanning(param);
-				map.addAttribute("resultmsg", "修改申请单为待放款，绕开签约");
-				break;
-			case changeProcessSQDToLoanning:
-				fengdaiUserInfoServiceImpl.changeProcessSQDToLoanning(param);
-				map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款");
-				break;
-			default:
-				map.addAttribute("resultmsg", "没有匹配到任何操作");
-				break;
+		case deleteAllLoanByLoginname:
+			fengdaiUserInfoServiceImpl.deleteAllLoanByLoginname(param);
+			map.addAttribute("resultmsg", "删除用户申请单与资金流水所有数据");
+			break;
+		case deleteUserByLoginname:
+			fengdaiUserInfoServiceImpl.deleteUserByLoginname(param);
+			map.addAttribute("resultmsg", "从数据库删除整个用户");
+			break;
+		case deleteLoanByLoanName:
+			fengdaiUserInfoServiceImpl.deleteLoanByLoanName(param);
+			map.addAttribute("resultmsg", "根据借款名称删除指定的申请单");
+			break;
+		case deleteLoanByLoanId:
+			fengdaiUserInfoServiceImpl.deleteLoanByLoanId(param);
+			map.addAttribute("resultmsg", "根据借款申请id删除指定的申请单");
+			break;
+		case changeSQDToLoanning:
+			fengdaiUserInfoServiceImpl.changeSQDToLoanning(param);
+			map.addAttribute("resultmsg", "修改申请单为待放款，绕开签约");
+			break;
+		case changeProcessSQDToLoanning:
+			fengdaiUserInfoServiceImpl.changeProcessSQDToLoanning(param);
+			map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款");
+			break;
+		default:
+			map.addAttribute("resultmsg", "没有匹配到任何操作");
+			break;
 		}
-		//切换数据库
+		// 切换数据库
 		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_ADMIN);
 		return "display";
 	}
 
-
 	/**
 	 * 修改时间
+	 *
 	 * @param changetimetype
 	 * @param date
 	 * @param time
@@ -346,47 +369,65 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping({ "changetime" })
-	@OperaLogComment(remark="修改時間")
+	@OperaLogComment(remark = opertype.changtime)
 	public String changetime(@RequestParam("changetimetype") String changetimetype, @RequestParam("date") String date,
 			@RequestParam("time") String time, HttpServletRequest request, ModelMap map, HttpServletResponse response) {
-		String cmd = "date -s '" + date + " " + time + "'";
-		switch (changetimetype) {
 
-			case "changeDubbotime": {
-				changeTimeImpl.changeServerTime(ServerInfo.changeDubbotimeIps, cmd);
-				break;
+//		boolean bool = false;
+
+//		Condition condition = lock.newCondition();
+
+
+		if (changetimelock.tryLock()) {
+			try {
+				String cmd = "date -s '" + date + " " + time + "'";
+				switch (changetimetype) {
+
+				case "changeDubbotime": {
+					changeTimeImpl.changeServerTime(ServerInfo.changeDubbotimeIps, cmd);
+					break;
+				}
+				case "changDubboDbtime": {
+					changeTimeImpl.changeServerTime(ServerInfo.changDubboDbtimeIps, cmd);
+					break;
+				}
+
+				case "changDubboResttime": {
+					changeTimeImpl.changeServerTime(ServerInfo.changDubboResttimeIps, cmd);
+					break;
+				}
+				case "changDubboRestDbtime": {
+					changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
+					break;
+				}
+				case "restAllTime": {
+					cmd = "date -s '" + GetNetworkTimeUtil.getWebsiteDatetime() + "'";
+					changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
+					break;
+				}
+				default:
+					break;
+				}
+				map.addAttribute("servernowtime", cmd);
+			} finally {
+				changetimelock.unlock();
 			}
-			case "changDubboDbtime": {
-				changeTimeImpl.changeServerTime(ServerInfo.changDubboDbtimeIps, cmd);
-				break;
-			}
-			case "changDubboResttime": {
-				changeTimeImpl.changeServerTime(ServerInfo.changDubboResttimeIps, cmd);
-				break;
-			}
-			case "changDubboRestDbtime": {
-				changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
-				break;
-			}
-			case "restAllTime": {
-				cmd = "date -s '"+GetNetworkTimeUtil.getWebsiteDatetime()+"'";
-				changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
-				break;
-			}
-			default:
-				break;
+		} else {
+			map.addAttribute("resultmsg", "有人正在修改时间，请稍等三分钟");
 		}
-		map.addAttribute("servernowtime", cmd);
+
+
 		return "display";
+
 	}
 
-
-//	@RequestMapping("/test")
-//	public String hehe(HttpSession session,ModelMap map,HttpServletRequest request) {
-//		session.setAttribute("haha", "nini");
-//		map.addAttribute("haha", "map1");
-//		request.setAttribute("haha", "request");
-//		request.setAttribute("reqqqqqq", request);
-//		return "hehe";
-//	}
+	// @RequestMapping("/test")
+	// public String hehe(HttpSession session,ModelMap map,HttpServletRequest
+	// request) {
+	// session.setAttribute("haha", "nini");
+	// map.addAttribute("haha", "map1");
+	// request.setAttribute("haha", "request");
+	// request.setAttribute("reqqqqqq", request);
+	// return "hehe";
+	// }
 }

@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.wsc.qa.constants.ServerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
@@ -13,6 +14,7 @@ import ch.ethz.ssh2.Session;
 
 public class  SshUtil{
 
+	private static final Logger logger = LoggerFactory.getLogger(SshUtil.class);
     /**
      * 遠程ssh執行命令，最多返回1000行
      *
@@ -42,13 +44,11 @@ public class  SshUtil{
                     //测试过程中发现linenumm必须不小于1000 否则过早干掉进程 shell脚本没有执行完 导致服务没有起来
                     if (line == null || linenum>1000)
                         break;
-                    System.out.println(cmd);
-                    System.out.println(linenum);
                     sb.append(line);
                     sb.append('\n');
                     linenum++;
                 }
-                System.out.println(sb.toString());
+                logger.info(hostname+"---ssh执行完的命令为："+cmd);
                return sb.toString();
             }catch (Exception e){
                 return "false";
@@ -108,8 +108,9 @@ public class  SshUtil{
     public static void main(String[] args) {
 //    	remoteRunCmd("10.200.141.38", "root", "Tairan@2017",
 //				"/usr/local/dubbo-quartz-0.0.1.M1-SNAPSHOT/sbin/demo.sh restart",true);
-    	SshUtil.remoteRunCmd(ServerInfo.quartzIpadd, ServerInfo.sshname, ServerInfo.sshpwd,
-				ServerInfo.restartquartzCmd,false);
+//    	SshUtil.remoteRunCmd(ServerInfo.quartzIpadd, ServerInfo.sshname, ServerInfo.sshpwd,
+//				ServerInfo.restartquartzCmd,false);
+    	System.out.println("sfsdffd".substring(0, 10));
 	}
 
 

@@ -6,11 +6,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.PARAMETER, ElementType.METHOD})  
-@Retention(RetentionPolicy.RUNTIME)  
-@Documented  
+import com.wsc.qa.constants.CommonConstants.opertype;
+
+@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface OperaLogComment {
-	/** 要执行的操作比如：add操作 **/  
-    public String remark() default "";  
+	/** 要执行的操作比如：add操作 **/
+    public opertype remark();
 
 }

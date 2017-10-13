@@ -31,7 +31,7 @@
 			<#if item=="fixenv">
 		   <form action="/fixenv" method="post">
 				<label>修复环境（针对蜂贷一个服务多个provider问题）</label>
-				<input type="text" name="zkAddress" placeholder="172.30.249.243">
+				<input type="text" name="zkAddress" placeholder="10.200.141.33">
 				<input type="submit" value="Submit">
 			</form> 
 			</#if>
@@ -41,9 +41,9 @@
 				<label >生成回调报文</label>
 				<select name="type">
 				  <option value="virRemark">通过remark字段模拟回调</option>
-				  <option value="virRelateId ">通过relateId字段模拟回调</option>
+				  <option value="virRelateId">通过relateId字段模拟回调</option>
 				</select>
-				<input type="text" name="callbackUrl" placeholder="回调地址">
+				<input type="text" name="callbackUrl" value="http://10.200.141.36:8080/Mqnotify/notify/transfer" readonly style="background:#CCCCCC">
 				<input type="text" name="fieldDetail" placeholder="字段内容">
 				<input type="submit" value="Submit">
 			</form>
@@ -52,7 +52,7 @@
 			<#if item=="mock">
 			<form action="/mockMessage" method="post">
 				<label >mockServer的地址：</label>
-				<input type="text" name="mockserverip" placeholder="mockServerIp"><br />
+				<input type="text" name="mockserverip" value="10.200.141.37" readonly style="background:#CCCCCC"><br />
 				<label >mock的类型：</label>
 				<select name="mockType">
 				  <option value="get">get请求</option>
