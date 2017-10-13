@@ -21,9 +21,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.wsc.qa.annotation.OperaLogComment;
-import com.wsc.qa.constants.CommonConstants;
+import com.wsc.qa.datasource.DataSourceContextHolder;
+import com.wsc.qa.datasource.DataSourceType;
 import com.wsc.qa.meta.OperaLog;
+import com.wsc.qa.meta.OperaLogCheck;
 import com.wsc.qa.service.OperLogService;
+import com.wsc.qa.utils.FormateDateUtil;
 import com.wsc.qa.utils.GetUserUtil;
 
 
@@ -66,8 +69,9 @@ public class OperLogAspect {
 						Calendar cal = Calendar.getInstance();// 取当前日期
 						operaLog.setOpertype(methodCache.remark());
 						operaLog.setUsername(GetUserUtil.getUserName(getRequest(joinPoint)));
-						operaLog.setOpertime(CommonConstants.TIMEFORMART.format(cal.getTime()));
+						operaLog.setOpertime(FormateDateUtil.format(cal.getTime()));
 						operaLog.setStatus("SUCCESS");
+						OperaLogCheck.checkOperLog(operaLog);
 						return operaLog;
 					}
 					break;
@@ -150,6 +154,8 @@ public class OperLogAspect {
 	 */
 	@After("controllerAspect()")
 	public void after(JoinPoint joinPoint) throws Exception {
+		//切换数据库
+		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_ADMIN);
 		logger.info("==========执行controller-operlog后置通知===============");
 		if(null != operaLog) {
 			operLogServiceImpl.insertOperLog(operaLog);
@@ -165,6 +171,8 @@ public class OperLogAspect {
      */
      @AfterThrowing(pointcut = "controllerAspect()", throwing="e")
      public  void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
+    	//切换数据库
+ 		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_ADMIN);
     	 /*========控制台输出=========*/
          logger.info("=====执行controller-operlog异常通知=====");
          if(null != operaLog) {

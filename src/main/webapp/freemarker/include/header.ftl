@@ -13,6 +13,7 @@
 		            <li><a href="/index?item=createCallbackStr">通过remark字段构造回调报文</a></li>
 		            <li><a href="/index?item=mock">mock平台建设</a></li>
 		            <li><a href="/index?item=changetime">修改时间</a></li>
+		            <li><a href="/index?item=deleteUserInfo">修改fengdai用户信息</a></li>
 		            <li><a href="/index?item=logout">登出</a></li>
 		        </ul>
 	    	</div>

@@ -39,12 +39,16 @@ public class  SshUtil{
                 while (true)
                 {
                     String line = br.readLine();
+                    //测试过程中发现linenumm必须不小于1000 否则过早干掉进程 shell脚本没有执行完 导致服务没有起来
                     if (line == null || linenum>1000)
                         break;
+                    System.out.println(cmd);
+                    System.out.println(linenum);
                     sb.append(line);
                     sb.append('\n');
                     linenum++;
                 }
+                System.out.println(sb.toString());
                return sb.toString();
             }catch (Exception e){
                 return "false";

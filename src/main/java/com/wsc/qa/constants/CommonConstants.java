@@ -4,9 +4,28 @@ import com.alibaba.fastjson.JSONObject;
 
 public class CommonConstants {
 
-	// 通过格式化输出日期
-	public static java.text.SimpleDateFormat TIMEFORMART = new java.text.SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
+
+	public static enum deleteCode{
+		deleteAllLoanByLoginname("deleteAllLoanByLoginname"),
+		deleteUserByLoginname("deleteUserByLoginname"),
+		deleteLoanByLoanName("deleteLoanByLoanName"),
+		deleteLoanByLoanId("deleteLoanByLoanId"),
+		changeSQDToLoanning("changeSQDToLoanning"),
+		changeProcessSQDToLoanning("changeProcessSQDToLoanning");
+		private final String value;
+		deleteCode(String value) {
+			this.value=value;
+		}
+		public String getValue(){
+			return value;
+		}
+	}
+
+
+	public static void main(String[] args) {
+		System.out.println(deleteCode.valueOf("deleteAllLoanByLoginname").getValue());
+	}
 
     /**
      * @Description 错误代码
@@ -85,5 +104,6 @@ public class CommonConstants {
             return json.toString();
         }
     }
+
 
 }

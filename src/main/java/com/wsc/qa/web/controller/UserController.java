@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,26 +22,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.annotation.OperaLogComment;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
+import com.wsc.qa.constants.CommonConstants.deleteCode;
 import com.wsc.qa.constants.IndexNav;
 import com.wsc.qa.constants.ServerInfo;
+import com.wsc.qa.datasource.DataSourceContextHolder;
+import com.wsc.qa.datasource.DataSourceType;
 import com.wsc.qa.exception.BusinessException;
+import com.wsc.qa.exception.MyExceptionHandler;
 import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.meta.User;
+import com.wsc.qa.service.ActivityBannerService;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.DealEnvService;
+import com.wsc.qa.service.FengdaiUserInfoService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
+import com.wsc.qa.utils.GetNetworkTimeUtil;
 import com.wsc.qa.utils.GetUserUtil;
 import com.wsc.qa.utils.JsonFormatUtil;
-import com.wsc.qa.utils.LogUtil;
 import com.wsc.qa.utils.OkHttpUtil;
 import com.wsc.qa.utils.SmilarJSONFormatUtil;
 
 @Controller
 public class UserController {
-	final LogUtil logger = new LogUtil(this.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(MyExceptionHandler.class);
 
 	@Autowired
 	private UserService userServiceImpl;
@@ -54,6 +62,10 @@ public class UserController {
 	private CreateCallbackService createCallbackServiceImpl;
 	@Autowired
 	private MockMessService mockMessServiceImpl;
+	@Autowired
+	private ActivityBannerService activityBannerServiceImpl;
+	@Autowired
+	private FengdaiUserInfoService fengdaiUserInfoServiceImpl;
 
 	@RequestMapping({ "/" })
 	@Log(operationType = "首页操作:", operationName = "首页")
@@ -98,6 +110,9 @@ public class UserController {
 			case "fixenv":
 				map.addAttribute("item", IndexNav.fixenv);
 				break;
+			case "deleteUserInfo":
+				map.addAttribute("item", IndexNav.deleteUserInfo);
+				break;
 			case "login":
 				return "login";
 			case "logout":
@@ -124,7 +139,7 @@ public class UserController {
 			HttpServletResponse response, HttpServletRequest request,ModelMap map,Error errors) throws IOException, BusinessException {
 		String userName=userRe.getUserName();
 		String userPassword = userRe.getUserPassword();
-		logger.logInfo("username is:" + userName);
+		logger.info("username is:" + userName);
 		User user = userServiceImpl.getUserInfo(userName);
 		if (user != null) {
 			if (user.getUserPassword().equals(userPassword)) {
@@ -151,6 +166,17 @@ public class UserController {
 		return "index";
 	}
 
+	/**
+	 * 注册
+	 * @param user
+	 * @param response
+	 * @param request
+	 * @param map
+	 * @param errors
+	 * @return
+	 * @throws IOException
+	 * @throws BusinessException
+	 */
 	@RequestMapping({ "/api/register" })
 	@Log(operationType = "register的api操作:", operationName = "注册")
 //	@OperaLogComment(remark="register")
@@ -172,7 +198,15 @@ public class UserController {
 	}
 
 
-
+	/**
+	 *
+	 *
+	 * @param zkAddress
+	 * @param request
+	 * @param map
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping({ "fixenv" })
 	@OperaLogComment(remark="fixenv")
 	@Log(operationType = "修复环境操作:", operationName = "修复环境")
@@ -246,9 +280,71 @@ public class UserController {
 			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
 		String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
 		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
+
 		return "display";
 	}
 
+	/**
+	 *
+	 * @param deleteType
+	 * @param param
+	 * @param request
+	 * @param map
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping({ "deleteUserInfo" })
+	@OperaLogComment(remark="删除用户数据")
+	public String deleteUserInfo(String deleteType, String param,
+			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
+
+		//切换数据库
+		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
+		switch (deleteCode.valueOf(deleteType)) {
+			case deleteAllLoanByLoginname:
+				fengdaiUserInfoServiceImpl.deleteAllLoanByLoginname(param);
+				map.addAttribute("resultmsg", "删除用户申请单与资金流水所有数据");
+				break;
+			case deleteUserByLoginname:
+				fengdaiUserInfoServiceImpl.deleteUserByLoginname(param);
+				map.addAttribute("resultmsg", "从数据库删除整个用户");
+				break;
+			case deleteLoanByLoanName:
+				fengdaiUserInfoServiceImpl.deleteLoanByLoanName(param);
+				map.addAttribute("resultmsg", "根据借款名称删除指定的申请单");
+				break;
+			case deleteLoanByLoanId:
+				fengdaiUserInfoServiceImpl.deleteLoanByLoanId(param);
+				map.addAttribute("resultmsg", "根据借款申请id删除指定的申请单");
+				break;
+			case changeSQDToLoanning:
+				fengdaiUserInfoServiceImpl.changeSQDToLoanning(param);
+				map.addAttribute("resultmsg", "修改申请单为待放款，绕开签约");
+				break;
+			case changeProcessSQDToLoanning:
+				fengdaiUserInfoServiceImpl.changeProcessSQDToLoanning(param);
+				map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款");
+				break;
+			default:
+				map.addAttribute("resultmsg", "没有匹配到任何操作");
+				break;
+		}
+		//切换数据库
+		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_ADMIN);
+		return "display";
+	}
+
+
+	/**
+	 * 修改时间
+	 * @param changetimetype
+	 * @param date
+	 * @param time
+	 * @param request
+	 * @param map
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping({ "changetime" })
 	@OperaLogComment(remark="修改時間")
 	public String changetime(@RequestParam("changetimetype") String changetimetype, @RequestParam("date") String date,
@@ -256,29 +352,35 @@ public class UserController {
 		String cmd = "date -s '" + date + " " + time + "'";
 		switch (changetimetype) {
 
-		case "changeDubbotime": {
-			changeTimeImpl.changeServerTime(ServerInfo.changeDubbotimeIps, cmd);
-			break;
+			case "changeDubbotime": {
+				changeTimeImpl.changeServerTime(ServerInfo.changeDubbotimeIps, cmd);
+				break;
+			}
+			case "changDubboDbtime": {
+				changeTimeImpl.changeServerTime(ServerInfo.changDubboDbtimeIps, cmd);
+				break;
+			}
+			case "changDubboResttime": {
+				changeTimeImpl.changeServerTime(ServerInfo.changDubboResttimeIps, cmd);
+				break;
+			}
+			case "changDubboRestDbtime": {
+				changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
+				break;
+			}
+			case "restAllTime": {
+				cmd = "date -s '"+GetNetworkTimeUtil.getWebsiteDatetime()+"'";
+				changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
+				break;
+			}
+			default:
+				break;
 		}
-		case "changDubboDbtime": {
-			changeTimeImpl.changeServerTime(ServerInfo.changDubboDbtimeIps, cmd);
-			break;
-		}
-		case "changDubboResttime": {
-			changeTimeImpl.changeServerTime(ServerInfo.changDubboResttimeIps, cmd);
-			break;
-		}
-		case "changDubboRestDbtime": {
-			changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
-			break;
-		}
-		default:
-			break;
-		}
-		map.addAttribute("servernowtime", date+" "+time);
+		map.addAttribute("servernowtime", cmd);
 		return "display";
-
 	}
+
+
 //	@RequestMapping("/test")
 //	public String hehe(HttpSession session,ModelMap map,HttpServletRequest request) {
 //		session.setAttribute("haha", "nini");

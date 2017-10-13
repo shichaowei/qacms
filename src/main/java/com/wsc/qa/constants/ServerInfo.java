@@ -13,7 +13,7 @@ public class ServerInfo {
 	//ssh相关变量
 	public static String quartzIpadd="10.200.141.38";
 	public static String stopquartzCmd="/usr/local/dubbo-quartz-0.0.1.M1-SNAPSHOT/sbin/demo.sh stop";
-	public static String restartquartzCmd="/usr/local/restart-dubbo-quartz.sh";
+	public static String restartquartzCmd="/usr/local/restart-dubbo-quartz-auto.sh";
 
 
 }

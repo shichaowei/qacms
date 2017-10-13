@@ -18,6 +18,11 @@
 		        <pre id="servernowtime">${servernowtime}</pre>
 		    </div>
 	</#if>
+	<#if resultmsg?has_content>
+		    <div class="n-result">
+		        <pre id="servernowtime">${resultmsg}</pre>
+		    </div>
+	</#if>
 
 </body>
 </html>
