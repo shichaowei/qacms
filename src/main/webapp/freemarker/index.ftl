@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <#include "/include/head.ftl">
-    <body>
+    <body >
     <script src="js/a.js" type="text/javascript"></script>
     <#include "/include/header.ftl">
 	  <br />
@@ -30,7 +30,7 @@
 			
 			<#if item=="fixenv">
 		   <form action="/fixenv" method="post">
-				<label>修复环境（针对蜂贷一个服务多个provider问题）</label>
+				<label>修复环境（针对蜂贷一个服务多个provider问题---慎用）</label>
 				<input type="text" name="zkAddress" placeholder="10.200.141.33">
 				<input type="submit" value="Submit">
 			</form> 

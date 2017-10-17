@@ -15,7 +15,7 @@ import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.utils.LogUtil;
 import com.wsc.qa.utils.Scpclient;
 import com.wsc.qa.utils.SshUtil;
-import com.wsc.qa.utils.WriteToFile;
+import com.wsc.qa.utils.WriteFileUtil;
 
 @Service
 public class MockMessServiceImpl implements MockMessService{
@@ -63,7 +63,7 @@ public class MockMessServiceImpl implements MockMessService{
         modeExports modeExports = new modeExports();
         modeExports.setBeforeSendRequestBody(beforeSendRequestBody);
         String filename = "rule"+new Date().getTime()+".txt";
-        WriteToFile.clearWriteFile(modeExports.toString(), filename);
+        WriteFileUtil.clearWriteFile(modeExports.toString(), filename);
         Scpclient scp = Scpclient.getInstance(mockServerIp, 22,ServerInfo.sshname,ServerInfo.sshpwd);
         scp.putFile(filename, filename, ServerInfo.anyproxyRulePath, null);
         logger.logInfo(filename);

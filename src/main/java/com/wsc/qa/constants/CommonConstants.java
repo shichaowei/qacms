@@ -26,7 +26,7 @@ public class CommonConstants {
 		mockdata("mock数据"),
 		changtime("修改时间"),
 		fixfengdaienv("修复环境"),
-		deletefengdaidata("删除蜂贷数据"),
+		deletefengdaidata("删除蜂贷用户业务数据"),
 		fundscallbackfengdai("资金服回调fengdai业务");
 		private final String value;
 		opertype(String value) {

@@ -23,7 +23,9 @@ import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.utils.SendmailUtil;
 
 /**
- * Hello world!
+ *
+ *
+ * @author hzweisc
  *
  */
 @Service
@@ -266,9 +268,9 @@ public class DealEnvServiceImpl implements DealEnvService{
 			}
 			if(!chongfuFengdaiDubboSet.isEmpty()){
 				System.out.println("input restart tomcats");
-				remoteRunCmd("172.30.250.25", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
-				remoteRunCmd("172.30.251.190", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
-				remoteRunCmd("172.30.248.218", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
+				remoteRunCmd("10.200.141.36", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
+				remoteRunCmd("10.200.141.41", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
+				remoteRunCmd("10.200.141.40", ServerInfo.sshname, ServerInfo.sshpwd,"/usr/local/restartapachetomcat.sh");
 			}
 
 	}

@@ -3,6 +3,7 @@ package com.wsc.qa.dao;
 import javax.annotation.Resource;
 
 import com.wsc.qa.meta.OperaLog;
+
 @Resource
 public interface OperaLogDao {
 
