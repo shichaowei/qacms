@@ -50,7 +50,7 @@
 			</#if>
 			
 			<#if item=="mock">
-			<form action="/mockMessage" method="post">
+			<form action="/mockMessage" method="post" enctype="multipart/form-data">
 				<label >mockServer的地址：</label>
 				<input type="text" name="mockserverip" value="10.200.141.37" readonly style="background:#CCCCCC"><br />
 				<label >mock的类型：</label>
@@ -68,8 +68,12 @@
 				<input type="text" name="checkUrl" placeholder="checkUrl"><br /> 
 				<label >mock的数据所含特征值：</label>	
 				<input type="text" name="checkParams" placeholder="checkParams"><br /> 
+
 				<label >mock返回的数据：</label>
 				<input type="text" name="responseBody" placeholder="responseBody"><br /> 
+				<label >mock返回的数据(文件)：</label>	
+				<input type="file" name="responseBodyFile"><br /> 
+				
 				<input type="submit" value="Submit">
 			</form>
 			</#if>

@@ -10,8 +10,6 @@ import java.util.concurrent.TimeUnit;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.wsc.qa.constants.CommonConstants.ErrorCode;
-import com.wsc.qa.exception.BusinessException;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
@@ -19,6 +17,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.wsc.qa.constants.CommonConstants.ErrorCode;
+import com.wsc.qa.exception.BusinessException;
 
 
 /**
@@ -50,7 +50,7 @@ public class OkHttpUtil {
             throw new IOException(response.body().string());
         }
     }
-    
+
     public static String getHostParseRetry(String url) throws IOException {
     	int count = 1;
         Request request = new Request.Builder().url(url).build();
@@ -68,7 +68,7 @@ public class OkHttpUtil {
 		} while (count <= 3);
         return result;
     }
-    
+
 
     /**
      * http  get获取字节 方法
@@ -87,7 +87,7 @@ public class OkHttpUtil {
             throw new IOException(response.body().string());
         }
     }
-  
+
 
     /**
      * http  get 方法
@@ -183,7 +183,7 @@ public class OkHttpUtil {
             throw new IOException(response.body().string());
         }
     }
-    
+
     /**
      * @author wangbb
      * @description postform提交需要重试机制
@@ -280,7 +280,7 @@ public class OkHttpUtil {
             throw new IOException(response.body().string());
         }
     }
-       
+
     /**
      * @author wangbb
      * @description 表单post提交（可以重试）
@@ -326,11 +326,11 @@ public class OkHttpUtil {
 	            }
              }
         }while(count<=3);
-        
+
         return result;
-       
+
     }
-    
+
     public static byte[] getPostByte(String url, final Map<String, Object> paramsMap) throws IOException {
         MultipartBuilder builder = new MultipartBuilder().type(MultipartBuilder.FORM);
         if (paramsMap != null) {
@@ -358,7 +358,7 @@ public class OkHttpUtil {
             throw new IOException(response.body().string());
         }
     }
-    
+
 
 
     public static void main(String[] args) throws Exception {
@@ -390,7 +390,7 @@ public class OkHttpUtil {
     private static void postTest() throws Exception {
         //String url = "http://192.168.2.198:8081/Baitiao/orderNo/CL";
         String url = "hzweisc.u1.luyouxia.net:56243/channel/channel_sys_user/getToken";
-        Map<String, Object> json = new HashMap<String, Object>();
+        Map<String, Object> json = new HashMap<String, Object>(3);
 //		{
 //			"customerId":"201504111402464257bdf665c8f324a60bc6b72766a2655aa",
 //			"certificateNumber":"410108198510200109",

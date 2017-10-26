@@ -2,13 +2,13 @@ package com.wsc.qa.mockmode;
 
 public class modeExports {
 	
-	modeBeforeSendRequestBody beforeSendRequestBody;
+	ModeBeforeSendRequestBody beforeSendRequestBody;
 
-	public modeBeforeSendRequestBody getBeforeSendRequestBody() {
+	public ModeBeforeSendRequestBody getBeforeSendRequestBody() {
 		return beforeSendRequestBody;
 	}
 
-	public modeExports setBeforeSendRequestBody(modeBeforeSendRequestBody beforeSendRequestBody) {
+	public modeExports setBeforeSendRequestBody(ModeBeforeSendRequestBody beforeSendRequestBody) {
 		this.beforeSendRequestBody = beforeSendRequestBody;
 		return this;
 	}

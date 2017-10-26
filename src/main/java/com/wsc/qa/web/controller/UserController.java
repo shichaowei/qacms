@@ -2,6 +2,7 @@ package com.wsc.qa.web.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -12,6 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +55,13 @@ import com.wsc.qa.utils.GetUserUtil;
 import com.wsc.qa.utils.JsonFormatUtil;
 import com.wsc.qa.utils.OkHttpUtil;
 import com.wsc.qa.utils.SmilarJSONFormatUtil;
-
+/**
+ *
+ *
+ *
+ * @author hzweisc
+ *
+ */
 @Controller
 public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(MyExceptionHandler.class);
@@ -73,8 +85,9 @@ public class UserController {
 	private FengdaiUserInfoService fengdaiUserInfoServiceImpl;
 	@Autowired
 	private FengdaiService fengdaiServiceImpl;
-	//修改时间需要用到锁，同一时间只有一个人在修改，如果在方法中的lock变量是局部变量，每个线程执行该方法时都会保存一个副本，
-	//那么每个线程执行到lock.lock()处获取的是不同的锁，所以就不会对临界资源形成同步互斥访问。因此，我们只需要将lock声明为成员变量即可
+	/**修改时间需要用到锁，同一时间只有一个人在修改，如果在方法中的lock变量是局部变量，每个线程执行该方法时都会保存一个副本，
+	那么每个线程执行到lock.lock()处获取的是不同的锁，所以就不会对临界资源形成同步互斥访问。因此，我们只需要将lock声明为成员变量即可
+	**/
 	Lock changetimelock = new ReentrantLock();
 	Lock mocklock = new ReentrantLock();
 
@@ -190,7 +203,7 @@ public class UserController {
 	 */
 	@RequestMapping({ "/api/register" })
 	@Log(operationType = "register的api操作:", operationName = "注册")
-	// @OperaLogComment(remark="register")
+	/** @OperaLogComment(remark="register")**/
 	public String registerApi(@ModelAttribute @Valid User user, HttpServletResponse response,
 			HttpServletRequest request, ModelMap map, Error errors) throws IOException, BusinessException {
 		userServiceImpl.insertUserInfo(user);
@@ -199,8 +212,8 @@ public class UserController {
 		HttpSession session = request.getSession();
 		Cookie userNameCookie = new Cookie("userName", userName);
 		Cookie pwdCookie = new Cookie("pwd", userPassword);
-		userNameCookie.setMaxAge(10 * 60);
-		pwdCookie.setMaxAge(10 * 60);
+		userNameCookie.setMaxAge(60 * 60);
+		pwdCookie.setMaxAge(60 * 60);
 		session.setAttribute("userName", userName);
 		response.addCookie(userNameCookie);
 		response.addCookie(pwdCookie);
@@ -248,14 +261,15 @@ public class UserController {
 			@RequestParam("fieldDetail") String fieldDetail, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		String remark = "";
-		if (type.equals("virRelateId")) {
-//			String sqlMode = "select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='%s' ORDER BY create_date DESC ";
-//			remark = new com.tairan.framework.utils.DBUtil("fengdai")
-//					.executeQueryGetMap(String.format(sqlMode, fieldDetail)).get("remarks").get(0);
+		if (CommonConstants.callbackType.virRelateId.getValue().equals(type)) {
+/**			String sqlMode = "select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='%s' ORDER BY create_date DESC ";
+			remark = new com.tairan.framework.utils.DBUtil("fengdai")
+					.executeQueryGetMap(String.format(sqlMode, fieldDetail)).get("remarks").get(0);
+					**/
 			// 切换数据库
 			DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
 			remark = fengdaiServiceImpl.getremark(fieldDetail);
-		} else if (type.equals("virRemark")) {
+		} else if (CommonConstants.callbackType.virRemark.getValue().equals(type)) {
 			remark = fieldDetail;
 		} else {
 			throw new BusinessException(ErrorCode.ERROR_PARAMS_INVALIED, "参数非法");
@@ -288,13 +302,59 @@ public class UserController {
 	 * @param map
 	 * @param response
 	 * @return
+	 * @throws IOException
+	 * @throws FileUploadException
 	 */
 	@RequestMapping({ "mockMessage" })
 	@OperaLogComment(remark = opertype.mockdata)
-	public String mockMessage(MockInfo mockinfo, HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) {
+	public String mockMessage( HttpServletRequest request, ModelMap map,
+			HttpServletResponse response) throws IOException, FileUploadException {
 		if(mocklock.tryLock()) {
 			try {
+				MockInfo mockinfo = new MockInfo();
+//				System.out.println(mockinfo.getCheckParamsFile().getInputStream().toString());
+				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+				ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
+				fileUpload.setHeaderEncoding("UTF-8");
+				List<FileItem> list = fileUpload.parseRequest(request);
+				for (FileItem item : list) {
+					//如果fileitem中封装的是普通输入项的数据
+	                if(item.isFormField()){
+	                    String name = item.getFieldName();
+	                    //解决普通输入项的数据的中文乱码问题
+	                    String value = item.getString("UTF-8");
+	                    if(StringUtils.isNotEmpty(value)) {
+		                    switch (name) {
+							case "mockserverip":
+								mockinfo.setMockserverip(value);
+								break;
+							case "mockType":
+								mockinfo.setMockType(value);
+								break;
+							case "ContentType":
+								mockinfo.setContentType(value);
+								break;
+							case "checkUrl":
+								mockinfo.setCheckUrl(value);
+								break;
+							case "checkParams":
+								mockinfo.setCheckParams(value);
+								break;
+							case "responseBody":
+								mockinfo.setResponseBody(value);
+								break;
+							default:
+								break;
+							}
+	                    }
+	                }else{
+	                    if(StringUtils.isEmpty(mockinfo.getResponseBody())) {
+	                    	mockinfo.setResponseBody(item.getString("utf-8"));
+	                    }
+	                }
+				}
+
+
 				String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
 				map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
 			} finally {

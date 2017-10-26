@@ -29,9 +29,9 @@ public class  SshUtil{
             {
                 conn.connect();
                 boolean isAuthenticated = conn.authenticateWithPassword(username, password);
-                if (isAuthenticated == false)
+                if (isAuthenticated == false) {
                         throw new IOException("Authentication failed.");
-
+                }
                 sess = conn.openSession();
                 sess.execCommand( cmd);
                 InputStream stdout =    sess.getStdout() ;
@@ -42,8 +42,9 @@ public class  SshUtil{
                 {
                     String line = br.readLine();
                     //测试过程中发现linenumm必须不小于1000 否则过早干掉进程 shell脚本没有执行完 导致服务没有起来
-                    if (line == null || linenum>1000)
+                    if (line == null || linenum>1000) {
                         break;
+                    }
                     sb.append(line);
                     sb.append('\n');
                     linenum++;
@@ -74,9 +75,9 @@ public class  SshUtil{
             {
                 conn.connect();
                 boolean isAuthenticated = conn.authenticateWithPassword(username, password);
-                if (isAuthenticated == false)
+                if (isAuthenticated == false) {
                         throw new IOException("Authentication failed.");
-
+                }
                 sess = conn.openSession();
                 sess.execCommand( cmd);
                 InputStream stdout =    sess.getStdout() ;
@@ -87,8 +88,9 @@ public class  SshUtil{
                 {
                     while (true) {
 						String line = br.readLine();
-						if (line == null || linenum > 1000)
+						if (line == null || linenum > 1000) {
 							break;
+						}
 						sb.append(line);
 						sb.append('\n');
 						linenum++;

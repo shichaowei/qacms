@@ -15,20 +15,20 @@ import com.wsc.qa.service.CreateCallbackService;
 @Service
 public class CreateCallbackServiceImpl implements CreateCallbackService {
 
-	public class item {
+	public class Item {
 		private String orderId;
 		private double amount;
 		private String status;
 		private String userParams;
 
-		public item(String orderId, double amount, String status, String userParams) {
+		public Item(String orderId, double amount, String status, String userParams) {
 			this.orderId = orderId;
 			this.amount = amount;
 			this.status = status;
 			this.userParams = userParams;
 		}
 
-		public item(double amount, String status) {
+		public Item(double amount, String status) {
 			this.amount = amount;
 			this.status = status;
 		}
@@ -77,12 +77,12 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 		List<Double> amount = JsonPath.read(remark, "$..outAmount");
 		List<String> userParams = JsonPath.read(remark, "$..customJson");
 		System.out.println(orderId.size());
-		ArrayList<item> items = new ArrayList<>();
+		ArrayList<Item> items = new ArrayList<>();
 		for (int i = 0; i < orderId.size(); i++) {
 			if (orderId.get(i) != null) {
-				items.add(new item(orderId.get(i), amount.get(i), "PAY_SUCCESS", userParams.get(i)));
+				items.add(new Item(orderId.get(i), amount.get(i), "PAY_SUCCESS", userParams.get(i)));
 			} else {
-				items.add(new item(amount.get(i), "PAY_SUCCESS"));
+				items.add(new Item(amount.get(i), "PAY_SUCCESS"));
 			}
 		}
 		System.out.println(items);

@@ -86,8 +86,9 @@ public class SystemLogAspect {
 	private HttpServletRequest getRequest(JoinPoint point) {
 		Object[] args = point.getArgs();
 		for (Object obj : args) {
-			if (obj instanceof HttpServletRequest)
+			if (obj instanceof HttpServletRequest) {
 				return (HttpServletRequest) obj;
+			}
 		}
 		RequestAttributes ra = RequestContextHolder.getRequestAttributes();
 		ServletRequestAttributes sra = (ServletRequestAttributes) ra;
@@ -103,8 +104,9 @@ public class SystemLogAspect {
 	private ModelMap getModelMap(JoinPoint point) {
 		Object[] args = point.getArgs();
 		for (Object obj : args) {
-			if (obj instanceof ModelMap)
+			if (obj instanceof ModelMap) {
 				return (ModelMap) obj;
+			}
 		}
 		return null;
 	}

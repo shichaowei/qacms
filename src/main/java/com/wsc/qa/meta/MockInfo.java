@@ -1,9 +1,11 @@
 package com.wsc.qa.meta;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.wsc.qa.constraint.NotBlank;
 
 public class MockInfo {
-	
+
 	@NotBlank
 	String mockserverip;
 	@NotBlank
@@ -12,9 +14,21 @@ public class MockInfo {
 	String ContentType;
 	@NotBlank
 	String checkUrl;
-	String checkParams;
 	@NotBlank
+	String checkParams;
+	MultipartFile  responseBodyFile;
+
 	String responseBody;
+
+
+	public MultipartFile getCheckParamsFile() {
+		return responseBodyFile;
+	}
+	public void setCheckParamsFile(MultipartFile responseBodyFile) {
+		this.responseBodyFile = responseBodyFile;
+	}
+
+
 	public String getMockserverip() {
 		return mockserverip;
 	}
@@ -51,6 +65,6 @@ public class MockInfo {
 	public void setResponseBody(String responseBody) {
 		this.responseBody = responseBody;
 	}
-	
+
 
 }

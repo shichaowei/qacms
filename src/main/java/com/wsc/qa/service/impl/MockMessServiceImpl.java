@@ -1,13 +1,12 @@
 package com.wsc.qa.service.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.meta.MockInfo;
-import com.wsc.qa.mockmode.modeBeforeSendRequestBody;
+import com.wsc.qa.mockmode.ModeBeforeSendRequestBody;
 import com.wsc.qa.mockmode.modeExports;
 import com.wsc.qa.mockmode.modeLocalResponse;
 import com.wsc.qa.mockmode.modecheckParamsStr;
@@ -57,12 +56,12 @@ public class MockMessServiceImpl implements MockMessService{
         modecheckParamsStr.setCheckPostParams(checkPostParams);
         modecheckParamsStr.setCheckGetParams(checkGetParams);
 
-        modeBeforeSendRequestBody beforeSendRequestBody = new modeBeforeSendRequestBody();
+        ModeBeforeSendRequestBody beforeSendRequestBody = new ModeBeforeSendRequestBody();
         beforeSendRequestBody.setCheckParamsStr(modecheckParamsStr).setLocalRes(localResponse);
 
         modeExports modeExports = new modeExports();
         modeExports.setBeforeSendRequestBody(beforeSendRequestBody);
-        String filename = "rule"+new Date().getTime()+".txt";
+        String filename = "rule"+System.currentTimeMillis()+".txt";
         WriteFileUtil.clearWriteFile(modeExports.toString(), filename);
         Scpclient scp = Scpclient.getInstance(mockServerIp, 22,ServerInfo.sshname,ServerInfo.sshpwd);
         scp.putFile(filename, filename, ServerInfo.anyproxyRulePath, null);

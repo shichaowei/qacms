@@ -2,11 +2,24 @@ package com.wsc.qa.constants;
 
 import com.alibaba.fastjson.JSONObject;
 
+/**
+ *
+ *
+ * @author hzweisc
+ *
+ */
 public class CommonConstants {
 
 
 
+
+	/**
+	 *
+	 * @author hzweisc
+	 *
+	 */
 	public static enum deleteCode{
+		//通过登录名删除所有单子
 		deleteAllLoanByLoginname("deleteAllLoanByLoginname"),
 		deleteUserByLoginname("deleteUserByLoginname"),
 		deleteLoanByLoanName("deleteLoanByLoanName"),
@@ -22,7 +35,13 @@ public class CommonConstants {
 		}
 	}
 
+	/**
+	 *
+	 * @author hzweisc
+	 *
+	 */
 	public static enum opertype{
+		//item项
 		mockdata("mock数据"),
 		changtime("修改时间"),
 		fixfengdaienv("修复环境"),
@@ -30,6 +49,23 @@ public class CommonConstants {
 		fundscallbackfengdai("资金服回调fengdai业务");
 		private final String value;
 		opertype(String value) {
+			this.value=value;
+		}
+		public String getValue(){
+			return value;
+		}
+	}
+	/**
+	 *
+	 * @author hzweisc
+	 *
+	 */
+	public static enum callbackType{
+		//生成回调报文
+		virRelateId("virRelateId"),
+		virRemark("virRemark");
+		private final String value;
+		callbackType(String value) {
 			this.value=value;
 		}
 		public String getValue(){
@@ -47,13 +83,15 @@ public class CommonConstants {
      * @Description 错误代码
      */
     public static enum ErrorCode {
+    	//通用错误code
         ERROR_ACCOUTWRONG(0x00001, "账户密码不正确"),
         ERROR_REPEAT_REQUEST(0x00003, "重复申请"),
         ERROR_PARAMS_INVALIED(0x00003, "参数非法"),
         ERROR_REQUEST_TIMEOUT(0x00005, "请求过期"),
         ERROR_IP_BLOCKED(0xFF000, "您的 ip 被限制访问"),
         ERROR_ILLEGAL_PARAMTER(0xFF001, "缺少参数或参数不合法"),
-        ERROR_OTHER_MSG(0xFF999, "自定义消息用"),//自定义消息用,BusinessException构造函数时用传detailMsg
+      //自定义消息用,BusinessException构造函数时用传detailMsg
+        ERROR_OTHER_MSG(0xFF999, "自定义消息用"),
         ERROR_TEMP(0xFF000, "临时变量，为了保留原先code值")
         ;
 

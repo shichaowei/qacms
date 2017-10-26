@@ -19,7 +19,7 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
 	@Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
             Exception ex) {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<String, Object>(1);
         model.put("ex", ExceptionUtil.printStackTraceToString(ex));
         logger.info("栈信息：{}",ExceptionUtil.printStackTraceToString(ex));
 //        ex.printStackTrace();

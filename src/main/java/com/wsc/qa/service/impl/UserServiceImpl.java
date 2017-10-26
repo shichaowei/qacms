@@ -12,7 +12,8 @@ import com.wsc.qa.service.UserService;
 public class UserServiceImpl implements UserService{
 	@Resource
 	private UserDao userDao;
-	
+
+	@Override
 	public User getUserInfo(String userName){
 		return userDao.getUserInfo(userName);
 	}
@@ -22,5 +23,5 @@ public class UserServiceImpl implements UserService{
 		return userDao.insertUserInfo(user);
 	}
 
-	
+
 }
