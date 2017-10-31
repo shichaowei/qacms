@@ -2,13 +2,12 @@
 <html lang="en-US">
 <#include "/include/head.ftl">
     <body >
-    <script src="js/a.js" type="text/javascript"></script>
+    <script src="/js/a.js" type="text/javascript"></script>
     <#include "/include/header.ftl">
 	  <br />
+	  <div class="resultbox">
 	   <#if !item?has_content>
-		   <div class="n-result">
-		        <h3>暂无内容！</h3>
-		    </div>
+		        <h3>请点击目录!</h3>
 	   <#else>
 
 		<#if item=="changetime">
@@ -97,7 +96,11 @@
 				<input type="submit" value="Submit">
 			</form>
 			</#if>
-		</#if>	
 			
+			
+			
+			
+		</#if>	
+		</div>	
     </body>
 </html>

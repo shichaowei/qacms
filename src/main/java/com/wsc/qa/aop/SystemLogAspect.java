@@ -140,7 +140,7 @@ public class SystemLogAspect {
     @After("controllerAspect()")
     public  void after(JoinPoint joinPoint) {
     	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    	String ip = request.getRemoteAddr();
+    	String ip = request.getRemoteHost();
          try {
 
             String targetName = joinPoint.getTarget().getClass().getName();

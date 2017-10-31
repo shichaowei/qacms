@@ -14,7 +14,7 @@ public class MockInfo {
 	String ContentType;
 	@NotBlank
 	String checkUrl;
-	@NotBlank
+
 	String checkParams;
 	MultipartFile  responseBodyFile;
 
