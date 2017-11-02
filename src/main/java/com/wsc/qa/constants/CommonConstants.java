@@ -90,6 +90,7 @@ public class CommonConstants {
         ERROR_REQUEST_TIMEOUT(0x00005, "请求过期"),
         ERROR_IP_BLOCKED(0xFF000, "您的 ip 被限制访问"),
         ERROR_ILLEGAL_PARAMTER(0xFF001, "缺少参数或参数不合法"),
+        ERROR_ILLEGAL_USERNAME(0xFF003, "注册的账号已被使用"),
         ERROR_ILLEGAL_REQUEST(0xFF002, "http請求不合法"),
       //自定义消息用,BusinessException构造函数时用传detailMsg
         ERROR_OTHER_MSG(0xFF999, "自定义消息用"),

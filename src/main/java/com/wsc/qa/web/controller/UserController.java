@@ -223,19 +223,24 @@ public class UserController {
 	/** @OperaLogComment(remark="register")**/
 	public String registerApi( User user,HttpServletResponse response,
 			HttpServletRequest request, ModelMap map, Error errors) throws UnsupportedEncodingException {
-		userServiceImpl.insertUserInfo(user);
-		String userName = URLEncoder.encode(user.getUserName(), "utf-8");
-		String userPassword = user.getUserPassword();
-		HttpSession session = request.getSession();
-		Cookie userNameCookie = new Cookie("userName", userName);
-		Cookie pwdCookie = new Cookie("pwd", userPassword);
-		userNameCookie.setMaxAge(60 * 60);
-		pwdCookie.setMaxAge(60 * 60);
-		session.setAttribute("userName", userName);
-		response.addCookie(userNameCookie);
-		response.addCookie(pwdCookie);
-		map.addAttribute("userName", GetUserUtil.getUserName(request));
-		return "index";
+		if(userServiceImpl.getUserInfo(user.getUserName()) == null) {
+			userServiceImpl.insertUserInfo(user);
+			String userName = URLEncoder.encode(user.getUserName(), "utf-8");
+
+			String userPassword = user.getUserPassword();
+			HttpSession session = request.getSession();
+			Cookie userNameCookie = new Cookie("userName", userName);
+			Cookie pwdCookie = new Cookie("pwd", userPassword);
+			userNameCookie.setMaxAge(60 * 60);
+			pwdCookie.setMaxAge(60 * 60);
+			session.setAttribute("userName", userName);
+			response.addCookie(userNameCookie);
+			response.addCookie(pwdCookie);
+			map.addAttribute("userName", GetUserUtil.getUserName(request));
+			return "index";
+		}else {
+			throw new BusinessException(ErrorCode.ERROR_ILLEGAL_USERNAME);
+		}
 	}
 
 

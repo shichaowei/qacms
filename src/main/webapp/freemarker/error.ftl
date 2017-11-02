@@ -1,7 +1,7 @@
 <html lang="en-US">
 <#include "/include/head.ftl">
     <body>
-	   <#include "/include/header.ftl">
+	   <#include "/include/menu.ftl">
 	   <#if ex?exists>
 	   		<p>something is wrong</p>
 	   		<pre>${ex}</pre>
