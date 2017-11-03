@@ -6,6 +6,7 @@ import com.wsc.qa.constraint.NotBlank;
 
 public class MockInfo {
 
+	int  id;
 	@NotBlank
 	String mockserverip;
 	@NotBlank
@@ -16,11 +17,31 @@ public class MockInfo {
 	String checkUrl;
 
 	String checkParams;
+	String opername;
 	MultipartFile  responseBodyFile;
 
 	String responseBody;
+	String mocktime;
 
 
+	public String getOpername() {
+		return opername;
+	}
+	public void setOpername(String opername) {
+		this.opername = opername;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getMocktime() {
+		return mocktime;
+	}
+	public void setMocktime(String mocktime) {
+		this.mocktime = mocktime;
+	}
 	public MultipartFile getCheckParamsFile() {
 		return responseBodyFile;
 	}

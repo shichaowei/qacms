@@ -3,7 +3,6 @@
 <#include "/include/head.ftl">
     <body >
     <div >
-    <script src="/js/a.js" type="text/javascript"></script>
 		<#include "/include/menu.ftl">
 		<#include "/include/userinfo.ftl">
 		  <div class="col-lg-offset-1 col-lg-9 bianjie">
@@ -71,41 +70,79 @@
 				</#if>
 				
 				<#if item=="mock">
-				<form role="form" action="/mockMessage" method="post" enctype="multipart/form-data">
+				<form role="form" action="/addmockrule" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label >mockServer的地址：</label>
 						<input type="text" class="form-control" name="mockserverip" value="10.200.141.37" readonly style="background:#CCCCCC"><br />
 					</div>
 					<div class="form-group">
 					<label >mock的类型：</label>
-					<select class="form-control" name="mockType">
-					  <option value="get">get请求</option>
-					  <option value="post">post请求</option>
-					</select>
+						<select class="form-control" name="mockType">
+						  <option value="get">get请求</option>
+						  <option value="post">post请求</option>
+						</select>
 					</div>
 					<div class="form-group">
-					<label >mock数据的返回类型：</label>				 			 
-					<select class="form-control" name="ContentType">
-					  <option value="application/json">application/json</option>
-					  <option value="text/xml">text/xml</option>
-					</select>
+						<label >mock数据的返回类型：</label>				 			 
+						<select class="form-control" name="ContentType">
+						  <option value="application/json">application/json</option>
+						  <option value="text/xml">text/xml</option>
+						</select>
 					</div>
 					<div class="form-group">
-					<label >mock的url：</label>	
-					<input class="form-control" type="text" name="checkUrl" placeholder="checkUrl">
+						<label >mock的url：</label>	
+						<input class="form-control" type="text" name="checkUrl" placeholder="checkUrl">
 					</div>
 					<div class="form-group">
-					<label >mock的数据所含特征值：</label>	
-					<input class="form-control" type="text" name="checkParams" placeholder="checkParams">
+						<label >mock的数据所含特征值：</label>	
+						<input class="form-control" type="text" name="checkParams" placeholder="checkParams">
 					</div>
 					<div class="form-group">
-					<label >mock返回的数据：</label>
-					<input class="form-control" type="text" name="responseBody" placeholder="responseBody">
+						<label >mock返回的数据：</label>
+						<input class="form-control" type="text" name="responseBody" placeholder="responseBody">
 					</div>
 					<div class="form-group">
-					<label >mock返回的数据(文件)：</label>	
-					<input class="form-control" type="file" name="responseBodyFile">
+						<label >mock返回的数据(文件)：</label>	
+						<input class="form-control" type="file" name="responseBodyFile">
 					</div> 
+					<button type="submit" class="btn btn-default">提交</button>
+				</form>
+				</#if>
+				
+				<#if item=="gethttpinterface">
+				<form role="form" action="/gethttpinterface" method="post" >
+					
+					<div class="form-group">
+						<label >http请求的类型：</label>
+						<select class="form-control" name="requestType">
+						  <option value="get">get请求</option>
+						  <option value="post">post请求</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label >http请求的url：</label>	
+						<input class="form-control" type="text" name="requestUrl" placeholder="requestUrl">
+					</div>
+					
+					<div class="form-group">
+						<label >http的请求类型：</label>				 			 
+						<select class="form-control" name="requestContentType">
+						  <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+						  <option value="application/json">application/json</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label >token：</label>				 			 
+						<input class="form-control" type="text" name="token" placeholder="token的值">
+					</div>
+					
+					<div class="form-group">
+						<label >http请求的body：</label>	
+						<input class="form-control" type="text" name="requestBody" placeholder="checkParams">
+					</div>
+				
 					<button type="submit" class="btn btn-default">提交</button>
 				</form>
 				</#if>
@@ -114,7 +151,7 @@
 				<form action="/deleteUserInfo" method="post">
 					<div class="form-group">
 					<label >要删除的的类型：</label>
-					<select class="form-control" name="deleteType">
+					<select class="form-control" name="deleteType" id="fengdaiDeleteType">
 					  <option value="deleteAllLoanByLoginname">删除指定用户所有的申请单(包括授信)</option>
 					  <!--
 					  <option value="deleteAllLoanWithoutCreditByLoginname">删除指定用户所有的申请单(不包括授信)--暂不提供</option>
@@ -124,11 +161,12 @@
 					  <option value="deleteLoanByLoanId">根据借款申请id删除指定的申请单</option>
 					  <option value="changeSQDToLoanning">根据借款名称修改为待放款，绕开签约</option>
 					  <option value="changeProcessSQDToLoanning">根据借款名称把放款中修改为待放款</option>
+					  <option value="changeUserAmount">修改用户账号余额</option>
 					</select>
 					</div>
 					<div class="form-group">
-					<label >指定的参数特征值：</label>	
-					<input class="form-control" type="text" name="param" placeholder="18667906998">
+						<label >指定的参数特征值：</label>	
+						<input id="fengdaiusername" class="form-control" type="text" name="param" placeholder="18667906998">
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>
 				</form>
@@ -140,5 +178,6 @@
 			</#if>	
 			</div>
 		</div>
+		    <script src="/js/a.js" type="text/javascript"></script>
     </body>
 </html>

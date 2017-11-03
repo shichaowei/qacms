@@ -16,16 +16,24 @@
 					<pre id="mockRuleStr">${mockRuleStr}</pre>
 				</div>
 		</#if>
+		
+		<#if gethttpinterface?has_content>
+				<div class="n-result">
+					<p id="mockRuleStr">${gethttpinterface}</p>
+				</div>
+		</#if>
 		<#if servernowtime?has_content>
 				<div class="n-result">
 					<pre id="servernowtime">${servernowtime}</pre>
 				</div>
 		</#if>
+		
 		<#if resultmsg?has_content>
 				<div class="n-result">
 					<pre id="servernowtime">${resultmsg}</pre>
 				</div>
 		</#if>
+		
 		<#if callbackinfolist?has_content>
 		
 			<#list callbackinfolist as x>
@@ -36,6 +44,12 @@
 			</#list>
 		
 		</#if>
+		
+
+		
+		
+		
+		
 	</div>
 	</div>
 </body>

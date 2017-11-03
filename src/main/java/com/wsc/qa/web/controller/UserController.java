@@ -1,11 +1,9 @@
 package com.wsc.qa.web.controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,11 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +50,10 @@ import com.wsc.qa.service.FengdaiUserInfoService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
-import com.wsc.qa.utils.FormateDateUtil;
 import com.wsc.qa.utils.GetNetworkTimeUtil;
 import com.wsc.qa.utils.GetUserUtil;
 import com.wsc.qa.utils.JsonFormatUtil;
 import com.wsc.qa.utils.OkHttpUtil;
-import com.wsc.qa.utils.SmilarJSONFormatUtil;
 /**
  *
  *
@@ -137,8 +129,16 @@ public class UserController {
 				map.addAttribute("item", IndexNav.changetime);
 				break;
 
-			case "mock":
-				map.addAttribute("item", IndexNav.mock);
+			case "addmockrule":
+				map.addAttribute("item", IndexNav.addmockrule);
+				break;
+			case "displaymockrules":{
+				List<MockInfo> var = mockMessServiceImpl.getAllMockInfos();
+				map.addAttribute("mockrules",var);
+				return "mockInfoDis";
+			}
+			case "gethttpinterface":
+				map.addAttribute("item", IndexNav.gethttpinterface);
 				break;
 			case "fixenv":
 				map.addAttribute("item", IndexNav.fixenv);
@@ -197,7 +197,6 @@ public class UserController {
 			}
 
 		} else {
-
 			throw new BusinessException(ErrorCode.ERROR_ACCOUTWRONG);
 		}
 		// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
@@ -244,94 +243,7 @@ public class UserController {
 	}
 
 
-	/**
-	 *用来提供回调地址，用于mock第三方服务器，并展示出服务器拿到的东西
-	 * @param response
-	 * @param request
-	 * @param map
-	 * @param errors
-	 * @throws FileUploadException
-	 * @throws IOException
-	 */
-	@RequestMapping({"callbackloop"})
-	public void callbackloop(HttpServletResponse response,
-			HttpServletRequest request, ModelMap map, Error errors) throws FileUploadException, IOException {
 
-		CallbackInfo callbackInfo = new CallbackInfo();
-		String mode = request.getMethod();
-		switch (mode) {
-			case "POST":{
-				if("application/x-www-form-urlencoded".equals(request.getContentType())) {
-					StringBuffer callbackBuffer = new StringBuffer();
-					callbackBuffer.append("application/x-www-form-urlencoded表单提交----");
-					Enumeration<?> names2 = request.getParameterNames();
-			        while(names2.hasMoreElements()){
-			        	String var = names2.nextElement().toString();
-			            callbackBuffer.append(var+":"+request.getParameter(var)+";");
-			        }
-			        callbackInfo.setCallbackinfo(callbackBuffer.toString());
-			        callbackInfo.setRequestip(request.getRemoteHost());
-
-				}else if (request.getContentType() != null&&request.getContentType().contains("multipart/form-data")&&request.getContentType().contains("boundary")) {
-					StringBuffer callbackBuffer = new StringBuffer();
-					callbackBuffer.append("multipart/form-data提交----");
-					DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-					ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
-					fileUpload.setHeaderEncoding("UTF-8");
-					List<FileItem> list = fileUpload.parseRequest(request);
-					for (FileItem item : list) {
-						//如果fileitem中封装的是普通输入项的数据
-		                if(item.isFormField()){
-		                	String name = item.getFieldName();
-		                    //解决普通输入项的数据的中文乱码问题
-		                    String value = item.getString("UTF-8");
-//		                    System.out.println(name);
-//		                    System.out.println(value);
-		                    callbackBuffer.append(name+":"+value+";");
-		                }else {
-		                	String fileName = item.getName();
-		                	int index = fileName.lastIndexOf("\\");
-		                	fileName = fileName.substring(index + 1);
-//		                	System.out.println(fileName);
-		                	callbackBuffer.append(fileName);
-						}
-					}
-					callbackInfo.setCallbackinfo(callbackBuffer.toString());
-			        callbackInfo.setRequestip(request.getRemoteHost());
-
-				}else if ("application/json".equals(request.getContentType())) {
-					StringBuffer callbackBuffer = new StringBuffer();
-					callbackBuffer.append("application/json提交----");
-					BufferedReader br=request.getReader();
-					String data = null;
-					while((data = br.readLine())!=null)
-					{
-//						System.out.println(data);
-						callbackBuffer.append(data+"\n");
-					}
-					callbackInfo.setCallbackinfo(callbackBuffer.toString());
-			        callbackInfo.setRequestip(request.getRemoteHost());
-				}else {
-					logger.error("content is error:{}",request.getContentType());
-					throw new BusinessException(ErrorCode.ERROR_ILLEGAL_REQUEST);
-				}
-				break;
-			}
-			case "GET":
-				StringBuffer callbackBuffer = new StringBuffer();
-				callbackBuffer.append("get提交----");
-//				System.out.println(request.getQueryString());
-				callbackBuffer.append(request.getQueryString());
-				callbackInfo.setCallbackinfo(callbackBuffer.toString());
-		        callbackInfo.setRequestip(request.getRemoteHost());
-				break;
-			default:
-				break;
-		}
-		callbackInfo.setCreatetime(FormateDateUtil.format(Calendar.getInstance().getTime()));
-		fengdaiCallbakInfoServiceImpl.addCallbackInfo(callbackInfo);
-
-	}
 
 	/**
 	 *
@@ -398,87 +310,8 @@ public class UserController {
 		return "display";
 	}
 
-	/**
-	 * 根據要mock的數據，在指定的服務器上啟動anyproxy，mock相關數據 checkPostParams checkGetParams
-	 * 以分隔符；為單位 test curl -d "{"name" : "魏士超"}"
-	 * http://172.30.251.176/credit-thirdparty-rest/api/auto/fill/factor --proxy
-	 * http://127.0.0.1:8001
-	 *
-	 * @param mockserverip
-	 * @param ContentType
-	 * @param checkUrl
-	 * @param checkPostParams
-	 * @param checkGetParams
-	 * @param responseBody
-	 * @param request
-	 * @param map
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 * @throws FileUploadException
-	 */
-	@RequestMapping({ "mockMessage" })
-	@OperaLogComment(remark = opertype.mockdata)
-	public String mockMessage( HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) throws IOException, FileUploadException {
-		System.out.println(request.getContentType());
-		if(mocklock.tryLock()) {
-			try {
-				MockInfo mockinfo = new MockInfo();
-//				System.out.println(mockinfo.getCheckParamsFile().getInputStream().toString());
-				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-				ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
-				fileUpload.setHeaderEncoding("UTF-8");
-				List<FileItem> list = fileUpload.parseRequest(request);
-				for (FileItem item : list) {
-					//如果fileitem中封装的是普通输入项的数据
-	                if(item.isFormField()){
-	                    String name = item.getFieldName();
-	                    //解决普通输入项的数据的中文乱码问题
-	                    String value = item.getString("UTF-8");
-	                    if(StringUtils.isNotEmpty(value)) {
-		                    switch (name) {
-							case "mockserverip":
-								mockinfo.setMockserverip(value);
-								break;
-							case "mockType":
-								mockinfo.setMockType(value);
-								break;
-							case "ContentType":
-								mockinfo.setContentType(value);
-								break;
-							case "checkUrl":
-								mockinfo.setCheckUrl(value);
-								break;
-							case "checkParams":
-								mockinfo.setCheckParams(value);
-								break;
-							case "responseBody":
-								mockinfo.setResponseBody(value);
-								break;
-							default:
-								break;
-							}
-	                    }
-	                }else{
-	                    if(StringUtils.isEmpty(mockinfo.getResponseBody())) {
-	                    	mockinfo.setResponseBody(item.getString("utf-8"));
-	                    }
-	                }
-				}
 
 
-				String mockRule = mockMessServiceImpl.mockProcess(mockinfo);
-				map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
-			} finally {
-				mocklock.unlock();
-			}
-
-		}else {
-			map.addAttribute("resultmsg", "有人正在mock数据，请稍等或者与最近操作的相关人员"+operaLogServiceImpl.getLastOperByType(CommonConstants.opertype.mockdata.getValue()).getUsername()+"联系");
-		}
-		return "display";
-	}
 
 	/**
 	 *
@@ -491,7 +324,7 @@ public class UserController {
 	 */
 	@RequestMapping({ "deleteUserInfo" })
 	@OperaLogComment(remark = opertype.deletefengdaidata)
-	public String deleteUserInfo(String deleteType, String param, HttpServletRequest request, ModelMap map,
+	public String deleteUserInfo(String deleteType, String param, String moneynumStr,HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 
 		// 切换数据库
@@ -520,6 +353,17 @@ public class UserController {
 		case changeProcessSQDToLoanning:
 			fengdaiUserInfoServiceImpl.changeProcessSQDToLoanning(param);
 			map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款");
+			break;
+		case changeUserAmount:
+
+				String username = param;
+				//构造以字符串内容为值的BigDecimal类型的变量bd
+				BigDecimal moneynum=new BigDecimal(moneynumStr);
+				//设置小数位数，第一个变量是小数位数，第二个变量是取舍方法(四舍五入)
+				moneynum=moneynum.setScale(2, BigDecimal.ROUND_HALF_UP);
+				fengdaiUserInfoServiceImpl.changeUserAccount(username, moneynum);
+				map.addAttribute("resultmsg", "修改用户:"+param+";金额为:"+moneynumStr);
+
 			break;
 		default:
 			map.addAttribute("resultmsg", "没有匹配到任何操作");

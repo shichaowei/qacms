@@ -184,6 +184,24 @@ public class OkHttpUtil {
         }
     }
 
+    public static String postFormWithCookie(String url, final Map<String, Object> paramsMap,String token) throws IOException {
+
+    	String tokenStr = "token=" + token;
+    	FormEncodingBuilder formEncodingBuilder = new FormEncodingBuilder();
+    	if (paramsMap != null) {
+    		for (String key : paramsMap.keySet()) {
+    			formEncodingBuilder.add(key, String.valueOf(paramsMap.get(key)));
+    		}
+    	}
+    	Request request = new Request.Builder().header("Cookie", tokenStr).url(url).post(formEncodingBuilder.build()).build();
+    	Response response = client.newCall(request).execute();
+    	if (response.isSuccessful()) {
+    		return response.body().string();
+    	} else {
+    		throw new IOException(response.body().string());
+    	}
+    }
+
     /**
      * @author wangbb
      * @description postform提交需要重试机制

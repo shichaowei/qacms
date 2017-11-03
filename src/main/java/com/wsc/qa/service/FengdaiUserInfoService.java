@@ -1,5 +1,7 @@
 package com.wsc.qa.service;
 
+import java.math.BigDecimal;
+
 public interface FengdaiUserInfoService {
 
 	public  void deleteAllLoanByLoginname(String loginname) ;
@@ -9,6 +11,7 @@ public interface FengdaiUserInfoService {
 	public  void deleteLoanByLoanId(String loanid) ;
 	public void changeSQDToLoanning(String loanname);
 	public void changeProcessSQDToLoanning(String loanname);
+	public void changeUserAccount(String username,BigDecimal money);
 
 
 

@@ -1,5 +1,6 @@
 package com.wsc.qa.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
@@ -136,6 +137,15 @@ public class FengdaiUserInfoDao {
 		for (String sql : SQLlist) {
 			jdbcTemplate.update(sql);
 		}
+	}
+
+	public void changeUserAccount(String username,BigDecimal moneynum) {
+		String sqltemp = ""
+				+ "update md_funds_db.funds_account SET totalAmount='%s',balanceAmount='%s',freezeAmount='0' WHERE  "
+				+ "acctCode=(select id FROM fengdai_user.sys_user WHERE cellphone='%s')";
+		String sql = String.format(sqltemp, moneynum, moneynum, username);
+		jdbcTemplate.update(sql);
+
 	}
 
 

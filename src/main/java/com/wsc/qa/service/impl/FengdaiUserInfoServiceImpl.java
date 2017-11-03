@@ -1,5 +1,7 @@
 package com.wsc.qa.service.impl;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -44,6 +46,11 @@ public class FengdaiUserInfoServiceImpl implements FengdaiUserInfoService{
 	}
 	@Override
 	public void changeProcessSQDToLoanning(String loanname) {
+
+	}
+	@Override
+	public void changeUserAccount(String username, BigDecimal moneynum) {
+		fengdaiUserInfoDao.changeUserAccount(username, moneynum);
 
 	}
 

@@ -13,6 +13,20 @@ public class CommonConstants {
 
 
 
+	public static enum ShellInfo{
+		restanyproxyrule("ruledemo.txt");
+		private final String value;
+		private ShellInfo(String value) {
+			this.value=value;
+		}
+		public String getValue(){
+			return value;
+		}
+
+	}
+
+
+
 	/**
 	 *
 	 * @author hzweisc
@@ -25,7 +39,8 @@ public class CommonConstants {
 		deleteLoanByLoanName("deleteLoanByLoanName"),
 		deleteLoanByLoanId("deleteLoanByLoanId"),
 		changeSQDToLoanning("changeSQDToLoanning"),
-		changeProcessSQDToLoanning("changeProcessSQDToLoanning");
+		changeProcessSQDToLoanning("changeProcessSQDToLoanning"),
+		changeUserAmount("changeUserAmount");
 		private final String value;
 		deleteCode(String value) {
 			this.value=value;
@@ -46,7 +61,10 @@ public class CommonConstants {
 		changtime("修改时间"),
 		fixfengdaienv("修复环境"),
 		deletefengdaidata("删除蜂贷用户业务数据"),
-		fundscallbackfengdai("资金服回调fengdai业务");
+		fundscallbackfengdai("资金服回调fengdai业务"),
+		startmock("开始mock"),
+		deletemockrules("删除mock规则"),
+		gethttpinterface("获取特定http请求的返回值");
 		private final String value;
 		opertype(String value) {
 			this.value=value;
@@ -75,9 +93,6 @@ public class CommonConstants {
 
 
 
-	public static void main(String[] args) {
-		System.out.println(deleteCode.valueOf("deleteAllLoanByLoginname").getValue());
-	}
 
     /**
      * @Description 错误代码
@@ -160,6 +175,15 @@ public class CommonConstants {
             return json.toString();
         }
     }
+
+
+	public static void main(String[] args) {
+		System.out.println(deleteCode.valueOf("deleteAllLoanByLoginname").getValue());
+
+		String var = String.format(ServerInfo.restartanyproxyShellMode, CommonConstants.ShellInfo.restanyproxyrule.getValue());
+		System.out.println(var);
+	}
+
 
 
 }

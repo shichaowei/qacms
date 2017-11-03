@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsc.qa.dao.MockInfoDao">
+	<resultMap id="BaseResultMap" type="com.wsc.qa.meta.MockInfo">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="mockserverip" jdbcType="VARCHAR" property="mockserverip" />
+		<result column="checkUrl" jdbcType="VARCHAR" property="checkUrl" />
+		<result column="mockType" jdbcType="VARCHAR" property="mockType" />
+		<result column="ContentType" jdbcType="VARCHAR" property="ContentType" />
+		<result column="checkParams" jdbcType="VARCHAR" property="checkParams" />
+		<result column="responseBody" jdbcType="VARCHAR" property="responseBody" />
+		<result column="mocktime" jdbcType="TIMESTAMP" property="mocktime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername
+	</sql>
+	
+	<insert id="addMockinfo" parameterType="com.wsc.qa.meta.MockInfo"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT into
+		fengdaimockinfo(mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername) VALUES
+		(#{mockserverip},#{checkUrl},#{mockType},#{ContentType},#{checkParams},#{responseBody},#{mocktime},#{opername})
+	</insert>
+	
+	<select id="getAllMockInfos" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from fengdaimockinfo where mockType is not null  order by mocktime DESC ,id Desc
+	</select>
+	
+	<delete id="deleteMockinfoByid" parameterType="int">
+		DELETE FROM fengdaimockinfo   WHERE id=#{id}
+	</delete>
+	
+	<delete id="deleteAllMockinfo" parameterType="int">
+		DELETE FROM fengdaimockinfo  
+	</delete>
+	
+	
+
+</mapper>

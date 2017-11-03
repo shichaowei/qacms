@@ -201,7 +201,11 @@ public class SystemLogAspect {
         String params = "";
          if (joinPoint.getArgs() !=  null && joinPoint.getArgs().length > 0) {
              for ( int i = 0; i < joinPoint.getArgs().length; i++) {
-                params += joinPoint.getArgs()[i].toString() + ";";
+            	if(joinPoint.getArgs()[i] != null) {
+            		params += joinPoint.getArgs()[i].toString() + ";";
+            	}else {
+            		params+=null+";";
+            	}
             }
         }
          try {
