@@ -1,9 +1,7 @@
 package com.wsc.qa.mockmode;
 
-import com.wsc.qa.mockmode.modeLocalResponse.headerDetail;
-
 public class modeLocalResponse {
-	
+
 	public class headerDetail{
 		private String ContentType;
 		private String Connection;
@@ -29,15 +27,15 @@ public class modeLocalResponse {
 			CacheControl = cacheControl;
 			return this;
 		}
-		
+
 		@Override
 		public String toString() {
 			return String.format("'Content-Type':'%s',Connection:'%s','Cache-Control':'%s'", ContentType , Connection, CacheControl);
 		}
-		
-	
+
+
 	}
-	
+
 
 	private int statusCode;
 	private headerDetail header;
@@ -68,11 +66,11 @@ public class modeLocalResponse {
 		StringBuffer result= new StringBuffer();
 		result.append(String.format("statusCode:%d,", statusCode));
 		result.append(String.format("header:{%s},", header.toString()));
-		result.append(String.format("body:'{%s}'", body));
+		result.append(String.format("body:'%s'", body));
 		return result.toString();
 	}
-	
-	
-	
-	
+
+
+
+
 }

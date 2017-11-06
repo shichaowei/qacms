@@ -2,6 +2,7 @@ package com.wsc.qa.web.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
@@ -176,20 +177,19 @@ public class MockController {
 	 * @param map
 	 * @param response
 	 * @return
-	 * @throws IOException
-	 * @throws FileUploadException
+	 * @throws Exception
 	 */
 	@RequestMapping({ "addmockrule" })
 	@OperaLogComment(remark = opertype.mockdata)
 	public String addmockrule( HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) throws IOException, FileUploadException {
+			HttpServletResponse response) throws Exception {
 		if(mocklock.tryLock()) {
 			try {
 				MockInfo mockinfo = new MockInfo();
 //				System.out.println(mockinfo.getCheckParamsFile().getInputStream().toString());
 				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
 				ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
-				fileUpload.setHeaderEncoding("UTF-8");
+//				fileUpload.setHeaderEncoding("UTF-8");
 				List<FileItem> list = fileUpload.parseRequest(request);
 				for (FileItem item : list) {
 					//如果fileitem中封装的是普通输入项的数据
@@ -223,7 +223,17 @@ public class MockController {
 	                    }
 	                }else{
 	                    if(StringUtils.isEmpty(mockinfo.getResponseBody())) {
-	                    	mockinfo.setResponseBody(item.getString("utf-8"));
+	                    	InputStream in = item.getInputStream();
+	                    	byte[] b = new byte[3];
+	                    	in.read(b);
+	                    	in.close();
+	                    	if (b[0] == -17 && b[1] == -69 && b[2] == -65) {
+	                    		mockinfo.setResponseBody(item.getString("utf-8"));
+	                    	}
+	                    	else {
+	                    		mockinfo.setResponseBody(item.getString("gbk").trim());
+	                    	}
+
 	                    }
 	                }
 				}
@@ -252,13 +262,15 @@ public class MockController {
 
 
 
+
+
 	@RequestMapping({ "startmock" })
 	@OperaLogComment(remark = opertype.startmock)
 	public String startmock( HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {
 		List<MockInfo> var = mockMessServiceImpl.getAllMockInfos();
 		String mockRule = mockMessServiceImpl.mockProcess(var);
-		logger.info("mock的rule{}",mockRule);
+		logger.info("mock的rule:{}",mockRule);
 		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
 		map.addAttribute("resultmsg","mock成功");
 		return "display";
@@ -282,7 +294,7 @@ public class MockController {
 		mockMessServiceImpl.deleteMockinfoByid(id);
 		SshUtil.remoteRunCmd(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, CommonConstants.ShellInfo.restanyproxyrule.getValue()), false);
 //		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
-		map.addAttribute("resultmsg","重置mock成功");
+		map.addAttribute("resultmsg","删除mock规则成功");
 		return "display";
 	}
 

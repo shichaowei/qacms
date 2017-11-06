@@ -11,7 +11,7 @@
 		   <#else>
 
 			<#if item=="changetime">
-			   <form role="form"  class="form-horizontal" action="/changetime" method="post">
+			   <form role="form"   action="/changetime" method="post">
 					<div class="form-group">
 						<label for="name" class="control-label">修改类型:</label>
 							<select  class="form-control" name="changetimetype" id='changetime'>
@@ -30,7 +30,7 @@
 								<input class="form-control" type="text"  name="time" placeholder="9:00:00">		
 						</div>
 					</div>
-					<button type="submit" class="btn btn-default col-lg-5 ">提交</button>
+					<button type="submit" class="btn btn-default  ">提交</button>
 				</form> 
 				</#if>
 				
