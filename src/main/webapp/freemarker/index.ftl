@@ -57,12 +57,19 @@
 						</select>
 					</div>
 					<div class="form-group">
-						<label>callbackUrl回调地址：</label>
+						<label>资金服回调的环境：</label>
+						<select name="callbackEnv" class="form-control">
+						  <option value="fengdaiold">2.0环境</option>
+						  <option value="fengdainew">3.0环境</option>
+						</select>
+						<!--
+						http://10.200.141.52:8080/Mqnotify/notify/transfer
 						<input type="text" class="form-control" name="callbackUrl" value="http://10.200.141.36:8080/Mqnotify/notify/transfer" readonly style="background:#CCCCCC">
+						-->
 					</div>
 					
 					<div class="form-group">
-						<label>mcbusiness字段内容：</label>
+						<label>mcbusiness特征值：</label>
 						<input type="text" class="form-control" name="fieldDetail" placeholder="字段内容">
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>
@@ -150,6 +157,11 @@
 				<#if item=="deleteUserInfo">
 				<form action="/deleteUserInfo" method="post">
 					<div class="form-group">
+					<label >使用的数据库：</label>
+					<select class="form-control" name="deleteMode" id="deleteModeType">
+					  <option value="OLD">删除2.0环境</option>
+					  <option value="NEW">删除3.0环境</option>
+					</select>
 					<label >要删除的的类型：</label>
 					<select class="form-control" name="deleteType" id="fengdaiDeleteType">
 					  <option value="deleteAllLoanByLoginname">删除指定用户所有的申请单(包括授信)</option>

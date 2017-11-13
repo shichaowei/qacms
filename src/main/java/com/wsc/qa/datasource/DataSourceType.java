@@ -11,4 +11,5 @@ public class DataSourceType {
 	public static final String SOURCE_ADMIN = "ds_admin";
 	//jdbc:mysql://10.200.141.45:3306/fengdai_riskcontrol
 	public static final String SOURCE_TESTDB = "ds_testdb";
+	public static final String SOURCE_TESTDBNEW = "ds_testdb3.0";
 }

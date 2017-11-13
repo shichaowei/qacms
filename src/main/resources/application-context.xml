@@ -66,11 +66,34 @@
         <property name="testOnBorrow" value="false" />      
 	</bean>
 	
+	<bean id="ds_testdb3.0" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName3}" />
+		<property name="url" value="${jdbc.url3}" />
+		<property name="username" value="${jdbc.username3}" />
+		<property name="password" value="${jdbc.password3}" />
+        <property name="maxActive" value="30"/>  
+        <property name="minIdle" value="5"/>  
+        <property name="maxIdle" value="10"/>  
+        <property name="initialSize" value="10"/>  
+        <property name="logAbandoned" value="true"/>  
+        <property name="removeAbandoned"  value="true"/>  
+        <property name="removeAbandonedTimeout" value="10"/>  
+        <property name="maxWait" value="1000"/>  
+        <property name="timeBetweenEvictionRunsMillis" value="10000"/>  
+        <property name="numTestsPerEvictionRun" value="10"/>  
+        <property name="minEvictableIdleTimeMillis" value="1800000"/>  
+        <property name="validationQuery" value="SELECT NOW() FROM DUAL"/>  
+        <property name="testWhileIdle" value="true" />  
+        <property name="testOnBorrow" value="false" />      
+	</bean>
+	
 	<bean id="dataSource" class="com.wsc.qa.datasource.DynamicDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
 				<entry value-ref="ds_admin" key="ds_admin"></entry>
 				<entry value-ref="ds_testdb" key="ds_testdb"></entry>
+				<entry value-ref="ds_testdb3.0" key="ds_testdb3.0"></entry>
 			</map>
 		</property>
 		<property name="defaultTargetDataSource" ref="ds_admin"></property>      

@@ -17,4 +17,9 @@ public class FengdaiServiceImpl implements FengdaiService {
 		return fengdaiDao.getremarkViaRelate(relateid);
 	}
 
+	@Override
+	public String getremarkNew(String relateid) {
+		return fengdaiDao.getremarkViaRelateNew(relateid);
+	}
+
 }

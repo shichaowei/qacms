@@ -2,7 +2,6 @@ package com.wsc.qa.web.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -27,22 +26,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wsc.qa.annotation.Log;
 import com.wsc.qa.annotation.OperaLogComment;
-import com.wsc.qa.constants.CommonConstants;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
-import com.wsc.qa.constants.CommonConstants.deleteCode;
 import com.wsc.qa.constants.CommonConstants.opertype;
 import com.wsc.qa.constants.IndexNav;
 import com.wsc.qa.constants.ServerInfo;
-import com.wsc.qa.datasource.DataSourceContextHolder;
-import com.wsc.qa.datasource.DataSourceType;
 import com.wsc.qa.exception.BusinessException;
-import com.wsc.qa.exception.MyExceptionHandler;
 import com.wsc.qa.meta.CallbackInfo;
 import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.meta.User;
 import com.wsc.qa.service.ActivityBannerService;
 import com.wsc.qa.service.ChangeTimeService;
-import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.service.FengdaiCallbakInfoService;
 import com.wsc.qa.service.FengdaiService;
@@ -52,8 +45,6 @@ import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
 import com.wsc.qa.utils.GetNetworkTimeUtil;
 import com.wsc.qa.utils.GetUserUtil;
-import com.wsc.qa.utils.JsonFormatUtil;
-import com.wsc.qa.utils.OkHttpUtil;
 /**
  *
  *
@@ -63,7 +54,7 @@ import com.wsc.qa.utils.OkHttpUtil;
  */
 @Controller
 public class UserController {
-	private static final Logger logger = LoggerFactory.getLogger(MyExceptionHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userServiceImpl;
@@ -74,8 +65,7 @@ public class UserController {
 	private OperLogService operaLogServiceImpl;
 	@Autowired
 	private DealEnvService dealEnvServiceImpl;
-	@Autowired
-	private CreateCallbackService createCallbackServiceImpl;
+
 	@Autowired
 	private MockMessService mockMessServiceImpl;
 	@Autowired
@@ -185,8 +175,8 @@ public class UserController {
 				// cookie取中文需要 URLEncoder.encode
 				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode(user.getUserName(), "utf-8"));
 				Cookie pwdCookie = new Cookie("pwd", userPassword);
-				userNameCookie.setMaxAge(1 * 10);
-				pwdCookie.setMaxAge(1 * 10);
+				userNameCookie.setMaxAge(365*24*3600);
+				pwdCookie.setMaxAge(365*24*3600);
 				session.setAttribute("userName", userName);
 				response.addCookie(userNameCookie);
 				response.addCookie(pwdCookie);
@@ -269,110 +259,7 @@ public class UserController {
 		return "index";
 	}
 
-	/**
-	 * remark字段生成回调报文
-	 *
-	 * @param remark
-	 * @param request
-	 * @param map
-	 * @param response
-	 * @return
-	 *
-	 */
-	@RequestMapping({ "createCallbackStr" })
-	@OperaLogComment(remark = opertype.fundscallbackfengdai)
-	public String createCallbackStr(@RequestParam("callbackUrl") String callbackUrl, @RequestParam("type") String type,
-			@RequestParam("fieldDetail") String fieldDetail, HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) {
-		String remark = "";
-		if (CommonConstants.callbackType.virRelateId.getValue().equals(type)) {
-/**			String sqlMode = "select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='%s' ORDER BY create_date DESC ";
-			remark = new com.tairan.framework.utils.DBUtil("fengdai")
-					.executeQueryGetMap(String.format(sqlMode, fieldDetail)).get("remarks").get(0);
-					**/
-			// 切换数据库
-			DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
-			remark = fengdaiServiceImpl.getremark(fieldDetail);
-		} else if (CommonConstants.callbackType.virRemark.getValue().equals(type)) {
-			remark = fieldDetail;
-		} else {
-			throw new BusinessException(ErrorCode.ERROR_PARAMS_INVALIED, "参数非法");
-		}
-		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
-		map.addAttribute("callbackStr", JsonFormatUtil.jsonFormatter(callbackStr));
-		// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
-		try {
-			OkHttpUtil.post(callbackUrl, callbackStr);
-		} catch (IOException e) {
-			throw new BusinessException(ErrorCode.ERROR_OTHER_MSG.customDescription("post请求失败"), e);
-		}
 
-		return "display";
-	}
-
-
-
-
-	/**
-	 *
-	 * @param deleteType
-	 * @param param
-	 * @param request
-	 * @param map
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping({ "deleteUserInfo" })
-	@OperaLogComment(remark = opertype.deletefengdaidata)
-	public String deleteUserInfo(String deleteType, String param, String moneynumStr,HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) {
-
-		// 切换数据库
-		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
-		switch (deleteCode.valueOf(deleteType)) {
-		case deleteAllLoanByLoginname:
-			fengdaiUserInfoServiceImpl.deleteAllLoanByLoginname(param);
-			map.addAttribute("resultmsg", "删除用户申请单与资金流水所有数据");
-			break;
-		case deleteUserByLoginname:
-			fengdaiUserInfoServiceImpl.deleteUserByLoginname(param);
-			map.addAttribute("resultmsg", "从数据库删除整个用户");
-			break;
-		case deleteLoanByLoanName:
-			fengdaiUserInfoServiceImpl.deleteLoanByLoanName(param);
-			map.addAttribute("resultmsg", "根据借款名称删除指定的申请单");
-			break;
-		case deleteLoanByLoanId:
-			fengdaiUserInfoServiceImpl.deleteLoanByLoanId(param);
-			map.addAttribute("resultmsg", "根据借款申请id删除指定的申请单");
-			break;
-		case changeSQDToLoanning:
-			fengdaiUserInfoServiceImpl.changeSQDToLoanning(param);
-			map.addAttribute("resultmsg", "修改申请单为待放款，绕开签约");
-			break;
-		case changeProcessSQDToLoanning:
-			fengdaiUserInfoServiceImpl.changeProcessSQDToLoanning(param);
-			map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款");
-			break;
-		case changeUserAmount:
-
-				String username = param;
-				//构造以字符串内容为值的BigDecimal类型的变量bd
-				BigDecimal moneynum=new BigDecimal(moneynumStr);
-				//设置小数位数，第一个变量是小数位数，第二个变量是取舍方法(四舍五入)
-				moneynum=moneynum.setScale(2, BigDecimal.ROUND_HALF_UP);
-				fengdaiUserInfoServiceImpl.changeUserAccount(username, moneynum);
-				map.addAttribute("resultmsg", "修改用户:"+param+";金额为:"+moneynumStr);
-
-			break;
-		default:
-			map.addAttribute("resultmsg", "没有匹配到任何操作");
-			break;
-		}
-		// 切换数据库
-		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_ADMIN);
-		return "display";
-	}
 
 	/**
 	 * 修改时间
