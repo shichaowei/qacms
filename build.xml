@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<project name="Jacoco" xmlns:jacoco="antlib:org.jacoco.ant" default="jacoco">   
+  <property name="jacocoantPath" value="F:\FDAutoTest\白盒测试\jacoco\lib\jacocoant.jar"/>
+  <property name="integrationJacocoexecPath" value="./jacoco-integration.exec"/>
+
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="${jacocoantPath}" />
+  </taskdef>
+
+  <target name="dump">
+      <jacoco:dump address="10.200.141.38" port="8044" reset="true" destfile="${integrationJacocoexecPath}" append="false"/>
+  </target>
+</project>
