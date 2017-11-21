@@ -21,7 +21,7 @@ import com.wsc.qa.constants.CommonConstants.deleteCode;
 import com.wsc.qa.constants.CommonConstants.opertype;
 import com.wsc.qa.constants.DbInfo.callbackUrlCode;
 import com.wsc.qa.datasource.DataSourceContextHolder;
-import com.wsc.qa.datasource.DataSourceType;
+import com.wsc.qa.datasource.DataSourceInfo;
 import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.service.CreateCallbackService;
 import com.wsc.qa.service.FengdaiCallbakInfoService;
@@ -67,10 +67,10 @@ public class FengdaiDbController {
 		if (CommonConstants.callbackType.virRelateId.getValue().equals(type)) {
 			// 切换数据库
 			if("fengdaiold".equals(callbackEnv)) {
-				DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
+				DataSourceContextHolder.setDbType(DataSourceInfo.SOURCE_TESTDB);
 				remark = fengdaiServiceImpl.getremark(fieldDetail);
 			}else if ("fengdainew".equals(callbackEnv)) {
-				DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDBNEW);
+				DataSourceContextHolder.setDbType(DataSourceInfo.SOURCE_TESTDBNEW);
 				remark = fengdaiServiceImpl.getremarkNew(fieldDetail);
 			}
 
@@ -117,9 +117,9 @@ public class FengdaiDbController {
 
 		if("OLD".equals(deleteMode)) {
 			// 切换数据库
-			DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDB);
+			DataSourceContextHolder.setDbType(DataSourceInfo.SOURCE_TESTDB);
 		}else if ("NEW".equals(deleteMode)) {
-			DataSourceContextHolder.setDbType(DataSourceType.SOURCE_TESTDBNEW);
+			DataSourceContextHolder.setDbType(DataSourceInfo.SOURCE_TESTDBNEW);
 		}
 
 		switch (deleteCode.valueOf(deleteType)) {
@@ -163,7 +163,7 @@ public class FengdaiDbController {
 			break;
 		}
 		// 切换数据库
-		DataSourceContextHolder.setDbType(DataSourceType.SOURCE_ADMIN);
+		DataSourceContextHolder.setDbType(DataSourceInfo.SOURCE_ADMIN);
 		return "display";
 	}
 

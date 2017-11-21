@@ -47,6 +47,7 @@ public class GetNetworkTimeUtil {
             long ld = uc.getDate();// 读取网站日期时间
             Date date = new Date(ld);// 转换为标准时间对象
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);// 输出北京时间
+            uc.getInputStream().close();
             return sdf.format(date);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -62,4 +63,6 @@ public class GetNetworkTimeUtil {
     public static String getWebsiteDatetime() {
     	return getWebsiteDatetime("http://www.ntsc.ac.cn");
     }
+
+
 }
