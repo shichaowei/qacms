@@ -113,11 +113,13 @@ public class FengdaiUserInfoDao {
 		String sql2 = "update fengdai_riskcontrol.loan_apply SET  front_status='loanning' WHERE loan_name LIKE  '%s';";
 		String sql3 = "DELETE from fengdai_mqnotify.mc_business WHERE relate_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
 		String sql4 = "DELETE FROM fengdai_finance.loan_history WHERE loan_apply_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
+		String sql5 = "DELETE from fengdai_finance.mc_business WHERE relate_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
 		ArrayList<String> SQLlist = new ArrayList<>();
 		SQLlist.add(String.format(sql1, "%" + loanname));
 		SQLlist.add(String.format(sql2, "%" + loanname));
 		SQLlist.add(String.format(sql3, "%" + loanname));
 		SQLlist.add(String.format(sql4, "%" + loanname));
+		SQLlist.add(String.format(sql5, "%" + loanname));
 
 		for (String sql : SQLlist) {
 			jdbcTemplate.update(sql);

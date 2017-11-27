@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fengdai.qa</groupId>
-	<artifactId>fengdaiqacms</artifactId>
+	<artifactId>qaUtilCMS</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>qaUtilCMS Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
@@ -187,11 +187,13 @@
 			<artifactId>spring-aop</artifactId>
 			<version>4.2.1.RELEASE</version>
 		</dependency>
+		<!--  
 		<dependency>
 			<groupId>com.fengdai.qa</groupId>
 			<artifactId>sourcecheck</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
@@ -238,7 +240,7 @@
 
 	<build>
 
-		<finalName>fengdaiqacms</finalName>
+		<finalName>qaUtilCMS</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>

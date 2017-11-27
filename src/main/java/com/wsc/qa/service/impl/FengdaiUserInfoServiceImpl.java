@@ -42,11 +42,11 @@ public class FengdaiUserInfoServiceImpl implements FengdaiUserInfoService{
 	}
 	@Override
 	public void changeSQDToLoanning(String loanname) {
-
+		fengdaiUserInfoDao.changeSQDToLoanning(loanname);
 	}
 	@Override
 	public void changeProcessSQDToLoanning(String loanname) {
-
+		fengdaiUserInfoDao.changeProcessSQDToLoanning(loanname);
 	}
 	@Override
 	public void changeUserAccount(String username, BigDecimal moneynum) {
