@@ -12,14 +12,14 @@
 		<result column="mocktime" jdbcType="TIMESTAMP" property="mocktime" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername
+		id, mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername,delaytime
 	</sql>
 	
 	<insert id="addMockinfo" parameterType="com.wsc.qa.meta.MockInfo"
 		useGeneratedKeys="true" keyProperty="id">
 		INSERT into
-		fengdaimockinfo(mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername) VALUES
-		(#{mockserverip},#{checkUrl},#{mockType},#{ContentType},#{checkParams},#{responseBody},#{mocktime},#{opername})
+		fengdaimockinfo(mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername,delaytime) VALUES
+		(#{mockserverip},#{checkUrl},#{mockType},#{ContentType},#{checkParams},#{responseBody},#{mocktime},#{opername},#{delaytime})
 	</insert>
 	
 	<select id="getAllMockInfos" resultMap="BaseResultMap">

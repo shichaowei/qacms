@@ -15,6 +15,7 @@
 				<th>mock的type</th>
 				<th>mock的URL</th>
 				<th>mock的特征值</th>
+				<th>mock的延时时间</th>
 				<th>mock的返回值</th>
 				<th>操作</th>
 			</tr>
@@ -25,6 +26,7 @@
 				<td>${rule.mockType}</td>
 				<td>${rule.checkUrl}</td>
 				<td>${rule.checkParams}</td>
+				<td>${rule.delaytime}</td>
 				<td><input value=${rule.responseBody} readonly></input></td>
 				<td><a href="deletemockrules?id=${rule.id}">删除</a></td>
 				</tr>

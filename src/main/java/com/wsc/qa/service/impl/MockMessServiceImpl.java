@@ -31,6 +31,7 @@ public class MockMessServiceImpl implements MockMessService{
 	 * 2.构造查询条件 modecheckParamsStr
 	 * 3.构造beforeSendRequestBody代码段
 	 * 4.构造modeExports
+	 * 此处我们默认返回的都是200
 	 *
 	 */
 	@Override
@@ -43,6 +44,7 @@ public class MockMessServiceImpl implements MockMessService{
 			String ContentType = mockInfo.getContentType();
 			String responseBody = mockInfo.getResponseBody();
 			String checkUrl = mockInfo.getCheckUrl();
+			int delaytime = mockInfo.getDelaytime();
 
 			List<String> checkPostParams = null;
 			List<String> checkGetParams = null;
@@ -69,6 +71,7 @@ public class MockMessServiceImpl implements MockMessService{
 			modeLocalResponse.headerDetail headers = localResponse.new headerDetail();
 			headers.setContentType(ContentType);
 			localResponse.setStatusCode(200).setHeader(headers).setBody(responseBody);
+			localResponse.setDelaytime(delaytime);
 			localResList.add(localResponse);
 
 			modecheckParamsStr modecheckParamsStr = new modecheckParamsStr();

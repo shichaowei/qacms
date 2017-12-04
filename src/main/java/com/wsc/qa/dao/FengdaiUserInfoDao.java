@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -34,11 +35,11 @@ public class FengdaiUserInfoDao {
 				+ "DELETE FROM fengdai_riskcontrol.dts_claims WHERE apply_id in (SELECT id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
 				+ "DELETE FROM fengdai_riskcontrol.dts_new_claims WHERE apply_id in (SELECT id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
 				+ "DELETE FROM fengdai_riskcontrol.loan_apply WHERE login_name = '%s';"
-				+ "DELETE FROM fengdai_activity.activity_people_list WHERE phone ='%s';"
+				+ "DELETE FROM fengdai_operation_activity.activity_people_list WHERE phone ='%s';"
 				+ "delete FROM fengdai_shop.shop_order_record_info WHERE order_id in (select id FROM fengdai_shop.shop_order_info WHERE user_id = (select id FROM fengdai_user.sys_user WHERE cellphone='%s'));"
 				+ "delete FROM fengdai_shop.shop_order_info WHERE user_id = (select id FROM fengdai_user.sys_user WHERE cellphone='%s');"
 				+ "DELETE FROM fengdai_shop.shop_order_after_sales WHERE user_phone ='%s';"
-				+ "DELETE FROM fengdai_activity.card_coupons_distribute WHERE user_phone='%s';"
+				+ "DELETE FROM fengdai_operation_activity.card_coupons_distribute WHERE user_phone='%s';"
 				+ "DELETE FROM fengdai_riskcontrol.entrust_apply WHERE urge_id in(select id FROM fengdai_riskcontrol.urge_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s'));"
 				+ "DELETE FROM fengdai_riskcontrol.urge_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
 				+ "DELETE FROM fengdai_riskcontrol.urge_entrust_follow_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
@@ -119,10 +120,15 @@ public class FengdaiUserInfoDao {
 		SQLlist.add(String.format(sql2, "%" + loanname));
 		SQLlist.add(String.format(sql3, "%" + loanname));
 		SQLlist.add(String.format(sql4, "%" + loanname));
-		SQLlist.add(String.format(sql5, "%" + loanname));
+
 
 		for (String sql : SQLlist) {
 			jdbcTemplate.update(sql);
+		}
+		try {
+			jdbcTemplate.update(sql5);
+		} catch (DataAccessException e) {
+			logger.info("use 2.0"+e);
 		}
 
 	}

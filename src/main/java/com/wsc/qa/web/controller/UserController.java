@@ -34,7 +34,6 @@ import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.CallbackInfo;
 import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.meta.User;
-import com.wsc.qa.service.ActivityBannerService;
 import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.service.FengdaiCallbakInfoService;
@@ -68,8 +67,6 @@ public class UserController {
 
 	@Autowired
 	private MockMessService mockMessServiceImpl;
-	@Autowired
-	private ActivityBannerService activityBannerServiceImpl;
 	@Autowired
 	private FengdaiUserInfoService fengdaiUserInfoServiceImpl;
 	@Autowired

@@ -105,6 +105,10 @@
 						<input class="form-control" type="text" name="checkParams" placeholder="checkParams">
 					</div>
 					<div class="form-group">
+						<label >mock返回的数据延时时间：</label>	
+						<input class="form-control" type="text" name="mockdelaytime" placeholder="checkParams">
+					</div>
+					<div class="form-group">
 						<label >mock返回的数据：</label>
 						<input class="form-control" type="text" name="responseBody" placeholder="responseBody">
 					</div>

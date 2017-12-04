@@ -40,6 +40,15 @@ public class modeLocalResponse {
 	private int statusCode;
 	private headerDetail header;
 	private String body;
+	//增加超时判断
+	private int delaytime;
+
+	public int getDelaytime() {
+		return delaytime;
+	}
+	public void setDelaytime(int delaytime) {
+		this.delaytime = delaytime;
+	}
 	public int getStatusCode() {
 		return statusCode;
 	}

@@ -22,8 +22,21 @@ public class MockInfo {
 
 	String responseBody;
 	String mocktime;
+	int delaytime;
 
 
+	public MultipartFile getResponseBodyFile() {
+		return responseBodyFile;
+	}
+	public void setResponseBodyFile(MultipartFile responseBodyFile) {
+		this.responseBodyFile = responseBodyFile;
+	}
+	public int getDelaytime() {
+		return delaytime;
+	}
+	public void setDelaytime(int delaytime) {
+		this.delaytime = delaytime;
+	}
 	public String getOpername() {
 		return opername;
 	}

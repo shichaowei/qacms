@@ -214,6 +214,9 @@ public class MockController {
 							case "checkParams":
 								mockinfo.setCheckParams(value);
 								break;
+							case "mockdelaytime":
+								mockinfo.setDelaytime(Integer.valueOf(value));
+								break;
 							case "responseBody":
 								mockinfo.setResponseBody(value);
 								break;

@@ -37,8 +37,8 @@
         <property name="removeAbandonedTimeout" value="10"/>  
         <property name="maxWait" value="1000"/>  
         <property name="timeBetweenEvictionRunsMillis" value="10000"/>  
+        <property name="minEvictableIdleTimeMillis" value="10000"/>  
         <property name="numTestsPerEvictionRun" value="10"/>  
-        <property name="minEvictableIdleTimeMillis" value="1800000"/>  
         <property name="validationQuery" value="SELECT NOW() FROM DUAL"/>  
         <property name="testWhileIdle" value="true" />  
         <property name="testOnBorrow" value="false" />      
@@ -81,8 +81,8 @@
         <property name="removeAbandonedTimeout" value="10"/>  
         <property name="maxWait" value="1000"/>  
         <property name="timeBetweenEvictionRunsMillis" value="10000"/>  
-        <property name="numTestsPerEvictionRun" value="10"/>  
         <property name="minEvictableIdleTimeMillis" value="1800000"/>  
+        <property name="numTestsPerEvictionRun" value="10"/>  
         <property name="validationQuery" value="SELECT NOW() FROM DUAL"/>  
         <property name="testWhileIdle" value="true" />  
         <property name="testOnBorrow" value="false" />      
