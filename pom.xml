@@ -9,6 +9,12 @@
 	<url>http://maven.apache.org</url>
 
 	<dependencies>
+	<!--增加 rest-assured -->
+	<dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>3.0.6</version>
+</dependency>
 		<!-- 增加文件上传 -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -58,6 +64,14 @@
 		</dependency>
 
 
+		<!--add spring test -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>5.0.2.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -67,7 +81,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.1</version>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -114,13 +128,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>5.0.2.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>5.0.2.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.freemarker</groupId>
@@ -130,19 +149,20 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.6.4</version>
+			<version>2.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.6.4</version>
+			<version>2.9.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>5.0.2.RELEASE</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
@@ -185,15 +205,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>5.0.2.RELEASE</version>
 		</dependency>
-		<!--  
-		<dependency>
-			<groupId>com.fengdai.qa</groupId>
-			<artifactId>sourcecheck</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>com.fengdai.qa</groupId> <artifactId>sourcecheck</artifactId> 
+			<version>1.0.0</version> </dependency> -->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>

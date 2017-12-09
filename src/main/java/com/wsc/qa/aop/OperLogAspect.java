@@ -71,6 +71,7 @@ public class OperLogAspect {
 						operaLog.setUsername(GetUserUtil.getUserName(getRequest(joinPoint)));
 						operaLog.setOpertime(FormateDateUtil.format(cal.getTime()));
 						operaLog.setStatus("SUCCESS");
+						//测试
 						OperaLogCheck.checkOperLog(operaLog);
 						return operaLog;
 					}

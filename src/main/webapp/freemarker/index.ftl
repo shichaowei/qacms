@@ -52,8 +52,8 @@
 					<div class="form-group">
 						<label>生成回调报文：</label>
 						<select name="type" class="form-control">
+						  <option value="virRelateId">通过relateId字段模拟回调（loanapplyid&&so on）</option>
 						  <option value="virRemark">通过remark字段模拟回调</option>
-						  <option value="virRelateId">通过relateId字段模拟回调</option>
 						</select>
 					</div>
 					<div class="form-group">

@@ -1,5 +1,5 @@
 
-     	
+     <#if userName?exists &&userName?has_content>
    <div class="col-lg-2 bianjie" >
 	    <ul class="nav nav-stacked ">
             <li><a href="/index?item=fixenv">修复环境</a></li>
@@ -13,4 +13,5 @@
             <li><a href="/index?item=logout">登出</a></li>
         </ul>
     </div>
+      </#if>
 	    	
