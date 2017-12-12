@@ -111,7 +111,7 @@ public class FengdaiDbController {
 	 * @return
 	 */
 	@RequestMapping({ "deleteUserInfo" })
-	@OperaLogComment(remark = opertype.deletefengdaidata)
+//	@OperaLogComment(remark = opertype.deletefengdaidata)
 	public String deleteUserInfo(String deleteMode,String deleteType, String param, String moneynumStr,HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 

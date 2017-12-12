@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -47,18 +48,19 @@ public class FengdaiUserInfoDao {
 				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
 				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
 				loginname);
+		logger.info(sql);
 //		System.out.println(sql.split(";"));
 		jdbcTemplate.batchUpdate(sql.split(";"));
 
 		try {
 			jdbcTemplate.update(String.format("DELETE FROM fengdai_channel.apply_to_third WHERE apply_id in (select id FROM fengdai_riskcontrol.loan_apply WHERE login_name = '%s')", loginname));
-		} catch (DataAccessException e) {
-			e.printStackTrace();
+		} catch (BadSqlGrammarException e) {
+			logger.info("3.0");
 		}
 		try {
 			jdbcTemplate.update(String.format("DELETE FROM fengdai_thirdparty.apply_to_third WHERE apply_id in (select id FROM fengdai_riskcontrol.loan_apply WHERE login_name = '%s')", loginname));
-		} catch (DataAccessException e) {
-			e.printStackTrace();
+		} catch (BadSqlGrammarException e) {
+			logger.info("2.0");
 		}
 
 		String sqldelZJLS = ""

@@ -2,7 +2,7 @@ package com.wsc.qa.test;
 
 import com.wsc.qa.utils.SshUtil;
 
-public class TestSsh {
+public class TestSourceToMe {
 
 	public static void processTransfer(Object paths) {
 		// TODO Auto-generated method stub
@@ -62,11 +62,12 @@ public class TestSsh {
 				"/trdata/jobs/蜂贷3.0/jobs/fengdai-parent/workspace","/trdata/jobs/蜂贷3.0/jobs/fengdai-common/workspace",
 				"/trdata/jobs/蜂贷3.0/jobs/fengdai-dubbo-funds-client-test/workspace",};
 //		processTransfer("fengdai-common");
-		for(String var :allpaths) {
-			String template ="<option value=\"%s\">%s</option>";
-			String aString = var.replace("/trdata/jobs/蜂贷3.0/jobs/", "").replaceAll("/workspace", "");
-			System.out.println(String.format(template, aString,aString));
-		}
+		processTransfer(allpaths);
+//		for(String var :allpaths) {
+//			String template ="<option value=\"%s\">%s</option>";
+//			String aString = var.replace("/trdata/jobs/蜂贷3.0/jobs/", "").replaceAll("/workspace", "");
+//			System.out.println(String.format(template, aString,aString));
+//		}
 	}
 
 }
