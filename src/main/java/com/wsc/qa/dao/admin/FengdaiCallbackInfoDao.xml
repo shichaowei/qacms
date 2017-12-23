@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsc.qa.dao.admin.FengdaiCallbackInfoDao">
+	<resultMap id="BaseResultMap" type="com.wsc.qa.meta.CallbackInfo">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="requestip" jdbcType="VARCHAR" property="requestip" />
+		<result column="callbackinfo" jdbcType="VARCHAR" property="callbackinfo" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, requestip,callbackinfo,createtime
+	</sql>
+	
+	<insert id="addCallbackInfo" parameterType="com.wsc.qa.meta.CallbackInfo"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT into
+		fengdaicallbackinfo(requestip,callbackinfo,createtime) VALUES
+		(#{requestip},#{callbackinfo},#{createtime})
+	</insert>
+	
+	<select id="getAllCallbakInfo" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from fengdaicallbackinfo order by createtime DESC ,id Desc
+		
+	</select>
+	
+	
+
+</mapper>
