@@ -140,10 +140,7 @@ public class FengdaiUserInfoDao {
 		SQLlist.add(String.format(sql2, "%" + loanname));
 //		SQLlist.add(String.format(sql3, "%" + loanname));
 		SQLlist.add(String.format(sql4, "%" + loanname));
-
-		jdbcTemplate.batchUpdate((String[]) SQLlist.toArray());
-
-
+		SQLlist.forEach(sql -> jdbcTemplate.batchUpdate(sql));
 		try {
 			//3.0专用
 			jdbcTemplate.update(sql5);
@@ -167,7 +164,7 @@ public class FengdaiUserInfoDao {
 		ArrayList<String> SQLlist = new ArrayList<>();
 		SQLlist.add(String.format(sql1, "%" + loanname));
 		SQLlist.add(String.format(sql2, "%" + loanname));
-		jdbcTemplate.batchUpdate((String[]) SQLlist.toArray());
+		SQLlist.forEach(sql -> jdbcTemplate.batchUpdate(sql));
 	}
 
 	public void changeUserAccount(String username,BigDecimal moneynum) {

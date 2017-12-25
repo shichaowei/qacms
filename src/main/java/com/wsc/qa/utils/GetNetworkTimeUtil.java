@@ -28,7 +28,12 @@ public class GetNetworkTimeUtil {
 //        System.out.println(getWebsiteDatetime(webUrl4) + " [中国科学院国家授时中心]");
 //        System.out.println(getWebsiteDatetime(webUrl5) + " [360安全卫士]");
 //        System.out.println(getWebsiteDatetime(webUrl6) + " [beijing-time]");
-    	System.out.println(getWebsiteDatetime());
+    	for(int i=0;i<1000;i++) {
+    		System.out.println(i);
+    		System.out.println(getWebsiteDatetime());
+    	}
+//    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);// 输出北京时间
+//    	sdf.format(null);
     }
 
     /**
@@ -40,29 +45,33 @@ public class GetNetworkTimeUtil {
      * @date   2015年11月27日
      */
     private static String getWebsiteDatetime(String webUrl){
+    	Date date = new Date();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);// 输出北京时间
         try {
             URL url = new URL(webUrl);// 取得资源对象
             URLConnection uc = url.openConnection();// 生成连接对象
             uc.connect();// 发出连接
             long ld = uc.getDate();// 读取网站日期时间
-            Date date = new Date(ld);// 转换为标准时间对象
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);// 输出北京时间
+            date = new Date(ld);// 转换为标准时间对象
             uc.getInputStream().close();
-            return sdf.format(date);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return sdf.format(date);
     }
 	/**
 	 * 从中科院授时中心获取时间，返回值为北京时间，yyyy-MM-dd HH:mm:ss 格式
 	 * @return
 	 */
     public static String getWebsiteDatetime() {
-    	return getWebsiteDatetime("http://www.ntsc.ac.cn");
+    	return getWebsiteDatetime("http://www.baidu.com");
     }
+
+
+
+
 
 
 }

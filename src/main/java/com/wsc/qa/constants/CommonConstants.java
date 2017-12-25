@@ -25,7 +25,9 @@ public class CommonConstants {
 
 	}
 
+	public static String DINGDINGJQR = "https://oapi.dingtalk.com/robot/send?access_token=c3ed6cf17e208e48047c39de15c25d5b7052885140a58e3e2501bb88cff6f9f4";
 
+	public static String creditupdatejob="1023";
 
 	/**
 	 *

@@ -34,6 +34,40 @@
 				</form> 
 				</#if>
 				
+			<#if item=="newchangetime">
+			   <form role="form"   action="/newchangetime" method="post">
+					<div class="form-group">
+						<label for="name" class="control-label">修改类型:</label>
+							<select  class="form-control" name="changetimetype" id='changetime'>
+							  <option value="changeServicetime">修改service时间</option>
+							  <option value="changServiceDbtime">修改service/db时间</option>
+							  <option value="restAllTime">重置service/db时间</option>
+							</select>
+					</div>
+					<div class="form-group">
+						<label for="name" class="control-label">jobid类型:</label>
+							<select  class="form-control" name="jobid" >
+							  <option value="1022">普通账单更新</option>
+							  <option value="1023">信用卡账单更新</option>
+							  <option value="1019">信用卡自动还款</option>
+							  <option value="1013">普通自动还款</option>
+							  <option value="28">RoundCheckBatchJob</option>
+							  <option value="29">RoundCheckExecuteJob</option>
+							  <option value="*">只改时间</option>
+							</select>
+					</div>
+					
+					<div id="detail">
+						<div class="form-group" >
+								<label for="name" class="control-label">要修改的日期和时间：</label>
+								<input class=" form-control" type="text"  name="date" placeholder="2017/07/04">
+								<input class="form-control" type="text"  name="time" placeholder="9:00:00">		
+						</div>
+					</div>
+					<button type="submit" class="btn btn-default  ">提交</button>
+				</form> 
+				</#if>
+				
 			<#if item=="fixenv">
 			
 			   <form role="form"  action="/fixenv" method="post">
@@ -163,8 +197,8 @@
 					<div class="form-group">
 					<label >使用的数据库：</label>
 					<select class="form-control" name="deleteMode" id="deleteModeType">
-					  <option value="OLD">删除2.0环境</option>
-					  <option value="NEW">删除3.0环境</option>
+					  <option value="OLD">2.0环境</option>
+					  <option value="NEW">3.0环境</option>
 					</select>
 					<label >要删除的的类型：</label>
 					<select class="form-control" name="deleteType" id="fengdaiDeleteType">

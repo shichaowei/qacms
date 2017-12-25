@@ -55,7 +55,7 @@ public class TestFengdaiDbController {
 	@Test
 	public void test2() throws InterruptedException, ExecutionException {
 		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(4);
-		for (int index = 1000; index < 1001; index++) {
+		for (int index = 3061; index < 8000; index++) {
 			final int i = index;
 			fixedThreadPool.submit(new Runnable() {
 
@@ -64,7 +64,7 @@ public class TestFengdaiDbController {
 					System.out.println(i);
 					String loginname = "1866791" + String.valueOf(i);
 					MultiValueMap<String, String> var = new LinkedMultiValueMap<>();
-					var.add("deleteMode", "OLD");
+					var.add("deleteMode", "NEW");
 					var.add("deleteType", "deleteUserByLoginname");
 					var.add("param", loginname);
 					var.add("moneynumStr", "1000");

@@ -36,4 +36,12 @@ public class ChangeTimeServiceImpl implements ChangeTimeService{
 		new ChangeTimeServiceImpl().changeServerTime(ServerInfo.changeDubbotimeIps,cmd );
 	}
 
+	@Override
+	public void newchangeServerTime(String[] ipaddress, String cmd) {
+		for (String ipaddres : ipaddress) {
+			SshUtil.remoteRunCmd(ipaddres, ServerInfo.sshname, ServerInfo.sshpwd, cmd);
+		}
+
+	}
+
 }

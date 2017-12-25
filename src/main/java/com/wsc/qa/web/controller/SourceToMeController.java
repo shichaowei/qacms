@@ -1,7 +1,5 @@
 package com.wsc.qa.web.controller;
 
-import static io.restassured.RestAssured.given;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +30,8 @@ public class SourceToMeController {
 	public String sourcetome(String ipaddress,String path,HttpServletRequest request, HttpServletResponse response, ModelMap map) throws IOException {
 //			String yuancheng="curl -u hzweisc:111111 http://10.200.130.105:8080/job/蜂贷3.0/view/01_编译_打包-spring-test/job/fengdai-common/build?token=fengdai-common";
 //			OkHttpUtil.get(URLEncoder.encode(yuancheng,"utf-8"));
-			given().auth().preemptive().basic("hzweisc", "111111").when().
-				get("http://10.200.130.105:8080/job/蜂贷3.0/view/01_编译_打包-spring-test/job/"+path+"/build?token="+path);
+//			given().auth().preemptive().basic("hzweisc", "111111").when().
+//				get("http://10.200.130.105:8080/job/蜂贷3.0/view/01_编译_打包-spring-test/job/"+path+"/build?token="+path);
 			String var1 = path;
 			if(!var1.contains("trdata")) {
 				var1="/trdata/jobs/蜂贷3.0/jobs/"+var1+"/workspace";

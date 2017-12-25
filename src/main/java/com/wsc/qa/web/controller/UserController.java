@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,20 +28,15 @@ import com.wsc.qa.annotation.OperaLogComment;
 import com.wsc.qa.constants.CommonConstants.ErrorCode;
 import com.wsc.qa.constants.CommonConstants.opertype;
 import com.wsc.qa.constants.IndexNav;
-import com.wsc.qa.constants.ServerInfo;
 import com.wsc.qa.exception.BusinessException;
 import com.wsc.qa.meta.CallbackInfo;
 import com.wsc.qa.meta.MockInfo;
 import com.wsc.qa.meta.User;
-import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.DealEnvService;
 import com.wsc.qa.service.FengdaiCallbakInfoService;
-import com.wsc.qa.service.FengdaiService;
-import com.wsc.qa.service.FengdaiUserInfoService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
 import com.wsc.qa.service.UserService;
-import com.wsc.qa.utils.GetNetworkTimeUtil;
 import com.wsc.qa.utils.GetUserUtil;
 /**
  *
@@ -58,8 +52,7 @@ public class UserController {
 	@Autowired
 	private UserService userServiceImpl;
 
-	@Resource
-	private ChangeTimeService changeTimeImpl;
+
 	@Autowired
 	private OperLogService operaLogServiceImpl;
 	@Autowired
@@ -67,16 +60,10 @@ public class UserController {
 
 	@Autowired
 	private MockMessService mockMessServiceImpl;
-	@Autowired
-	private FengdaiUserInfoService fengdaiUserInfoServiceImpl;
-	@Autowired
-	private FengdaiService fengdaiServiceImpl;
+
 	@Autowired
 	private FengdaiCallbakInfoService fengdaiCallbakInfoServiceImpl;
-	/**修改时间需要用到锁，同一时间只有一个人在修改，如果在方法中的lock变量是局部变量，每个线程执行该方法时都会保存一个副本，
-	那么每个线程执行到lock.lock()处获取的是不同的锁，所以就不会对临界资源形成同步互斥访问。因此，我们只需要将lock声明为成员变量即可
-	**/
-	Lock changetimelock = new ReentrantLock();
+
 	Lock mocklock = new ReentrantLock();
 
 
@@ -114,6 +101,9 @@ public class UserController {
 				break;
 			case "changetime":
 				map.addAttribute("item", IndexNav.changetime);
+				break;
+			case "newchangetime":
+				map.addAttribute("item", IndexNav.newchangetime);
 				break;
 
 			case "addmockrule":
@@ -258,69 +248,7 @@ public class UserController {
 
 
 
-	/**
-	 * 修改时间
-	 *
-	 * @param changetimetype
-	 * @param date
-	 * @param time
-	 * @param request
-	 * @param map
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping({ "changetime" })
-	@OperaLogComment(remark = opertype.changtime)
-	public String changetime(@RequestParam("changetimetype") String changetimetype, @RequestParam("date") String date,
-			@RequestParam("time") String time, HttpServletRequest request, ModelMap map, HttpServletResponse response) {
 
-//		boolean bool = false;
-
-//		Condition condition = lock.newCondition();
-
-
-		if (changetimelock.tryLock()) {
-			try {
-				String cmd = "date -s '" + date + " " + time + "'";
-				switch (changetimetype) {
-
-				case "changeDubbotime": {
-					changeTimeImpl.changeServerTime(ServerInfo.changeDubbotimeIps, cmd);
-					break;
-				}
-				case "changDubboDbtime": {
-					changeTimeImpl.changeServerTime(ServerInfo.changDubboDbtimeIps, cmd);
-					break;
-				}
-
-				case "changDubboResttime": {
-					changeTimeImpl.changeServerTime(ServerInfo.changDubboResttimeIps, cmd);
-					break;
-				}
-				case "changDubboRestDbtime": {
-					changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
-					break;
-				}
-				case "restAllTime": {
-					cmd = "date -s '" + GetNetworkTimeUtil.getWebsiteDatetime() + "'";
-					changeTimeImpl.changeServerTime(ServerInfo.changDubboRestDbtimeIps, cmd);
-					break;
-				}
-				default:
-					break;
-				}
-				map.addAttribute("servernowtime", cmd);
-			} finally {
-				changetimelock.unlock();
-			}
-		} else {
-			map.addAttribute("resultmsg", "有人正在修改时间，请稍等三分钟");
-		}
-
-
-		return "display";
-
-	}
 
 	// @RequestMapping("/test")
 	// public String hehe(HttpSession session,ModelMap map,HttpServletRequest

@@ -12,7 +12,7 @@ public class TestSourceToMe {
 //		String tempStr = FileUtil.readFileByLines("D:/test.txt");
 //		// System.out.println(var);
 //		String[] lines = tempStr.split(",");
-		System.out.println(paths.getClass());
+//		System.out.println(paths.getClass());
 		if(paths.getClass().isArray()) {
 			String[] lines = (String[]) paths;
 			for (String var1 : lines) {

@@ -40,6 +40,7 @@ import com.wsc.qa.service.ChangeTimeService;
 import com.wsc.qa.service.FengdaiCallbakInfoService;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.service.OperLogService;
+import com.wsc.qa.utils.CheckEncodeUtil;
 import com.wsc.qa.utils.FormateDateUtil;
 import com.wsc.qa.utils.GetUserUtil;
 import com.wsc.qa.utils.OkHttpUtil;
@@ -226,15 +227,35 @@ public class MockController {
 	                    }
 	                }else{
 	                    if(StringUtils.isEmpty(mockinfo.getResponseBody())) {
+//	                    	logger.info("response mock data utf8 is：{}",item.getString("utf-8"));
+//                    		if( CheckEncodeUtil.isMessyCode(item.getString("utf-8"))) {
+//                    			logger.info("response mock data utf8 is：{}",item.getString("utf-8"));
+//                    			mockinfo.setResponseBody(item.getString("utf-8").trim());
+//                    		}
+//                    		else if ( CheckEncodeUtil.isMessyCode(item.getString("gbk"))) {
+//                    			logger.info("response mock data gbk is：{}",item.getString("gbk"));
+//                    			mockinfo.setResponseBody(item.getString("gbk").trim());
+//							}else {
+//								logger.error("乱码");
+//							}
 	                    	InputStream in = item.getInputStream();
 	                    	byte[] b = new byte[3];
 	                    	in.read(b);
 	                    	in.close();
+	                    	logger.info(b[0]+"**"+b[1]+"**"+b[2]);
 	                    	if (b[0] == -17 && b[1] == -69 && b[2] == -65) {
-	                    		mockinfo.setResponseBody(item.getString("utf-8"));
+	                    		logger.info("response mock data utf8 is：{}",item.getString("utf-8"));
+	                    		mockinfo.setResponseBody(item.getString("utf-8").trim());
 	                    	}
 	                    	else {
-	                    		mockinfo.setResponseBody(item.getString("gbk").trim());
+	                    		logger.info("response mock data gbk is：{}",item.getString("gbk"));
+	                    		if ( CheckEncodeUtil.isMessyCode(item.getString("gbk"))) {
+	                    			logger.info("response mock data gbk is：{}",item.getString("gbk"));
+	                    			mockinfo.setResponseBody(item.getString("gbk").trim());
+								}else {
+									logger.info("gbk failed response mock data utf8 is：{}",item.getString("utf-8"));
+									mockinfo.setResponseBody(item.getString("utf-8").trim());
+								}
 	                    	}
 
 	                    }
@@ -244,7 +265,7 @@ public class MockController {
 				mockinfo.setOpername(GetUserUtil.getUserName(request));
 				mockMessServiceImpl.addMockinfo(mockinfo);
 				List<MockInfo> var = mockMessServiceImpl.getAllMockInfos();
-				logger.info("mock的数据是:{}",var);
+//				logger.info("mock的数据是:{}",var);
 //				String mockRule = mockMessServiceImpl.mockProcess(var);
 //				logger.info("mock的rule{}",mockRule);
 //				map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
