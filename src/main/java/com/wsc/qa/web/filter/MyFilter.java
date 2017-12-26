@@ -23,7 +23,6 @@ import org.springframework.core.annotation.Order;
 import com.wsc.qa.service.UserService;
 
 @Order(1)
-//重点
 @WebFilter(filterName = "myfilter", urlPatterns = "/*")
 public class MyFilter implements Filter {
 

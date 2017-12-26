@@ -69,15 +69,8 @@ public class UserController {
 
 	@RequestMapping({ "/" })
 	public String getIndex(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
-		if (null != userName && !userName.isEmpty()) {
-			// map.addAttribute("userName", userName);
-			// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 			return "index";
-		} else {
-			return "login";
-		}
+
 	}
 
 	@RequestMapping({ "/register" })
@@ -93,9 +86,6 @@ public class UserController {
 	@RequestMapping({ "index" })
 	public String getIndexInfo(@RequestParam("item") String item, HttpServletRequest request,
 			HttpServletResponse response, ModelMap map) {
-		HttpSession session = request.getSession();
-		String userName = (String) session.getAttribute("userName");
-		if (null != userName &&null != userServiceImpl.getUserInfo(userName)) {
 			switch (item) {
 			case "createCallbackStr":
 				map.addAttribute("item", IndexNav.createCallbackStr);
@@ -133,7 +123,7 @@ public class UserController {
 				return "display";
 			}
 			case "logout":
-				session.invalidate();
+				request.getSession().invalidate();
 				return "login";
 			default:
 				break;
@@ -142,14 +132,11 @@ public class UserController {
 			// map.addAttribute("lastoperaInfo",operaLogServiceImpl.getLastOper());
 
 			return "index";
-		} else {
-			return "login";
-		}
+
 
 	}
 
 	@RequestMapping({ "/api/login" })
-	// @OperaLogComment(remark="login")
 	public String login(@ModelAttribute @Valid User userRe, HttpServletResponse response, HttpServletRequest request,
 			ModelMap map, Error errors) throws IOException, BusinessException {
 		String userName = userRe.getUserName();
@@ -195,7 +182,6 @@ public class UserController {
 	 * @throws FileUploadException
 	 */
 	@RequestMapping({ "/api/register" })
-	/** @OperaLogComment(remark="register")**/
 	public String registerApi( User user,HttpServletResponse response,
 			HttpServletRequest request, ModelMap map, Error errors) throws UnsupportedEncodingException {
 		if(userServiceImpl.getUserInfo(user.getUserName()) == null) {
