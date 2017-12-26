@@ -85,12 +85,17 @@ public class UserController {
 		return "register";
 	}
 
+	@RequestMapping({ "/login" })
+	public String login(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
+		return "login";
+	}
+
 	@RequestMapping({ "index" })
 	public String getIndexInfo(@RequestParam("item") String item, HttpServletRequest request,
 			HttpServletResponse response, ModelMap map) {
 		HttpSession session = request.getSession();
 		String userName = (String) session.getAttribute("userName");
-		if (null != userName && userName.equals(userName)) {
+		if (null != userName &&null != userServiceImpl.getUserInfo(userName)) {
 			switch (item) {
 			case "createCallbackStr":
 				map.addAttribute("item", IndexNav.createCallbackStr);
@@ -155,13 +160,13 @@ public class UserController {
 			if (user.getUserPassword().equals(userPassword)) {
 				HttpSession session = request.getSession();
 				// cookie取中文需要 URLEncoder.encode
-				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode(user.getUserName(), "utf-8"));
-				Cookie pwdCookie = new Cookie("pwd", userPassword);
-				userNameCookie.setMaxAge(365*24*3600);
-				pwdCookie.setMaxAge(365*24*3600);
+//				Cookie userNameCookie = new Cookie("userName", URLEncoder.encode(user.getUserName(), "utf-8"));
+//				Cookie pwdCookie = new Cookie("pwd", userPassword);
+//				userNameCookie.setMaxAge(365*24*3600);
+//				pwdCookie.setMaxAge(365*24*3600);
 				session.setAttribute("userName", userName);
-				response.addCookie(userNameCookie);
-				response.addCookie(pwdCookie);
+//				response.addCookie(userNameCookie);
+//				response.addCookie(pwdCookie);
 				// response.sendRedirect("user/" + userName);
 				// map.addAttribute("userName", user.getUserName());
 			} else {
@@ -225,7 +230,7 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping({ "fixenv" })
+	@RequestMapping({ "/api/fixenv" })
 	@OperaLogComment(remark = opertype.fixfengdaienv)
 	public String fixenv(@RequestParam("zkAddress") String zkAddress, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {

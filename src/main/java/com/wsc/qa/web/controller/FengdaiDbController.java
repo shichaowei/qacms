@@ -59,7 +59,7 @@ public class FengdaiDbController {
 	 * @return
 	 *
 	 */
-	@RequestMapping({ "createCallbackStr" })
+	@RequestMapping({ "/api/createCallbackStr" })
 	@OperaLogComment(remark = opertype.fundscallbackfengdai)
 	public String createCallbackStr(@RequestParam("callbackEnv") String callbackEnv, @RequestParam("type") String type,
 			@RequestParam("fieldDetail") String fieldDetail, HttpServletRequest request, ModelMap map,
@@ -109,7 +109,7 @@ public class FengdaiDbController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping({ "deleteUserInfo" })
+	@RequestMapping({ "/api/deleteUserInfo" })
 	// @OperaLogComment(remark = opertype.deletefengdaidata)
 	public String deleteUserInfo(String deleteMode, String deleteType, String param, String moneynumStr,
 			HttpServletRequest request, ModelMap map, HttpServletResponse response) {

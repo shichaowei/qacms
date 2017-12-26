@@ -11,7 +11,7 @@
 		   <#else>
 
 			<#if item=="changetime">
-			   <form role="form"   action="/changetime" method="post">
+			   <form role="form"   action="/api/changetime" method="post">
 					<div class="form-group">
 						<label for="name" class="control-label">修改类型:</label>
 							<select  class="form-control" name="changetimetype" id='changetime'>
@@ -35,7 +35,7 @@
 				</#if>
 				
 			<#if item=="newchangetime">
-			   <form role="form"   action="/newchangetime" method="post">
+			   <form role="form"   action="/api/newchangetime" method="post">
 					<div class="form-group">
 						<label for="name" class="control-label">修改类型:</label>
 							<select  class="form-control" name="changetimetype" id='changetime'>
@@ -70,7 +70,7 @@
 				
 			<#if item=="fixenv">
 			
-			   <form role="form"  action="/fixenv" method="post">
+			   <form role="form"  action="/api/fixenv" method="post">
 					<div class="form-group text-left">
 						<label class="control-label">修复环境（针对蜂贷一个服务多个provider问题---慎用）</label>
 						<input type="text"  class="form-control input-group" name="zkAddress" placeholder="10.200.141.33">
@@ -82,7 +82,7 @@
 				</#if>
 				
 				<#if item=="createCallbackStr">
-				<form role="form" action="/createCallbackStr" method="post">
+				<form role="form" action="/api/createCallbackStr" method="post">
 					<div class="form-group">
 						<label>生成回调报文：</label>
 						<select name="type" class="form-control">
@@ -111,7 +111,7 @@
 				</#if>
 				
 				<#if item=="mock">
-				<form role="form" action="/addmockrule" method="post" enctype="multipart/form-data">
+				<form role="form" action="/api/addmockrule" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label >mockServer的地址：</label>
 						<input type="text" class="form-control" name="mockserverip" value="10.200.141.37" readonly style="background:#CCCCCC"><br />
@@ -155,7 +155,7 @@
 				</#if>
 				
 				<#if item=="gethttpinterface">
-				<form role="form" action="/gethttpinterface" method="post" >
+				<form role="form" action="/api/gethttpinterface" method="post" >
 					
 					<div class="form-group">
 						<label >http请求的类型：</label>
@@ -193,7 +193,7 @@
 				</#if>
 				
 				<#if item=="deleteUserInfo">
-				<form action="/deleteUserInfo" method="post">
+				<form action="/api/deleteUserInfo" method="post">
 					<div class="form-group">
 					<label >使用的数据库：</label>
 					<select class="form-control" name="deleteMode" id="deleteModeType">
@@ -228,6 +228,6 @@
 			</#if>	
 			</div>
 		</div>
-		    <script src="static/js/a.js" type="text/javascript"></script>
+		    <script src="/static/js/a.js" type="text/javascript"></script>
     </body>
 </html>

@@ -57,7 +57,7 @@ public class ServerChangeTimeController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping({ "changetime" })
+	@RequestMapping({ "/api/changetime" })
 	@OperaLogComment(remark = opertype.changtime)
 	public String changetime(@RequestParam("changetimetype") String changetimetype, @RequestParam("date") String date,
 			@RequestParam("time") String time, HttpServletRequest request, ModelMap map, HttpServletResponse response) {
@@ -122,7 +122,7 @@ public class ServerChangeTimeController {
 	 * @throws InterruptedException
 	 * @throws UnsupportedEncodingException
 	 */
-	@RequestMapping({ "newchangetime" })
+	@RequestMapping({ "/api/newchangetime" })
 	@OperaLogComment(remark = opertype.changtime)
 	public String newChangeTime(@RequestParam("changetimetype") String changetimetype,
 			@RequestParam("jobid") String jobid, @RequestParam("date") String date, @RequestParam("time") String time,

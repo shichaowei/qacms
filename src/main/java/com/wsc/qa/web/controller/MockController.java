@@ -79,7 +79,7 @@ public class MockController {
 	 * @throws FileUploadException
 	 * @throws IOException
 	 */
-	@RequestMapping({"callbackloop"})
+	@RequestMapping({"/api/callbackloop"})
 	public void callbackloop(HttpServletResponse response,
 			HttpServletRequest request, ModelMap map, Error errors) throws FileUploadException, IOException {
 
@@ -179,7 +179,7 @@ public class MockController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping({ "addmockrule" })
+	@RequestMapping({ "/api/addmockrule" })
 	@OperaLogComment(remark = opertype.mockdata)
 	public String addmockrule( HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws Exception {
@@ -267,7 +267,7 @@ public class MockController {
 
 
 
-	@RequestMapping({ "startmock" })
+	@RequestMapping({ "/api/startmock" })
 	@OperaLogComment(remark = opertype.startmock)
 	public String startmock( HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {
@@ -279,7 +279,7 @@ public class MockController {
 		return "display";
 	}
 
-	@RequestMapping({ "resetmock" })
+	@RequestMapping({ "/api/resetmock" })
 	@OperaLogComment(remark = opertype.startmock)
 	public String resetmock( HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {
@@ -290,7 +290,7 @@ public class MockController {
 		return "display";
 	}
 
-	@RequestMapping({ "deletemockrules" })
+	@RequestMapping({ "/api/deletemockrules" })
 	@OperaLogComment(remark = opertype.deletemockrules)
 	public String deletemockrules( int id,HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {
@@ -301,7 +301,7 @@ public class MockController {
 		return "display";
 	}
 
-	@RequestMapping({ "gethttpinterface" })
+	@RequestMapping({ "/api/gethttpinterface" })
 	@OperaLogComment(remark = opertype.gethttpinterface)
 	public String gethttpinterface( GetRequestResult getInterfaceInfo, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {

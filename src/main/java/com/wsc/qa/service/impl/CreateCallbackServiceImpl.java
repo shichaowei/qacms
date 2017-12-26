@@ -80,9 +80,9 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 		ArrayList<Item> items = new ArrayList<>();
 		for (int i = 0; i < orderId.size(); i++) {
 			if (orderId.get(i) != null) {
-				items.add(new Item(orderId.get(i), amount.get(i), "PAY_SUCCESS", userParams.get(i)));
+				items.add(new Item(orderId.get(i), amount.get(i), "PAY_FAILURE", userParams.get(i)));
 			} else {
-				items.add(new Item(amount.get(i), "PAY_SUCCESS"));
+				items.add(new Item(amount.get(i), "PAY_FAILURE"));
 			}
 		}
 		System.out.println(items);
