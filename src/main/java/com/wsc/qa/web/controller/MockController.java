@@ -14,10 +14,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
 import com.wsc.qa.annotation.OperaLogComment;
@@ -79,6 +79,7 @@ public class MockController {
 	 * @throws FileUploadException
 	 * @throws IOException
 	 */
+	@Deprecated
 	@RequestMapping({"/api/callbackloop"})
 	public void callbackloop(HttpServletResponse response,
 			HttpServletRequest request, ModelMap map, Error errors) throws FileUploadException, IOException {
@@ -101,27 +102,22 @@ public class MockController {
 				}else if (request.getContentType() != null&&request.getContentType().contains("multipart/form-data")&&request.getContentType().contains("boundary")) {
 					StringBuffer callbackBuffer = new StringBuffer();
 					callbackBuffer.append("multipart/form-data提交----");
-					DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-					ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
-					fileUpload.setHeaderEncoding("UTF-8");
-					List<FileItem> list = fileUpload.parseRequest(request);
-					for (FileItem item : list) {
-						//如果fileitem中封装的是普通输入项的数据
-		                if(item.isFormField()){
-		                	String name = item.getFieldName();
-		                    //解决普通输入项的数据的中文乱码问题
-		                    String value = item.getString("UTF-8");
-//		                    System.out.println(name);
-//		                    System.out.println(value);
-		                    callbackBuffer.append(name+":"+value+";");
-		                }else {
-		                	String fileName = item.getName();
-		                	int index = fileName.lastIndexOf("\\");
-		                	fileName = fileName.substring(index + 1);
-//		                	System.out.println(fileName);
-		                	callbackBuffer.append(fileName);
+
+					MultipartHttpServletRequest params=((MultipartHttpServletRequest) request);
+					MultipartFile responseBodyFile = ((MultipartHttpServletRequest) request).getFile("responseBodyFile");
+					Map<String, String[]>keymap = params.getParameterMap();
+					logger.info("keymaps is {}",keymap);
+					keymap.forEach((name,values)->{
+							String value = values[0];
+							callbackBuffer.append(name+":"+value+";");
 						}
-					}
+					);
+					Map<String, MultipartFile>filekeymap = params.getFileMap();
+
+					logger.info("filekeymap is {}",filekeymap);
+					filekeymap.forEach((name,value) ->{
+						callbackBuffer.append(name+":"+value.getOriginalFilename()+";");
+					});
 					callbackInfo.setCallbackinfo(callbackBuffer.toString());
 			        callbackInfo.setRequestip(request.getRemoteHost());
 
@@ -185,11 +181,10 @@ public class MockController {
 			HttpServletResponse response) throws Exception {
 		if(mocklock.tryLock()) {
 			try {
-				MockInfo mockinfo = new MockInfo();
-//				System.out.println(mockinfo.getCheckParamsFile().getInputStream().toString());
+				//处理混合表单不能和MVC一样
+				/*
 				DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
 				ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
-//				fileUpload.setHeaderEncoding("UTF-8");
 				List<FileItem> list = fileUpload.parseRequest(request);
 				for (FileItem item : list) {
 					//如果fileitem中封装的是普通输入项的数据
@@ -239,12 +234,59 @@ public class MockController {
 
 	                    }
 	                }
+				}*/
+				MockInfo mockinfo = new MockInfo();
+				MultipartHttpServletRequest params=((MultipartHttpServletRequest) request);
+
+				MultipartFile responseBodyFile = ((MultipartHttpServletRequest) request).getFile("responseBodyFile");
+				Map<String, String[]>keymap = params.getParameterMap();
+
+				logger.info("keymaps is {}",keymap);
+
+				keymap.forEach((name,values)->{
+					String value = values[0];
+					switch (name) {
+					case "mockserverip":
+						mockinfo.setMockserverip(value);
+						break;
+					case "mockType":
+						mockinfo.setMockType(value);
+						break;
+					case "ContentType":
+						mockinfo.setContentType(value);
+						break;
+					case "checkUrl":
+						mockinfo.setCheckUrl(value);
+						break;
+					case "checkParams":
+						mockinfo.setCheckParams(value);
+						break;
+					case "mockdelaytime":
+						mockinfo.setDelaytime(Integer.valueOf(value));
+						break;
+					case "responseBody":
+						mockinfo.setResponseBody(value);
+						break;
+					default:
+						break;
+					}
+				}
+				);
+				/**
+				 * 文件优先级低于input标签里面的内容
+				 */
+				if(StringUtils.isEmpty(mockinfo.getResponseBody())) {
+                	InputStream in = responseBodyFile.getInputStream();
+                	String var = IOUtils.toString(in,"utf-8");
+                	logger.info("response mock utf8 is：{}",var);
+            		mockinfo.setResponseBody(var);
 				}
 				mockinfo.setMocktime(FormateDateUtil.format(Calendar.getInstance().getTime()));
 				mockinfo.setOpername(GetUserUtil.getUserName(request));
+				logger.info("mockinfo 数据：{}",mockinfo.toString());
 				mockMessServiceImpl.addMockinfo(mockinfo);
 				List<MockInfo> var = mockMessServiceImpl.getAllMockInfos();
-				logger.info("mock的数据是:{}",var);
+//				logger.info("mock的数据是:{}",var);
 //				String mockRule = mockMessServiceImpl.mockProcess(var);
 //				logger.info("mock的rule{}",mockRule);
 //				map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));

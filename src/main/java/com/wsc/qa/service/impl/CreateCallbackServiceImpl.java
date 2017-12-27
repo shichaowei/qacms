@@ -68,7 +68,7 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 	}
 
 	@Override
-	public String genCallbackStr(String remark) {
+	public String genCallbackStr(String remark,String callbackstatus) {
 //		System.out.println(remark);
 		if (StringUtils.isEmpty(remark)) {
 			throw new BusinessException(ErrorCode.ERROR_ILLEGAL_PARAMTER, "remark为空数据非法");
@@ -80,9 +80,9 @@ public class CreateCallbackServiceImpl implements CreateCallbackService {
 		ArrayList<Item> items = new ArrayList<>();
 		for (int i = 0; i < orderId.size(); i++) {
 			if (orderId.get(i) != null) {
-				items.add(new Item(orderId.get(i), amount.get(i), "PAY_FAILURE", userParams.get(i)));
+				items.add(new Item(orderId.get(i), amount.get(i), callbackstatus, userParams.get(i)));
 			} else {
-				items.add(new Item(amount.get(i), "PAY_FAILURE"));
+				items.add(new Item(amount.get(i), callbackstatus));
 			}
 		}
 		System.out.println(items);

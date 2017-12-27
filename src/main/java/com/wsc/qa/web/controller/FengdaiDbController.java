@@ -62,7 +62,7 @@ public class FengdaiDbController {
 	@RequestMapping({ "/api/createCallbackStr" })
 	@OperaLogComment(remark = opertype.fundscallbackfengdai)
 	public String createCallbackStr(@RequestParam("callbackEnv") String callbackEnv, @RequestParam("type") String type,
-			@RequestParam("fieldDetail") String fieldDetail, HttpServletRequest request, ModelMap map,
+			@RequestParam("fieldDetail") String fieldDetail,@RequestParam("callbackstatus") String callbackstatus, HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) {
 		/**
 		 * 拿到remark字段
@@ -84,7 +84,7 @@ public class FengdaiDbController {
 		/**
 		 * 开始发送报文
 		 */
-		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark);
+		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark,callbackstatus);
 		logger.info("生成的callback的body:{}", callbackStr);
 		try {
 			if ("fengdaiold".equals(callbackEnv)) {

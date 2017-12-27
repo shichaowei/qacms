@@ -101,5 +101,13 @@ public class MockInfo {
 		this.responseBody = responseBody;
 	}
 
+	@Override
+	public String toString() {
+		return "MockInfo [id=" + id + ", mockserverip=" + mockserverip + ", mockType=" + mockType + ", ContentType="
+				+ ContentType + ", checkUrl=" + checkUrl + ", checkParams=" + checkParams + ", opername=" + opername
+				+ ", responseBodyFile=" + responseBodyFile + ", responseBody=" + responseBody + ", mocktime=" + mocktime
+				+ ", delaytime=" + delaytime + "]";
+	}
+
 
 }

@@ -28,7 +28,7 @@
 				<td>${rule.checkParams}</td>
 				<td>${rule.delaytime}</td>
 				<td><input value=${rule.responseBody} readonly></input></td>
-				<td><a href="deletemockrules?id=${rule.id}">删除</a></td>
+				<td><a href="/api/deletemockrules?id=${rule.id}">删除</a></td>
 				</tr>
 			</#list>
 		</table>
