@@ -24,11 +24,12 @@
 		<!-- Spring -->
 		<spring-framework.version>4.3.13.RELEASE</spring-framework.version>
 
-		<spring-boot-starter-freemarker.version>1.4.1.RELEASE</spring-boot-starter-freemarker.version>
+		<spring-boot-starter-freemarker.version>1.5.8.RELEASE</spring-boot-starter-freemarker.version>
 
 		<druid-spring-boot-starter.version>1.1.5</druid-spring-boot-starter.version>
 
-		<spring-data-redis.version>2.0.2.RELEASE</spring-data-redis.version>
+
+		<spring-boot-devtools.version>1.5.8.RELEASE</spring-boot-devtools.version>
 
 
 		<!-- Hibernate / JPA -->
@@ -44,6 +45,13 @@
 	</properties>
 
 	<dependencies>
+		<!-- 增加热部署 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>${spring-boot-devtools.version}</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- add redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -363,6 +371,13 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

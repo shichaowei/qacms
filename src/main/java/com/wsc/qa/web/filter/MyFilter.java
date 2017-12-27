@@ -67,6 +67,8 @@ public class MyFilter implements Filter {
         List<Pattern> patterns = new ArrayList<Pattern>();
         patterns.add(Pattern.compile(".*login$"));
         patterns.add(Pattern.compile(".*register$"));
+        patterns.add(Pattern.compile(".*error$"));
+        patterns.add(Pattern.compile(".*ops$"));
         for (Pattern pattern : patterns) {
             Matcher matcher = pattern.matcher(url);
             if (matcher.matches()) {
