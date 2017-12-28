@@ -16,8 +16,14 @@ public class ServerInfo {
 	public static String quartzIpadd="10.200.141.67";
 	public static String stopquartzCmd="/usr/local/dubbo-quartz-0.0.1.M1-SNAPSHOT/sbin/demo.sh stop";
 	public static String restartquartzCmd="/usr/local/restart-dubbo-quartz-auto.sh";
+	//nc相关
+	public static String ncServerFundCmd="cd /root/serverlog;nc -l 1567 > fund.log";
+	public static String ncStopServerFundCmd="ps -ef | grep nc | grep -v grep| grep -v hbase|cut -c 10-15| xargs kill -9";
+	public static String ncClientFundCmd="tail -f  /usr/local/dubbo-funds-3.0.BUILD-SNAPSHOT/funds.log | nc 10.200.141.37 1567 &";
+	public static String NCfundClientIp="10.200.141.55";
 
 	public static String mockServerIp="10.200.141.37";
+	public static String NCServerIp="10.200.141.37";
 
 	public static void main(String[] args) {
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +16,12 @@ import ch.ethz.ssh2.Session;
 public class  SshUtil{
 
 	private static final Logger logger = LoggerFactory.getLogger(SshUtil.class);
+	private static InputStream stdout =null;
     /**
      * 遠程ssh執行命令，最多返回1000行
      *
      */
-    public static String remoteRunCmd(String hostname,String username,String password,String  cmd)
+    public static void remoteRunCmd(String hostname,String username,String password,String  cmd)
     {
 
             Connection conn = new Connection(hostname);
@@ -34,30 +36,26 @@ public class  SshUtil{
                 }
                 sess = conn.openSession();
                 sess.execCommand( cmd);
-                InputStream stdout =    sess.getStdout() ;
-                BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
-                StringBuilder sb = new StringBuilder();
-                int linenum=0;
-                while (true)
-                {
-                    String line = br.readLine();
-                    //测试过程中发现linenumm必须不小于1000 否则过早干掉进程 shell脚本没有执行完 导致服务没有起来
-                    if (line == null || linenum>1000) {
-                        break;
-                    }
-                    sb.append(line);
-                    sb.append('\n');
-                    linenum++;
-                }
+                stdout =    sess.getStdout() ;
                 logger.info(hostname+"---ssh执行完的命令为："+cmd);
-               return sb.toString();
             }catch (Exception e){
-                return "false";
+                logger.error("ssh error {}",e.getStackTrace());
             }finally{
                 sess.close();
                 conn.close();
             }
         }
+
+    	public static String getResultStr() {
+    		try {
+    			String result =IOUtils.toString(stdout);
+				logger.info("ssh result {}",result);
+				return result;
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    			return null;
+			}
+    	}
 
 
     /**

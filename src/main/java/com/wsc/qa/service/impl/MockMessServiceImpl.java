@@ -15,7 +15,7 @@ import com.wsc.qa.mockmode.modeLocalResponse;
 import com.wsc.qa.mockmode.modecheckParamsStr;
 import com.wsc.qa.service.MockMessService;
 import com.wsc.qa.utils.LogUtil;
-import com.wsc.qa.utils.Scpclient;
+import com.wsc.qa.utils.ScpclientUtil;
 import com.wsc.qa.utils.SshUtil;
 import com.wsc.qa.utils.WriteFileUtil;
 
@@ -87,7 +87,7 @@ public class MockMessServiceImpl implements MockMessService{
 		modeExports.setBeforeSendRequestBody(beforeSendRequestBody);
 		String filename = "rule" + System.currentTimeMillis() + ".txt";
 		WriteFileUtil.clearWriteFile(modeExports.toString(), filename);
-		Scpclient scp = Scpclient.getInstance(ServerInfo.mockServerIp, 22, ServerInfo.sshname, ServerInfo.sshpwd);
+		ScpclientUtil scp = ScpclientUtil.getInstance(ServerInfo.mockServerIp, 22, ServerInfo.sshname, ServerInfo.sshpwd);
 		scp.putFile(filename, filename, ServerInfo.anyproxyRulePath, null);
 		logger.logInfo(filename);
 		SshUtil.remoteRunCmd(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, filename), false);
