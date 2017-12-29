@@ -326,7 +326,7 @@ public class MockController {
 	public String resetmock( HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {
 		mockMessServiceImpl.deleteAllMockinfo();
-		SshUtil.remoteRunCmd(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, CommonConstants.ShellInfo.restanyproxyrule.getValue()), false);
+		SshUtil.remoteRunCmdAddDelay(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, CommonConstants.ShellInfo.restanyproxyrule.getValue()), false);
 //		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
 		map.addAttribute("resultmsg","重置mock成功");
 		return "display";
@@ -337,7 +337,7 @@ public class MockController {
 	public String deletemockrules( int id,HttpServletRequest request, ModelMap map,
 			HttpServletResponse response) throws IOException, FileUploadException {
 		mockMessServiceImpl.deleteMockinfoByid(id);
-		SshUtil.remoteRunCmd(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, CommonConstants.ShellInfo.restanyproxyrule.getValue()), false);
+		SshUtil.remoteRunCmdAddDelay(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, CommonConstants.ShellInfo.restanyproxyrule.getValue()), false);
 //		map.addAttribute("mockRuleStr", SmilarJSONFormatUtil.format(mockRule));
 		map.addAttribute("resultmsg","删除mock规则成功");
 		return "display";

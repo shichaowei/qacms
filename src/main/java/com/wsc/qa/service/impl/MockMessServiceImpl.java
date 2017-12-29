@@ -90,7 +90,7 @@ public class MockMessServiceImpl implements MockMessService{
 		ScpclientUtil scp = ScpclientUtil.getInstance(ServerInfo.mockServerIp, 22, ServerInfo.sshname, ServerInfo.sshpwd);
 		scp.putFile(filename, filename, ServerInfo.anyproxyRulePath, null);
 		logger.logInfo(filename);
-		SshUtil.remoteRunCmd(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, filename), false);
+		SshUtil.remoteRunCmdAddDelay(ServerInfo.mockServerIp, ServerInfo.sshname, ServerInfo.sshpwd,String.format(ServerInfo.restartanyproxyShellMode, filename), false);
 		return modeExports.toString();
 
 
