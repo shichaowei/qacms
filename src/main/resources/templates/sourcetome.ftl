@@ -7,9 +7,7 @@
     		<form  role="form" action="api/sourcetome" method="post">
     			<div class="form-group">
     				<label for="name" class="control-label">transferServerIp:</label>
-					<select  class="form-control" name="ipaddress">
-					  <option value="192.168.16.185">192.168.16.185</option>
-					</select>
+    				<input class ="form-control" name="ipaddress"></input>
 				</div>
 	  			<div class="form-group">
 	  				<label for="name" class="control-label">projectName:</label>

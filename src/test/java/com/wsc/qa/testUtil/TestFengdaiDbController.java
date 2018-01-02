@@ -1,4 +1,4 @@
-package com.fengdai.qa.testUtil;
+package com.wsc.qa.testUtil;
 
 
 import java.util.concurrent.ExecutionException;
@@ -9,22 +9,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.wsc.qa.service.FengdaiDbNewUserInfoService;
 import com.wsc.qa.web.controller.FengdaiDbController;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration(locations = {"classpath:spring-mvc.xml","classpath:application-context.xml"})
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TestFengdaiDbController {
 	@Autowired
 	FengdaiDbController fengdaiDbController;
@@ -32,11 +30,18 @@ public class TestFengdaiDbController {
 	@Autowired
 	FengdaiDbNewUserInfoService fengdaiUserInfoServiceImpl;
 
+	@Autowired
+    private WebApplicationContext wac;
+
 	MockMvc mockMvc;
 
 	@Before
 	public void setup(){
-	    mockMvc = MockMvcBuilders.standaloneSetup(fengdaiDbController).build();
+//	    mockMvc = MockMvcBuilders.standaloneSetup(new FengdaiDbController()).build();
+	  //MockMvcBuilders使用构建MockMvc对象   （项目拦截器有效）
+	    mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	    //单个类  拦截器无效
+	  // mockMvc = MockMvcBuilders.standaloneSteup(userController).build();
 	}
 
 //	@Test
@@ -69,7 +74,7 @@ public class TestFengdaiDbController {
 					var.add("param", loginname);
 					var.add("moneynumStr", "1000");
 					try {
-						ResultActions resultActions =  mockMvc.perform(MockMvcRequestBuilders.post("/deleteUserInfo").params(var));
+						ResultActions resultActions =  mockMvc.perform(MockMvcRequestBuilders.post("/api/deleteUserInfo").params(var));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

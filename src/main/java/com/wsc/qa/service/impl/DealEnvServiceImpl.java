@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -30,7 +29,6 @@ import com.wsc.qa.utils.SendmailUtil;
  */
 @Service
 public class DealEnvServiceImpl implements DealEnvService{
-	private static Logger logger = Logger.getLogger(DealEnvServiceImpl.class);
 
 //	public static List<String> dubboAllclasses = new ArrayList<>();
 

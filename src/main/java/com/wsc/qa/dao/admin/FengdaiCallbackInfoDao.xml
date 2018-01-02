@@ -17,6 +17,7 @@
 		(#{requestip},#{callbackinfo},#{createtime})
 	</insert>
 	
+	
 	<select id="getAllCallbakInfo" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />

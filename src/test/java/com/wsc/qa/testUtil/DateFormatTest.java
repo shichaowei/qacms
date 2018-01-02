@@ -1,4 +1,4 @@
-package com.fengdai.qa.testUtil;
+package com.wsc.qa.testUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

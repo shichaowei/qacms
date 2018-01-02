@@ -81,7 +81,7 @@
 				
 				</#if>
 				
-				<#if item=="createCallbackStr">
+			<#if item=="createCallbackStr">
 				<form role="form" action="/api/createCallbackStr" method="post">
 					<div class="form-group">
 						<label>生成回调报文：</label>
@@ -114,9 +114,9 @@
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>
 				</form>
-				</#if>
+			</#if>
 				
-				<#if item=="mock">
+			<#if item=="mock">
 				<form role="form" action="/api/addmockrule" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 						<label >mockServer的地址：</label>
@@ -158,9 +158,9 @@
 					</div> 
 					<button type="submit" class="btn btn-default">提交</button>
 				</form>
-				</#if>
+			</#if>
 				
-				<#if item=="gethttpinterface">
+			<#if item=="gethttpinterface">
 				<form role="form" action="/api/gethttpinterface" method="post" >
 					
 					<div class="form-group">
@@ -196,9 +196,9 @@
 				
 					<button type="submit" class="btn btn-default">提交</button>
 				</form>
-				</#if>
+			</#if>
 				
-				<#if item=="deleteUserInfo">
+			<#if item=="deleteUserInfo">
 				<form action="/api/deleteUserInfo" method="post">
 					<div class="form-group">
 					<label >使用的数据库：</label>
@@ -226,7 +226,7 @@
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>
 				</form>
-				</#if>
+			</#if>
 				
 				
 				

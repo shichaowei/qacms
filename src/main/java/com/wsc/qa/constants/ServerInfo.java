@@ -16,13 +16,14 @@ public class ServerInfo {
 	public static String quartzIpadd="10.200.141.67";
 	public static String stopquartzCmd="/usr/local/dubbo-quartz-0.0.1.M1-SNAPSHOT/sbin/demo.sh stop";
 	public static String restartquartzCmd="/usr/local/restart-dubbo-quartz-auto.sh";
-	//nc相关
+	//nc相关 部署的时候默认nc监听服务器也是工程项目部署的服务器
+	public static String ncServerLogDir="/root/serverlog/";
 	public static String ncServerFundCmd="cd /root/serverlog;nc -l 1567 > fund.log";
 	public static String ncServerLoanCmd="cd /root/serverlog;nc -l 1568 > loan.log";
 	public static String ncServerFinanceCmd="cd /root/serverlog;nc -l 1569 > finance.log";
 	public static String ncServerDockCmd="cd /root/serverlog;nc -l 1570 > dock.log";
 
-	public static String ncStopServerCmd="ps -ef | grep nc | grep -v grep| grep -v hbase|cut -c 10-15| xargs kill -9";
+	public static String ncStopServerCmd="ps -ef | grep nc | grep -v grep| grep -v hbase|cut -c 10-15| xargs kill -9;cd /root/serverlog;rm -rf logs.zip ;zip -r logs.zip *";
 	public static String ncClientFundCmdTemplate="tail -f  /usr/local/dubbo-funds-3.0.BUILD-SNAPSHOT/%s | nc 10.200.141.37 1567 &";
 	public static String ncClientLoanCmdTemplate="tail -f  /usr/local/spring-boot/fd-loan/%s | nc 10.200.141.37 1568 &";
 	public static String ncClientFinanceCmdTemplate="tail -f  /usr/local/spring-boot/fd-finance/%s | nc 10.200.141.37 1569 &";

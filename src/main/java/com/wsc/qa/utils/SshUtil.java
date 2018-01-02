@@ -79,7 +79,7 @@ public class SshUtil {
 		try {
 			result = future.get(timeout * 1000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			logger.error("get sshdata timeout {}",ExceptionUtil.printStackTraceToString(e));
+//			logger.error("get sshdata timeout {}",ExceptionUtil.printStackTraceToString(e));
 			result=null;
 		}
 

@@ -31,7 +31,7 @@ public abstract class LogPrepareUtil {
 			process();
 			this.endTime = new Date().getTime();
 			this.execMesc = endTime - startTime;
-			System.out.println("耗时"+execMesc+"ms");
+			logger.info("耗时"+execMesc+"ms");
 			logger.info("耗时"+execMesc+"ms");
 		} catch (Exception ex) {
 			// ExceptionLog exceptionLog = new ExceptionLog();

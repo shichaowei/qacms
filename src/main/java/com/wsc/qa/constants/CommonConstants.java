@@ -66,7 +66,8 @@ public class CommonConstants {
 		fundscallbackfengdai("资金服回调fengdai业务"),
 		startmock("开始mock"),
 		deletemockrules("删除mock规则"),
-		gethttpinterface("获取特定http请求的返回值");
+		gethttpinterface("获取特定http请求的返回值"),
+		logtome("获取服务器端的日志");
 		private final String value;
 		opertype(String value) {
 			this.value=value;

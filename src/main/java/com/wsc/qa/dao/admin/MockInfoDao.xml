@@ -11,6 +11,7 @@
 		<result column="responseBody" jdbcType="VARCHAR" property="responseBody" />
 		<result column="mocktime" jdbcType="TIMESTAMP" property="mocktime" />
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		id, mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername,delaytime
 	</sql>

@@ -1,4 +1,4 @@
-package com.fengdai.qa.testUtil;
+package com.wsc.qa.testUtil;
 
 import static io.restassured.RestAssured.given;
 

@@ -4,9 +4,15 @@
 	<groupId>org.springframework.samples.service.service</groupId>
 	<artifactId>fengdaiUtils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
-	<properties>
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.8.RELEASE</version>
+</parent>
+<properties>
 
 
 
@@ -24,12 +30,10 @@
 		<!-- Spring -->
 		<spring-framework.version>4.3.13.RELEASE</spring-framework.version>
 
-		<spring-boot-starter-freemarker.version>1.5.8.RELEASE</spring-boot-starter-freemarker.version>
 
 		<druid-spring-boot-starter.version>1.1.5</druid-spring-boot-starter.version>
 
 
-		<spring-boot-devtools.version>1.5.8.RELEASE</spring-boot-devtools.version>
 
 
 		<!-- Hibernate / JPA -->
@@ -43,20 +47,29 @@
 		<junit.version>4.11</junit.version>
 
 	</properties>
+	
+	
+
+	
+	
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- 增加热部署 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-			<version>${spring-boot-devtools.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- add redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
-			<version>1.5.8.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.session</groupId>
@@ -80,7 +93,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
-			<version>${spring-boot-starter-freemarker.version}</version>
 		</dependency>
 
 		<!-- Other Web dependencies -->
@@ -258,16 +270,7 @@
 			<artifactId>freemarker</artifactId>
 			<version>2.3.23</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.9.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.9.2</version>
-		</dependency>
+	
 
 		<dependency>
 			<groupId>org.springframework</groupId>
