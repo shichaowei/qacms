@@ -4,14 +4,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.wsc.qa.dao.admin.OperaLogDao;
+import com.wsc.qa.dao.admin.OperaLogMapper;
 import com.wsc.qa.meta.OperaLog;
 import com.wsc.qa.service.OperLogService;
 
 @Service
 public class OperLogServiceImpl implements OperLogService{
 	@Resource
-	private OperaLogDao operaLogDao;
+	private OperaLogMapper operaLogDao;
 
 	@Override
 	public OperaLog getLastOper(){

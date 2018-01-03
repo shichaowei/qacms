@@ -2,11 +2,8 @@ package com.wsc.qa.dao.admin;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import com.wsc.qa.meta.CallbackInfo;
 
-@Resource
 public interface FengdaiCallbackInfoDao {
 
 

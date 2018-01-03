@@ -38,7 +38,7 @@ public class SourceToMeController {
 			}
 			if (var1.matches(".*workspace$")) {
 				if (var1.contains("fengdai-")&&!var1.contains("deploy")) {
-					System.out.print("\""+var1+"\",");
+//					System.out.print("\""+var1+"\",");
 					String temp = "scp -r  " + var1 + " sshuser@"+ipaddress+":/D:/51/"+var1.replace("/trdata/jobs/蜂贷3.0/jobs/", "").replace("workspace", "");
 					SshUtil.remoteRunCmd("10.200.130.105", "root", "Jenkinstest@123098", temp);
 				}
