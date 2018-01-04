@@ -1,6 +1,6 @@
 package com.wsc.qa.testUtil;
 
-import com.wsc.qa.utils.SshUtil;
+import com.fengdai.qa.utils.SshUtil;
 
 public class TestSourceToMe {
 

@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.wsc.qa.web.controller.ServerChangeTimeController;
+import com.fengdai.qa.web.controller.ServerChangeTimeController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

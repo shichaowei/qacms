@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import java.io.UnsupportedEncodingException;
 
-import com.wsc.qa.utils.LogPrepareUtil;
+import com.fengdai.qa.utils.LogPrepareUtil;
 
 import io.restassured.response.Response;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wsc.qa.dao.admin.MockInfoDao">
-	<resultMap id="BaseResultMap" type="com.wsc.qa.meta.MockInfo">
+<mapper namespace="com.fengdai.qa.dao.admin.MockInfoDao">
+	<resultMap id="BaseResultMap" type="com.fengdai.qa.meta.MockInfo">
 		<id column="id" jdbcType="INTEGER" property="id" />
 		<result column="mockserverip" jdbcType="VARCHAR" property="mockserverip" />
 		<result column="checkUrl" jdbcType="VARCHAR" property="checkUrl" />
@@ -18,7 +18,7 @@
 		id, mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername,delaytime
 	</sql>
 	
-	<insert id="addMockinfo" parameterType="com.wsc.qa.meta.MockInfo"
+	<insert id="addMockinfo" parameterType="com.fengdai.qa.meta.MockInfo"
 		useGeneratedKeys="true" keyProperty="id">
 		INSERT into
 		fengdaimockinfo(mockserverip,checkUrl,mockType,ContentType,checkParams,responseBody,mocktime,opername,delaytime) VALUES

@@ -12,8 +12,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.wsc.qa.service.FengdaiDbNewUserInfoService;
-import com.wsc.qa.web.controller.FengdaiDbController;
+import com.fengdai.qa.service.FengdaiDbNewUserInfoService;
+import com.fengdai.qa.web.controller.FengdaiDbController;
 
 import junit.framework.Assert;
 

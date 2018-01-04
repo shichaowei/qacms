@@ -19,8 +19,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.wsc.qa.service.FengdaiDbNewUserInfoService;
-import com.wsc.qa.web.controller.FengdaiDbController;
+import com.fengdai.qa.service.FengdaiDbNewUserInfoService;
+import com.fengdai.qa.web.controller.FengdaiDbController;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestFengdaiDbController {

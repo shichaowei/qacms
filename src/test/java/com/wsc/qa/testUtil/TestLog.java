@@ -9,9 +9,9 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wsc.qa.constants.ServerInfo;
-import com.wsc.qa.utils.NcLogUtil;
-import com.wsc.qa.utils.SshUtil;
+import com.fengdai.qa.constants.ServerInfo;
+import com.fengdai.qa.utils.NcLogUtil;
+import com.fengdai.qa.utils.SshUtil;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

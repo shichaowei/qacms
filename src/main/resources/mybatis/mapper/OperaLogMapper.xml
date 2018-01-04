@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wsc.qa.dao.admin.OperaLogMapper">
-	<resultMap id="BaseResultMap" type="com.wsc.qa.meta.OperaLog">
+<mapper namespace="com.fengdai.qa.dao.admin.OperaLogMapper">
+	<resultMap id="BaseResultMap" type="com.fengdai.qa.meta.OperaLog">
 		<id column="id" jdbcType="INTEGER" property="id" />
 		<result column="username" jdbcType="VARCHAR" property="username" />
 		<result column="opertype" jdbcType="VARCHAR" property="opertype" />
@@ -28,14 +28,14 @@
 		where status='SUCCESS' and opertype=#{opertype} ORDER BY opertime DESC LIMIT 1
 	</select>
 
-	<insert id="insertOper" parameterType="com.wsc.qa.meta.OperaLog"
+	<insert id="insertOper" parameterType="com.fengdai.qa.meta.OperaLog"
 		useGeneratedKeys="true" keyProperty="id">
 		INSERT into
 		fengdaioperlog(username,opertype,opertime,status) VALUES
 		(#{username},#{opertype},now(),#{status})
 	</insert>
 
-	<update id="updateStatus" parameterType="com.wsc.qa.meta.OperaLog">
+	<update id="updateStatus" parameterType="com.fengdai.qa.meta.OperaLog">
 		UPDATE fengdaioperlog SET status=#{status} WHERE id=#{id}
 	</update>
 
