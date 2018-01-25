@@ -1,9 +1,14 @@
 package com.fengdai.qa.dao.admin;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.fengdai.qa.constants.DataSourceConsts;
+import com.fengdai.qa.dao.DS;
 import com.fengdai.qa.meta.OperaLog;
 
+@DS(value=DataSourceConsts.DEFAULT)
+@Mapper
 public interface OperaLogMapper {
 
 //	@Select("select * FROM fengdaioperlog where status='SUCCESS' ORDER BY opertime DESC LIMIT 1")

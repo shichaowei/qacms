@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class FengdaiOldDao {
 	private static final Logger logger = LoggerFactory.getLogger(FengdaiOldUserInfoDao.class);
-	@Resource(name="oldFDJdbcTemplate")
+//	@Resource(name="oldFDJdbcTemplate")
+	@Resource
 	private JdbcTemplate jdbcTemplate;
 
 	public String  getremarkViaRelate(String relateid) {

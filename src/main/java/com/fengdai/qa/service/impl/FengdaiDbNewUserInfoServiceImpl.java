@@ -6,9 +6,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.fengdai.qa.constants.DataSourceConsts;
+import com.fengdai.qa.dao.DS;
 import com.fengdai.qa.dao.fengdainew.FengdaiUserInfoDao;
 import com.fengdai.qa.service.FengdaiDbNewUserInfoService;
 @Service
+@DS(value=DataSourceConsts.fengdai3)
 public class FengdaiDbNewUserInfoServiceImpl implements FengdaiDbNewUserInfoService{
 
 	@Resource

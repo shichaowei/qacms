@@ -16,7 +16,10 @@ import org.springframework.stereotype.Repository;
 public class FengdaiOldUserInfoDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(FengdaiOldUserInfoDao.class);
-	@Resource(name="oldFDJdbcTemplate")
+//	@Resource(name="oldFDJdbcTemplate")
+//	private JdbcTemplate jdbcTemplate;
+
+	@Resource
 	private JdbcTemplate jdbcTemplate;
 
 	public void deleteAllLoanByLoginname(String loginname) {
