@@ -42,6 +42,7 @@
 							  <option value="changeServicetime">修改service时间</option>
 							  <option value="changServiceDbtime">修改service/db时间</option>
 							  <option value="restAllTime">重置service/db时间</option>
+							  <option value="changnothing">触发定时任务</option>
 							</select>
 					</div>
 					<div class="form-group">
@@ -53,6 +54,7 @@
 							  <option value="1013">普通自动还款</option>
 							  <option value="28">RoundCheckBatchJob</option>
 							  <option value="29">RoundCheckExecuteJob</option>
+							  <option value="17">申请表自动填充（往鲸数发请求获取数据填充申请表）</option>
 							  <option value="*">只改时间</option>
 							</select>
 					</div>

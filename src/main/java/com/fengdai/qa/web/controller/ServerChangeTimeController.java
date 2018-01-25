@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fengdai.qa.annotation.OperaLogComment;
 import com.fengdai.qa.constants.CommonConstants;
-import com.fengdai.qa.constants.ServerInfo;
 import com.fengdai.qa.constants.CommonConstants.opertype;
+import com.fengdai.qa.constants.ServerInfo;
 import com.fengdai.qa.service.ChangeTimeService;
 import com.fengdai.qa.service.FengdaiDbNewService;
 import com.fengdai.qa.service.FengdaiDbNewUserInfoService;
@@ -150,6 +150,9 @@ public class ServerChangeTimeController {
 				case "restAllTime": {
 					cmd = "date -s '" + GetNetworkTimeUtil.getWebsiteDatetime() + "'";
 					changeTimeImpl.newchangeServerTime(ServerInfo.changeServiceDbtimeIps, cmd);
+					break;
+				}
+				case "changnothing": {
 					break;
 				}
 				default:

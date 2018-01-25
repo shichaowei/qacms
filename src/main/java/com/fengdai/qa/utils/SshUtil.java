@@ -23,15 +23,14 @@ public class SshUtil {
 	private static final Logger logger = LoggerFactory.getLogger(SshUtil.class);
 
 	/**
-	 * 遠程ssh執行命令，最多返回1000行
-	 * 如果遲遲不回 默認3s結束
+	 * 遠程ssh執行命令，最多返回1000行 如果遲遲不回 默認3s結束
 	 *
 	 */
 	public static String remoteRunCmd(String hostname, String username, String password, String cmd) {
 		Connection conn = new Connection(hostname);
 		Session sess = null;
-		InputStream stdout=null;
-		String result =null;
+		InputStream stdout = null;
+		String result = null;
 		try {
 			conn.connect();
 			boolean isAuthenticated = conn.authenticateWithPassword(username, password);
@@ -41,18 +40,19 @@ public class SshUtil {
 			sess = conn.openSession();
 			sess.execCommand(cmd);
 			stdout = sess.getStdout();
-			result = getResultStr(stdout,3);
-			logger.info(hostname + "---ssh执行完的命令为：" + cmd);
+			result = getResultStr(stdout, 10);
+			logger.info(hostname + "---ssh执行完的命令为：" + cmd + ",result is " + result);
 		} catch (Exception e) {
 			logger.error("ssh error {}", e.getStackTrace());
 		} finally {
+
 			sess.close();
 			conn.close();
 		}
 		return result;
 	}
 
-	private static String getResultStr(InputStream stdout,int timeout) {
+	private static String getResultStr(InputStream stdout, int timeout) {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		FutureTask<String> future = new FutureTask<String>(new Callable<String>() {
 			@Override
@@ -62,14 +62,13 @@ public class SshUtil {
 				int linenum = 0;
 				while (true) {
 					String line = br.readLine();
-					if (line == null || linenum > 1000) {
+					if (line == null || linenum > 10000) {
 						break;
 					}
 					sb.append(line);
 					sb.append('\n');
 					linenum++;
 				}
-
 
 				return sb.toString().trim();
 			}
@@ -79,20 +78,17 @@ public class SshUtil {
 		try {
 			result = future.get(timeout * 1000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-//			logger.error("get sshdata timeout {}",ExceptionUtil.printStackTraceToString(e));
-			result=null;
+			// logger.error("get sshdata timeout
+			// {}",ExceptionUtil.printStackTraceToString(e));
+			result = null;
 		}
-
-
-
-
-        try {
-        	// 類比：向学生传达“问题解答完毕后请举手示意！”
-    		executor.shutdown();
-    		// 類比：向学生传达“XX分之内解答不完的问题全部带回去作为课后作业！”后老师等待学生答题
-            // (所有的任务都结束的时候，返回TRUE)
-			if(!executor.awaitTermination(3000, TimeUnit.MILLISECONDS)){
-			    // 超时的时候向线程池中所有的线程发出中断(interrupted)。
+		try {
+			// 類比：向学生传达“问题解答完毕后请举手示意！”
+			executor.shutdown();
+			// 類比：向学生传达“XX分之内解答不完的问题全部带回去作为课后作业！”后老师等待学生答题
+			// (所有的任务都结束的时候，返回TRUE)
+			if (!executor.awaitTermination(3000, TimeUnit.MILLISECONDS)) {
+				// 超时的时候向线程池中所有的线程发出中断(interrupted)。
 				executor.shutdownNow();
 			}
 		} catch (InterruptedException e) {
@@ -153,7 +149,10 @@ public class SshUtil {
 		// SshUtil.remoteRunCmd(ServerInfo.quartzIpadd, ServerInfo.sshname,
 		// ServerInfo.sshpwd,
 		// ServerInfo.restartquartzCmd,false);
-		System.out.println("sfsdffd".substring(0, 10));
+		// System.out.println("sfsdffd".substring(0, 10));
+		String temp = "scp -r  /trdata/jobs/蜂贷3.0/jobs/fengdai-report/workspace sshuser@192.168.16.120:/D:/51/fengdai-loan/";
+		SshUtil.remoteRunCmd("10.200.130.105", "root", "Jenkinstest@123098", temp);
+
 	}
 
 }

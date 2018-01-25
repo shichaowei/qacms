@@ -139,7 +139,7 @@ public class FengdaiUserInfoDao {
 	public void changeProcessSQDToLoanning(String loanname) {
 		String sql1 = "UPDATE  fengdai_riskcontrol.loan_apply_ext SET grant_status='GRANT_FAIL' WHERE loan_apply_id = (select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
 		String sql2 = "update fengdai_riskcontrol.loan_apply SET  front_status='loanning' WHERE loan_name LIKE  '%s';";
-		String sql3 = "DELETE from fengdai_mqnotify.mc_business WHERE relate_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
+		String sql3 = "DELETE from fengdai_finance.mc_business WHERE relate_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
 		String sql4 = "DELETE FROM fengdai_finance.loan_history WHERE loan_apply_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
 		String sql5 = "DELETE from fengdai_finance.mc_business WHERE relate_id=(select id FROM fengdai_riskcontrol.loan_apply WHERE loan_name LIKE  '%s');";
 		ArrayList<String> SQLlist = new ArrayList<>();

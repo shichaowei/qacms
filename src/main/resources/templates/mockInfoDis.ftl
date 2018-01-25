@@ -32,8 +32,8 @@
 				</tr>
 			</#list>
 		</table>
-		<a  class="btn btn-primary" href="startmock">开始mock数据</a>
-		<a  class="btn btn-primary" href="resetmock">重置mock数据</a>
+		<a  class="btn btn-primary" href="/api/startmock">开始mock数据</a>
+		<a  class="btn btn-primary" href="/api/resetmock">重置mock数据</a>
 	</div>
 	
 	<#if resultmsg?has_content>
