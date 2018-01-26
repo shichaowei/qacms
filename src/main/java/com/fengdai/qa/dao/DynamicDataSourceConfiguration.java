@@ -28,7 +28,6 @@ import com.fengdai.qa.constants.DataSourceConsts;
 @Configuration
 public class DynamicDataSourceConfiguration {
 	// 精确到 master 目录，以便跟其他数据源隔离
-    static final String PACKAGE = "com.fengdai.qa.dao.admin";
     static final String MAPPER_LOCATION = "classpath:mybatis/mapper/*.xml";
 
     @Bean(name = DataSourceConsts.DEFAULT)
@@ -67,7 +66,7 @@ public class DynamicDataSourceConfiguration {
      * @return
      */
     @Bean(name = "dynamicDataSource")
-    public DataSource dataSource() {
+    public DynamicDataSource dataSource() {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
         // 默认数据源
         dynamicDataSource.setDefaultTargetDataSource(dataSourceMaster());

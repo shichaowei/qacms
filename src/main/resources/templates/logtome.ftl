@@ -4,6 +4,7 @@
 <body>
 
 <div class="col-lg-10">
+			<p>本地PC开启BitviseSSH配置公钥，请在NCServerIp（37服务器）端先执行：scp -r /root/serverlog admin@ipaddress:/D:/abc/ 本地PC端iP变化需要重复操作</p>
 			<#if resultmsg?has_content>
 				<div class="n-result">
 					<pre id="resultmsg">${resultmsg}</pre>

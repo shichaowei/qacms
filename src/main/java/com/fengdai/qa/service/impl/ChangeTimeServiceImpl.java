@@ -29,12 +29,6 @@ public class ChangeTimeServiceImpl implements ChangeTimeService{
 			} while (!flag);
 	}
 
-	public static void main(String[] args) {
-		String date ="2017/10/27";
-		String time ="03:29:10";
-		String cmd = "date -s '" + date + " " + time + "'";
-		new ChangeTimeServiceImpl().changeServerTime(ServerInfo.changeDubbotimeIps,cmd );
-	}
 
 	@Override
 	public void newchangeServerTime(String[] ipaddress, String cmd) {
@@ -43,5 +37,15 @@ public class ChangeTimeServiceImpl implements ChangeTimeService{
 		}
 
 	}
+
+	public static void main(String[] args) {
+		String date ="2017/10/27";
+		String time ="03:29:10";
+		String cmd = "date -s '" + date + " " + time + "'";
+		new ChangeTimeServiceImpl().changeServerTime(ServerInfo.changeDubbotimeIps,cmd );
+	}
+
+
+
 
 }

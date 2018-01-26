@@ -79,6 +79,20 @@
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>
 				</form> 
+			</#if>
+			
+			<#if item=="getservertime">
+			
+			   <form role="form"  action="/api/getservertime" method="post">
+					<div class="form-group text-left">
+						<label class="control-label">多个serverip地址</label>
+						<select  class="form-control" name="ipservers" >
+							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54">3.0的server环境</option>
+							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54">3.0的server/db环境</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-default">提交</button>
+				</form> 
 
 				
 				</#if>
@@ -97,6 +111,7 @@
 						<select name="callbackEnv" class="form-control">
 						  <option value="fengdaiold">2.0环境</option>
 						  <option value="fengdainew">3.0环境</option>
+						  <option value="fengdainewonline">3.0的online环境</option>
 						</select>
 						<!--
 						http://10.200.141.52:8080/Mqnotify/notify/transfer
@@ -207,6 +222,7 @@
 					<select class="form-control" name="deleteMode" id="deleteModeType">
 					  <option value="OLD">2.0环境</option>
 					  <option value="NEW">3.0环境</option>
+					  <option value="NEWONLINE">3.0的online环境</option>
 					</select>
 					<label >要删除的的类型：</label>
 					<select class="form-control" name="deleteType" id="fengdaiDeleteType">

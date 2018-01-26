@@ -3,8 +3,8 @@ package com.fengdai.qa.dao.admin;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.fengdai.qa.annotation.DS;
 import com.fengdai.qa.constants.DataSourceConsts;
-import com.fengdai.qa.dao.DS;
 import com.fengdai.qa.meta.OperaLog;
 
 @DS(value=DataSourceConsts.DEFAULT)

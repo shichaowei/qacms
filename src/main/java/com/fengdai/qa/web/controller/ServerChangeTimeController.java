@@ -25,6 +25,7 @@ import com.fengdai.qa.service.FengdaiDbNewService;
 import com.fengdai.qa.service.FengdaiDbNewUserInfoService;
 import com.fengdai.qa.utils.GetNetworkTimeUtil;
 import com.fengdai.qa.utils.GetUserUtil;
+import com.fengdai.qa.utils.SshUtil;
 
 import io.restassured.response.Response;
 
@@ -45,6 +46,26 @@ public class ServerChangeTimeController {
 	 **/
 	Lock changetimelock = new ReentrantLock();
 	Lock newchangetimelock = new ReentrantLock();
+
+
+
+	/**
+	 *
+	 * 多个ipaddress以分号风格
+	 * @param ipservers
+	 * @return
+	 */
+	@RequestMapping({ "/api/getservertime" })
+	@OperaLogComment(remark = opertype.getservettime)
+	public String getServertime(String ipservers) {
+		String[] serverips = ipservers.split(";");
+		for(String serverip:serverips) {
+			SshUtil.remoteRunCmd(serverip, ServerInfo.sshname, ServerInfo.sshpwd, "date");
+
+		}
+		return "display";
+	}
+
 
 	/**
 	 * 修改时间

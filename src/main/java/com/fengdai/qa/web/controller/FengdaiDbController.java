@@ -20,7 +20,9 @@ import com.fengdai.qa.constants.CommonConstants;
 import com.fengdai.qa.constants.CommonConstants.ErrorCode;
 import com.fengdai.qa.constants.CommonConstants.deleteCode;
 import com.fengdai.qa.constants.CommonConstants.opertype;
+import com.fengdai.qa.constants.DataSourceConsts;
 import com.fengdai.qa.constants.DbInfo.callbackUrlCode;
+import com.fengdai.qa.dao.DataSourceContextHolder;
 import com.fengdai.qa.exception.BusinessException;
 import com.fengdai.qa.service.CreateCallbackService;
 import com.fengdai.qa.service.FengdaiCallbakInfoService;
@@ -62,17 +64,23 @@ public class FengdaiDbController {
 	@RequestMapping({ "/api/createCallbackStr" })
 	@OperaLogComment(remark = opertype.fundscallbackfengdai)
 	public String createCallbackStr(@RequestParam("callbackEnv") String callbackEnv, @RequestParam("type") String type,
-			@RequestParam("fieldDetail") String fieldDetail,@RequestParam("callbackstatus") String callbackstatus, HttpServletRequest request, ModelMap map,
-			HttpServletResponse response) {
+			@RequestParam("fieldDetail") String fieldDetail, @RequestParam("callbackstatus") String callbackstatus,
+			HttpServletRequest request, ModelMap map, HttpServletResponse response) {
 		/**
 		 * 拿到remark字段
 		 */
 		String remark = "";
 		if (CommonConstants.callbackType.virRelateId.getValue().equals(type)) {
-			// 切换数据库
 			if ("fengdaiold".equals(callbackEnv)) {
 				remark = fengdaiDbOldServiceImpl.getremark(fieldDetail);
-			} else if ("fengdainew".equals(callbackEnv)) {
+			} else {
+				if ("fengdainew".equals(callbackEnv)) {
+					DataSourceContextHolder.setDB(DataSourceConsts.fengdai3);
+				} else if ("fengdainewonline".equals(callbackEnv)) {
+					DataSourceContextHolder.setDB(DataSourceConsts.fengdai3online);
+				} else {
+					throw new BusinessException(ErrorCode.ERROR_ILLEGAL_DB, "环境参数错误");
+				}
 				remark = fengdaiDbNewServiceImpl.getremarkNew(fieldDetail);
 			}
 
@@ -84,13 +92,15 @@ public class FengdaiDbController {
 		/**
 		 * 开始发送报文
 		 */
-		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark,callbackstatus);
+		String callbackStr = createCallbackServiceImpl.genCallbackStr(remark, callbackstatus);
 		logger.info("生成的callback的body:{}", callbackStr);
 		try {
 			if ("fengdaiold".equals(callbackEnv)) {
 				OkHttpUtil.post(callbackUrlCode.callbackold.getValue(), callbackStr);
 			} else if ("fengdainew".equals(callbackEnv)) {
 				OkHttpUtil.post(callbackUrlCode.callbacknew.getValue(), callbackStr);
+			} else if ("fengdainewonline".equals(callbackEnv)) {
+				OkHttpUtil.post(callbackUrlCode.callbacknewonline.getValue(), callbackStr);
 			}
 
 		} catch (IOException e) {
@@ -157,47 +167,57 @@ public class FengdaiDbController {
 				break;
 			}
 
-		} else if ("NEW".equals(deleteMode)) {
-			switch (deleteCode.valueOf(deleteType)) {
-			case deleteAllLoanByLoginname:
-				fengdaiDbNewUserInfoServiceImpl.deleteAllLoanByLoginname(param);
-				map.addAttribute("resultmsg", "删除用户申请单与资金流水所有数据");
-				break;
-			case deleteUserByLoginname:
-				fengdaiDbNewUserInfoServiceImpl.deleteUserByLoginname(param);
-				map.addAttribute("resultmsg", "从数据库删除整个用户");
-				break;
-			case deleteLoanByLoanName:
-				fengdaiDbNewUserInfoServiceImpl.deleteLoanByLoanName(param);
-				map.addAttribute("resultmsg", "根据借款名称删除指定的申请单");
-				break;
-			case deleteLoanByLoanId:
-				fengdaiDbNewUserInfoServiceImpl.deleteLoanByLoanId(param);
-				map.addAttribute("resultmsg", "根据借款申请id删除指定的申请单");
-				break;
-			case changeSQDToLoanning:
-				fengdaiDbNewUserInfoServiceImpl.changeSQDToLoanning(param);
-				map.addAttribute("resultmsg", "修改申请单为待放款，绕开签约");
-				break;
-			case changeProcessSQDToLoanning:
-				fengdaiDbNewUserInfoServiceImpl.changeProcessSQDToLoanning(param);
-				map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款");
-				break;
-			case changeUserAmount:
-
-				String username = param;
-				// 构造以字符串内容为值的BigDecimal类型的变量bd
-				BigDecimal moneynum = new BigDecimal(moneynumStr);
-				// 设置小数位数，第一个变量是小数位数，第二个变量是取舍方法(四舍五入)
-				moneynum = moneynum.setScale(2, BigDecimal.ROUND_HALF_UP);
-				fengdaiDbNewUserInfoServiceImpl.changeUserAccount(username, moneynum);
-				map.addAttribute("resultmsg", "修改用户:" + param + ";金额为:" + moneynumStr);
-
-				break;
-			default:
-				map.addAttribute("resultmsg", "没有匹配到任何操作");
-				break;
+		} else {
+			if ("NEW".equals(deleteMode)) {
+				// 切换数据源
+				System.out.println(DataSourceContextHolder.getDB());
+				DataSourceContextHolder.setDB(DataSourceConsts.fengdai3);
+				System.out.println(DataSourceContextHolder.getDB());
+			} else if ("NEWONLINE".equals(deleteMode)) {
+				DataSourceContextHolder.setDB(DataSourceConsts.fengdai3online);
+			} else {
+				throw new BusinessException(ErrorCode.ERROR_ILLEGAL_DB, "非法db名称");
 			}
+			String sqlvar = "";
+			switch (deleteCode.valueOf(deleteType)) {
+
+				case deleteAllLoanByLoginname:
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.deleteAllLoanByLoginname(param);
+					map.addAttribute("resultmsg", "删除用户申请单与资金流水所有数据\n" + sqlvar);
+					break;
+				case deleteUserByLoginname:
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.deleteUserByLoginname(param);
+					map.addAttribute("resultmsg", "从数据库删除整个用户\n" + sqlvar);
+					break;
+				case deleteLoanByLoanName:
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.deleteLoanByLoanName(param);
+					map.addAttribute("resultmsg", "根据借款名称删除指定的申请单\n" + sqlvar);
+					break;
+				case deleteLoanByLoanId:
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.deleteLoanByLoanId(param);
+					map.addAttribute("resultmsg", "根据借款申请id删除指定的申请单\n" + sqlvar);
+					break;
+				case changeSQDToLoanning:
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.changeSQDToLoanning(param);
+					map.addAttribute("resultmsg", "修改申请单为待放款，绕开签约\n" + sqlvar);
+					break;
+				case changeProcessSQDToLoanning:
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.changeProcessSQDToLoanning(param);
+					map.addAttribute("resultmsg", "修改申请单为待放款，处理放款中无法再放款\n" + sqlvar);
+					break;
+				case changeUserAmount:
+					String username = param;
+					// 构造以字符串内容为值的BigDecimal类型的变量bd
+					BigDecimal moneynum = new BigDecimal(moneynumStr);
+					// 设置小数位数，第一个变量是小数位数，第二个变量是取舍方法(四舍五入)
+					moneynum = moneynum.setScale(2, BigDecimal.ROUND_HALF_UP);
+					sqlvar = fengdaiDbNewUserInfoServiceImpl.changeUserAccount(username, moneynum);
+					map.addAttribute("resultmsg", "修改用户:" + param + ";金额为:" + moneynumStr + "\n" + sqlvar);
+					break;
+				default:
+					map.addAttribute("resultmsg", "没有匹配到任何操作");
+					break;
+				}
 		}
 
 		return "display";

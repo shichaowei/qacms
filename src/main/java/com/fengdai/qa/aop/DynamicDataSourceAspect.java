@@ -1,4 +1,4 @@
-package com.fengdai.qa.dao;
+package com.fengdai.qa.aop;
 import java.lang.reflect.Method;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,7 +8,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.fengdai.qa.annotation.DS;
 import com.fengdai.qa.constants.DataSourceConsts;
+import com.fengdai.qa.dao.DataSourceContextHolder;
 
 /**
  * 动态数据源AOP切面
@@ -18,9 +20,11 @@ import com.fengdai.qa.constants.DataSourceConsts;
 @Component
 public class DynamicDataSourceAspect {
 
-  @Around("execution( * com.fengdai.qa.dao.admin.*.*(..)) || execution( * com.fengdai.qa.service.impl.*.*(..))")
+  @Around("execution( * com.fengdai.qa.dao.admin.*.*(..)) || execution( * com.fengdai.qa.service.impl.FengdaiDbOld*.*(..))")
   public Object switchDS(ProceedingJoinPoint point) throws Throwable {
     Class<?> className = point.getTarget().getClass();
+//    System.out.println(Thread.currentThread().getName());
+//    System.out.println("now datasource is "+DataSourceContextHolder.getDB());
     String dataSource = DataSourceConsts.DEFAULT;
 
     if (className.isAnnotationPresent(DS.class)) {

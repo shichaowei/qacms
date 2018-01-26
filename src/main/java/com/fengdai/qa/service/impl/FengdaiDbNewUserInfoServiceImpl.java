@@ -6,55 +6,53 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.fengdai.qa.constants.DataSourceConsts;
-import com.fengdai.qa.dao.DS;
 import com.fengdai.qa.dao.fengdainew.FengdaiUserInfoDao;
 import com.fengdai.qa.service.FengdaiDbNewUserInfoService;
 @Service
-@DS(value=DataSourceConsts.fengdai3)
+//由于存在多个数据库 多套环境 此处不加注解 切换放到controller层做datasource切换
+//@DS(value=DataSourceConsts.fengdai3)
 public class FengdaiDbNewUserInfoServiceImpl implements FengdaiDbNewUserInfoService{
 
 	@Resource
 	private FengdaiUserInfoDao fengdaiUserInfoDao;
 	@Override
-	public void deleteAllLoanByLoginname(String loginname) {
+	public String deleteAllLoanByLoginname(String loginname) {
 
-		fengdaiUserInfoDao.deleteAllLoanByLoginname(loginname);
+		return fengdaiUserInfoDao.deleteAllLoanByLoginname(loginname);
 
 
 	}
 	@Override
-	public void deleteAllLoanWithoutCreditByLoginname(String loginname) {
+	public String deleteAllLoanWithoutCreditByLoginname(String loginname) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String deleteUserByLoginname(String loginname) {
 
+		return fengdaiUserInfoDao.deleteUserByLoginname(loginname);
 	}
 	@Override
-	public void deleteUserByLoginname(String loginname) {
+	public String deleteLoanByLoanName(String loanname) {
 
-		fengdaiUserInfoDao.deleteUserByLoginname(loginname);
+		return fengdaiUserInfoDao.deleteLoanByLoanName(loanname);
 	}
 	@Override
-	public void deleteLoanByLoanName(String loanname) {
+	public String deleteLoanByLoanId(String loanapplyid) {
 
-		fengdaiUserInfoDao.deleteLoanByLoanName(loanname);
+		return fengdaiUserInfoDao.deleteLoanByLoanId(loanapplyid);
 	}
 	@Override
-	public void deleteLoanByLoanId(String loanapplyid) {
-
-		fengdaiUserInfoDao.deleteLoanByLoanId(loanapplyid);
+	public String changeSQDToLoanning(String loanname) {
+		return fengdaiUserInfoDao.changeSQDToLoanning(loanname);
 	}
 	@Override
-	public void changeSQDToLoanning(String loanname) {
-		fengdaiUserInfoDao.changeSQDToLoanning(loanname);
+	public String changeProcessSQDToLoanning(String loanname) {
+		return fengdaiUserInfoDao.changeProcessSQDToLoanning(loanname);
 	}
 	@Override
-	public void changeProcessSQDToLoanning(String loanname) {
-		fengdaiUserInfoDao.changeProcessSQDToLoanning(loanname);
-	}
-	@Override
-	public void changeUserAccount(String username, BigDecimal moneynum) {
-		fengdaiUserInfoDao.changeUserAccount(username, moneynum);
-
+	public String changeUserAccount(String username, BigDecimal moneynum) {
+		return fengdaiUserInfoDao.changeUserAccount(username, moneynum);
 	}
 
 

@@ -1,4 +1,4 @@
-package com.fengdai.qa.dao;
+package com.fengdai.qa.annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fengdai.qa.annotation.DS;
 import com.fengdai.qa.constants.DataSourceConsts;
-import com.fengdai.qa.dao.DS;
 import com.fengdai.qa.dao.fengdaiold.FengdaiOldUserInfoDao;
 import com.fengdai.qa.service.FengdaiDbOldUserInfoService;
 @Service
