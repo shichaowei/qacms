@@ -50,11 +50,12 @@ public class SshUtil {
 			result = getResultStr(stdout, 10);
 			logger.info(hostname + "---ssh执行完的命令为：" + cmd + ",result is " + result);
 		} catch (Exception e) {
-			logger.error("ssh error {}", e.getStackTrace());
+			logger.error("ssh error {}", ExceptionUtil.printStackTraceToString(e));
 		} finally {
-
-			sess.close();
-			conn.close();
+			if(sess!=null)
+				sess.close();
+			if(conn!=null)
+				conn.close();
 		}
 		return result;
 	}
