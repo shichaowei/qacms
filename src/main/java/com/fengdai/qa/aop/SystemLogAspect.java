@@ -72,6 +72,7 @@ public class SystemLogAspect {
 //		logger.info("username::"+GetUserUtil.getUserName(getRequest(joinPoint)));
 		//map中不指定username，freemarker从session中取
 //		getModelMap(joinPoint).addAttribute("userName",GetUserUtil.getUserName(getRequest(joinPoint)));
+		logger.info("---"+operLogServiceImpl.getLastOper());
 		getModelMap(joinPoint).addAttribute("lastoperaInfo",operLogServiceImpl.getLastOper());
 //		logger.info("operlog is ::"+operLogServiceImpl.getLastOper().getUsername());
 

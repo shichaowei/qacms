@@ -12,8 +12,12 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fengdai.qa.constants.CommonConstants.ErrorCode;
+import com.fengdai.qa.exception.BusinessException;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
@@ -23,10 +27,13 @@ public class SshUtil {
 	private static final Logger logger = LoggerFactory.getLogger(SshUtil.class);
 
 	/**
-	 * 遠程ssh執行命令，最多返回1000行 如果遲遲不回 默認3s結束
+	 * 遠程ssh執行命令，最多返回3000行 如果遲遲不回 默認3s結束
 	 *
 	 */
 	public static String remoteRunCmd(String hostname, String username, String password, String cmd) {
+		if(StringUtils.isBlank(hostname)|| StringUtils.isBlank(username)||StringUtils.isBlank(password)||StringUtils.isBlank(cmd)) {
+			throw new BusinessException(ErrorCode.ERROR_ILLEGAL_PARAMTER, "ssh连接信息错误，有空值出现");
+		}
 		Connection conn = new Connection(hostname);
 		Session sess = null;
 		InputStream stdout = null;
@@ -62,7 +69,7 @@ public class SshUtil {
 				int linenum = 0;
 				while (true) {
 					String line = br.readLine();
-					if (line == null || linenum > 10000) {
+					if (line == null || linenum > 3000) {
 						break;
 					}
 					sb.append(line);

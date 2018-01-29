@@ -88,7 +88,7 @@
 						<label class="control-label">多个serverip地址</label>
 						<select  class="form-control" name="ipservers" >
 							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54">3.0的server环境</option>
-							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54">3.0的server/db环境</option>
+							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54;10.200.141.58">3.0的server/db环境</option>
 						</select>
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>

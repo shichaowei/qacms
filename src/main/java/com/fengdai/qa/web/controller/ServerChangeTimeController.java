@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,6 +30,11 @@ import com.fengdai.qa.utils.SshUtil;
 
 import io.restassured.response.Response;
 
+/**
+ *
+ * @author hzweisc
+ *
+ */
 @Controller
 public class ServerChangeTimeController {
 
@@ -57,12 +63,18 @@ public class ServerChangeTimeController {
 	 */
 	@RequestMapping({ "/api/getservertime" })
 	@OperaLogComment(remark = opertype.getservettime)
-	public String getServertime(String ipservers) {
+	public String getServertime(String ipservers ,ModelMap map) {
+		StringBuffer resultbuffer = new StringBuffer();
 		String[] serverips = ipservers.split(";");
 		for(String serverip:serverips) {
-			SshUtil.remoteRunCmd(serverip, ServerInfo.sshname, ServerInfo.sshpwd, "date");
-
+			if(StringUtils.isBlank(serverip)) {
+				continue;
+			}
+			String var = SshUtil.remoteRunCmd(serverip, ServerInfo.sshname, ServerInfo.sshpwd, "date +\"%Y/%m/%d %H:%M:%S\"");
+			resultbuffer.append("ipaddress is "+serverip+"\n");
+			resultbuffer.append(var+"\n");
 		}
+		map.addAttribute("resultmsg", resultbuffer.toString());
 		return "display";
 	}
 

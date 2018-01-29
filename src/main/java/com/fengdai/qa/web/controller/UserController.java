@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fengdai.qa.annotation.OperaLogComment;
-import com.fengdai.qa.constants.IndexNav;
 import com.fengdai.qa.constants.CommonConstants.ErrorCode;
 import com.fengdai.qa.constants.CommonConstants.opertype;
+import com.fengdai.qa.constants.IndexNav;
 import com.fengdai.qa.exception.BusinessException;
 import com.fengdai.qa.meta.CallbackInfo;
 import com.fengdai.qa.meta.MockInfo;
@@ -96,7 +96,9 @@ public class UserController {
 			case "newchangetime":
 				map.addAttribute("item", IndexNav.newchangetime);
 				break;
-
+			case "getservertime":
+				map.addAttribute("item", IndexNav.getservertime);
+				break;
 			case "addmockrule":
 				map.addAttribute("item", IndexNav.addmockrule);
 				break;

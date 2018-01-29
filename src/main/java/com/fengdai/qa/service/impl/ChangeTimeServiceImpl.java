@@ -32,8 +32,9 @@ public class ChangeTimeServiceImpl implements ChangeTimeService{
 
 	@Override
 	public void newchangeServerTime(String[] ipaddress, String cmd) {
+
 		for (String ipaddres : ipaddress) {
-			SshUtil.remoteRunCmd(ipaddres, ServerInfo.sshname, ServerInfo.sshpwd, cmd);
+			 SshUtil.remoteRunCmd(ipaddres, ServerInfo.sshname, ServerInfo.sshpwd, cmd);
 		}
 
 	}

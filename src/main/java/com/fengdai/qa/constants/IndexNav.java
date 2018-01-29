@@ -10,5 +10,6 @@ public class IndexNav {
 	public static final String gethttpinterface="gethttpinterface";
 	public static final String login="login";
 	public static final String deleteUserInfo="deleteUserInfo";
+	public static final String getservertime="getservertime";
 
 }
