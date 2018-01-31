@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FengdaiDao {
+public class FengdaiBusinessDao {
 	private static final Logger logger = LoggerFactory.getLogger(FengdaiUserInfoDao.class);
 //	@Resource(name="newFDJdbcTemplate")
 	@Resource
@@ -27,6 +27,20 @@ public class FengdaiDao {
 //		System.out.println(sql);
 		logger.info("sql执行结果为：",jdbcTemplate.queryForMap(sql));
 		return (String) jdbcTemplate.queryForMap(sql).get("remarks");
+	}
+
+	public String getmongodbid(String loanapplyid) {
+		String sql="SELECT apply_info_mongo_id FROM fengdai_riskcontrol.loan_apply WHERE id=?";
+		String result =jdbcTemplate.queryForObject(sql, String.class, loanapplyid);
+		logger.info("sql执行结果为：",result);
+		return result;
+	}
+
+	public String getfieldname(String fieldid) {
+		String sql="SELECT name FROM fengdai_riskcontrol.apply_field_lib WHERE id=?";
+		String result =jdbcTemplate.queryForObject(sql, String.class, fieldid);
+		logger.info("sql执行结果为：",result);
+		return result;
 	}
 
 }

@@ -13,14 +13,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.fengdai.qa.web.controller.ServerChangeTimeController;
+import com.fengdai.qa.web.controller.FDServerTimeController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath:spring-mvc.xml","classpath:application-context.xml"})
 public class TestChangeTimeController {
 	@Autowired
-	ServerChangeTimeController serverChangeTimeController;
+	FDServerTimeController serverChangeTimeController;
 
 
 

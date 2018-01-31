@@ -45,6 +45,35 @@
 		
 		</#if>
 		
+		<#if MongodbfieldInfos?has_content>
+		<div class=table-responsive">
+			<table class="table table-striped table-condensed text-nowrap">
+			<thead>
+				<tr>
+					<th>字段id</th>
+					<th>字段名称</th>
+					<th>字段来源</th>
+					<th>字段类型</th>
+					<th>因子code</th>
+					<th>字段值</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list MongodbfieldInfos as x>
+						<tr>
+							<th>${x.field_id}</th>
+							<th>${x.fieldname}</th>
+							<th>${x.datasource}</th>
+							<th>${x.fieldtype}</th>
+							<th>${x.code}</th>
+							<th class="col-md-3">${x.fieldvalue}</th>
+						</tr>
+				</#list>
+			</tbody>
+			</table>
+			</div>
+		</#if>
+		
 
 		
 		

@@ -60,6 +60,7 @@ public class CommonConstants {
 	public static enum opertype{
 		//item项
 		mockdata("mock数据"),
+		getmongodbinfo("获取mongodb数据"),
 		getservettime("获取服务器时间"),
 		changtime("修改时间"),
 		fixfengdaienv("修复环境"),

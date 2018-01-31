@@ -21,7 +21,7 @@ import com.fengdai.qa.constants.CommonConstants.ErrorCode;
 import com.fengdai.qa.constants.CommonConstants.deleteCode;
 import com.fengdai.qa.constants.CommonConstants.opertype;
 import com.fengdai.qa.constants.DataSourceConsts;
-import com.fengdai.qa.constants.DbInfo.callbackUrlCode;
+import com.fengdai.qa.constants.EnvInfo.callbackUrlCode;
 import com.fengdai.qa.dao.DataSourceContextHolder;
 import com.fengdai.qa.exception.BusinessException;
 import com.fengdai.qa.service.CreateCallbackService;

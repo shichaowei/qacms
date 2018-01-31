@@ -102,6 +102,9 @@ public class UserController {
 			case "addmockrule":
 				map.addAttribute("item", IndexNav.addmockrule);
 				break;
+			case "getmongodbinfo":
+				map.addAttribute("item", IndexNav.getmongodbinfo);
+				break;
 			case "displaymockrules":{
 				List<MockInfo> var = mockMessServiceImpl.getAllMockInfos();
 				map.addAttribute("mockrules",var);

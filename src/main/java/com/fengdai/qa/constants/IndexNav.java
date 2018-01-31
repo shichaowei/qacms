@@ -7,6 +7,7 @@ public class IndexNav {
 	public static final String newchangetime="newchangetime";
 	public static final String fixenv="fixenv";
 	public static final String addmockrule="mock";
+	public static final String getmongodbinfo="getmongodbinfo";
 	public static final String gethttpinterface="gethttpinterface";
 	public static final String login="login";
 	public static final String deleteUserInfo="deleteUserInfo";

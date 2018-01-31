@@ -87,9 +87,28 @@
 					<div class="form-group text-left">
 						<label class="control-label">选择类型</label>
 						<select  class="form-control" name="ipservers" >
-							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54">3.0的server</option>
+							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54;10.200.141.96;10.200.141.97">3.0的server</option>
 							  <option value="10.200.141.51;10.200.141.52;10.200.141.53;10.200.141.54;10.200.141.58">3.0的server/db</option>
 						</select>
+					</div>
+					<button type="submit" class="btn btn-default">提交</button>
+				</form> 
+
+				
+				</#if>
+				
+			<#if item=="getmongodbinfo">
+			
+			   <form role="form"  action="/api/getmongodbinfo" method="post">
+			   <div class="form-group">
+						<label>环境参数：</label>
+						<select name="env" class="form-control">
+						  <option value="fengdainew">3.0环境</option>
+						</select>
+					</div>
+					<div class="form-group text-left">
+						<label class="control-label">申请id号:</label>
+						<input type="text"  class="form-control input-group" name="loanapplyid">
 					</div>
 					<button type="submit" class="btn btn-default">提交</button>
 				</form> 

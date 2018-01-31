@@ -36,7 +36,7 @@ import io.restassured.response.Response;
  *
  */
 @Controller
-public class ServerChangeTimeController {
+public class FDServerTimeController {
 
 	@Autowired
 	private FengdaiDbNewUserInfoService fengdaiUserInfoServiceImpl;
