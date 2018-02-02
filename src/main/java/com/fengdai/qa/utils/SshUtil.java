@@ -19,15 +19,18 @@ import org.slf4j.LoggerFactory;
 import com.fengdai.qa.constants.CommonConstants.ErrorCode;
 import com.fengdai.qa.exception.BusinessException;
 
+import ch.ethz.ssh2.ChannelCondition;
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
+import ch.ethz.ssh2.StreamGobbler;
 
 public class SshUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(SshUtil.class);
 
 	/**
-	 * 遠程ssh執行命令，最多返回3000行 如果遲遲不回 默認3s結束
+	 * 遠程ssh執行命令，最多返回3000行 如果遲遲不回 默認3s返回一个null
+	 * 等待session返回一个信号，如果不返回默认5s结束
 	 *
 	 */
 	public static String remoteRunCmd(String hostname, String username, String password, String cmd) {
@@ -46,8 +49,9 @@ public class SshUtil {
 			}
 			sess = conn.openSession();
 			sess.execCommand(cmd);
-			stdout = sess.getStdout();
-			result = getResultStr(stdout, 10);
+			stdout = new StreamGobbler(sess.getStdout());
+			result = getResultStr(stdout, 5);
+			sess.waitForCondition(ChannelCondition.CLOSED | ChannelCondition.EOF | ChannelCondition.EXIT_STATUS, 5000);
 			logger.info(hostname + "---ssh执行完的命令为：" + cmd + ",result is " + result);
 		} catch (Exception e) {
 			logger.error("ssh error {}", ExceptionUtil.printStackTraceToString(e));

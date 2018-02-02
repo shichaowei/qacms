@@ -38,15 +38,20 @@ public class SshWatched extends Observable {
 		this.sess = sess;
 	}
 
-	public  SshWatched(String hostname, String username, String password, String cmd) throws IOException {
-		conn = new Connection(hostname);
-		conn.connect();
-		boolean isAuthenticated = conn.authenticateWithPassword(username, password);
-		if (isAuthenticated == false) {
-			throw new IOException("Authentication failed.");
+	public  SshWatched(String hostname, String username, String password, String cmd) {
+		try {
+			conn = new Connection(hostname);
+			conn.connect();
+			boolean isAuthenticated = conn.authenticateWithPassword(username, password);
+			if (isAuthenticated == false) {
+				throw new IOException("Authentication failed.");
+			}
+			sess = conn.openSession();
+			sess.execCommand(cmd);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		sess = conn.openSession();
-		sess.execCommand(cmd);
 //		InputStream stdout = sess.getStdout();
 //		BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
 //		StringBuilder sb = new StringBuilder();
