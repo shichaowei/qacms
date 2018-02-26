@@ -33,13 +33,16 @@ public class SourceToMeController {
 //			given().auth().preemptive().basic("hzweisc", "111111").when().
 //				get("http://10.200.130.105:8080/job/蜂贷3.0/view/01_编译_打包-spring-test/job/"+path+"/build?token="+path);
 			String var1 = path;
-			if(!var1.contains("trdata")) {
+			if(!var1.contains("trdata")&&!var1.contains("dubbo")&&!var1.contains("rest")&&!var1.contains("client")) {
+				var1="/trdata/jobs/蜂贷3.0/jobs/fengdai_3.0_all/jobs/"+var1+"/workspace";
+			}else {
 				var1="/trdata/jobs/蜂贷3.0/jobs/"+var1+"/workspace";
+
 			}
 			if (var1.matches(".*workspace$")) {
 				if (var1.contains("fengdai-")&&!var1.contains("deploy")) {
 //					System.out.print("\""+var1+"\",");
-					String temp = "scp -r  " + var1 + " sshuser@"+ipaddress+":/D:/51/"+var1.replace("/trdata/jobs/蜂贷3.0/jobs/", "").replace("workspace", "");
+					String temp = "scp -r  " + var1 + " sshuser@"+ipaddress+":/D:/51/"+var1.replace("/trdata/jobs/蜂贷3.0/jobs/", "").replace("fengdai_3.0_all/jobs/", "").replace("workspace", "");
 					SshUtil.remoteRunCmd("10.200.130.105", "root", "Jenkinstest@123098", temp);
 				}
 			}

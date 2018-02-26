@@ -69,6 +69,7 @@ public class MyFilter implements Filter {
         patterns.add(Pattern.compile(".*register$"));
         patterns.add(Pattern.compile(".*error$"));
         patterns.add(Pattern.compile(".*ops$"));
+        patterns.add(Pattern.compile(".*sqlprocess$"));
         for (Pattern pattern : patterns) {
             Matcher matcher = pattern.matcher(url);
             if (matcher.matches()) {
