@@ -45,11 +45,12 @@ public class FengdaiUserInfoDao {
 				+ "DELETE FROM fengdai_riskcontrol.urge_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
 				+ "DELETE FROM fengdai_riskcontrol.urge_entrust_follow_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
 				+ "DELETE FROM fengdai_riskcontrol.tel_verify_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
+				+ "DELETE FROM fengdai_riskcontrol.credit_line_round_check WHERE account='%s';"
 				+ "DELETE FROM fengdai_finance.batch_manual_repay WHERE loan_apply_code NOT in (SELECT order_no FROM fengdai_riskcontrol.loan_apply);";
 
 		String sql = String.format(sqltemp, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
 				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
-				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
+				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,loginname,
 				loginname);
 		logger.info(sql);
 //		System.out.println(sql.split(";"));

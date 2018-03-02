@@ -16,7 +16,7 @@ import com.fengdai.qa.meta.FDSqlInfo;
 @Mapper
 public interface FengdaiSqlDao {
 
-	@Insert("INSERT INTO fengdaisqls(sqlcontent,addtime) VALUES(#{sql}, now())")
+	@Insert("INSERT INTO fengdaisqls(sqlcontent,reverseresult,addtime) VALUES(#{sql}, #{reverseresult},now())")
 	public int addSql(FDSqlInfo fdSqlInfo);
 
 	@Select("SELECT NOW()")
