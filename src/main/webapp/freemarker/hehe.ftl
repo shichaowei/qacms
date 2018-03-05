@@ -1,1 +1,0 @@
-${reqqqqqq.getAttribute('haha')}
