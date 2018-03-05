@@ -101,7 +101,13 @@
 						<input type="text" class="form-control" name="callbackUrl" value="http://10.200.141.36:8080/Mqnotify/notify/transfer" readonly style="background:#CCCCCC">
 						-->
 					</div>
-					
+						<div class="form-group">
+						<label>回调的状态：</label>
+						<select name="callbackstatus" class="form-control">
+						  <option value="PAY_SUCCESS">成功</option>
+						  <option value="PAY_FALIED">失败</option>
+						</select>
+					</div>
 					<div class="form-group">
 						<label>mcbusiness特征值：</label>
 						<input type="text" class="form-control" name="fieldDetail" placeholder="字段内容">

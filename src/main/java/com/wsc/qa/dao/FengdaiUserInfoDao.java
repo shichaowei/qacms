@@ -43,7 +43,9 @@ public class FengdaiUserInfoDao {
 				+ "DELETE FROM fengdai_riskcontrol.entrust_apply WHERE urge_id in(select id FROM fengdai_riskcontrol.urge_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s'));"
 				+ "DELETE FROM fengdai_riskcontrol.urge_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
 				+ "DELETE FROM fengdai_riskcontrol.urge_entrust_follow_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
-				+ "DELETE FROM fengdai_riskcontrol.tel_verify_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');";
+				+ "DELETE FROM fengdai_riskcontrol.tel_verify_record WHERE loan_apply_id in(select id FROM fengdai_riskcontrol.loan_apply WHERE login_name='%s');"
+				+ "DELETE FROM fengdai_finance.withdraw_info WHERE loan_apply_id NOT IN(SELECT id FROM fengdai_riskcontrol.loan_apply);"
+				+ "DELETE FROM fengdai_finance.withhold_record WHERE loan_apply_id NOT IN(SELECT id FROM fengdai_riskcontrol.loan_apply);";
 		String sql = String.format(sqltemp, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
 				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
 				loginname, loginname, loginname, loginname, loginname, loginname, loginname, loginname,
@@ -113,7 +115,9 @@ public class FengdaiUserInfoDao {
 				+ "DELETE FROM`fengdai_shop`.`shop_order_info`WHERE loan_apply_id NOT IN(SELECT id FROM fengdai_riskcontrol.loan_apply);"
 				+ "DELETE FROM`fengdai_shop`.`shop_order_record_info`WHERE order_id NOT IN(SELECT id FROM`fengdai_shop`.`shop_order_info`);"
 				+ "DELETE FROM`fengdai_shop`.`shop_order_after_sales`WHERE`loan_apply_id`NOT IN(SELECT id FROM fengdai_riskcontrol.loan_apply);"
-				+ "DELETE FROM`fengdai_riskcontrol`.`apply_astrict`;";
+				+ "DELETE FROM`fengdai_riskcontrol`.`apply_astrict`;"
+				+ "DELETE FROM fengdai_finance.withdraw_info WHERE loan_apply_id NOT IN(SELECT id FROM fengdai_riskcontrol.loan_apply);"
+				+ "DELETE FROM fengdai_finance.withhold_record WHERE loan_apply_id NOT IN(SELECT id FROM fengdai_riskcontrol.loan_apply);";
 		String sql = String.format(sqltemp, "%"+loanname);
 		System.out.println(sql);
 		jdbcTemplate.batchUpdate(sql.split(";"));
