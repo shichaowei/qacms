@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # qacms
 QA搭建平台
 提供的通用功能：mock平台 第三方模拟 http请求 时间更改 删除测试数据
@@ -12,3 +13,6 @@ QA搭建平台
 
 
 
+=======
+ fengdai_testtools
+>>>>>>> 2b34a239d779229aa6a08b619c33dbe496f1a334
