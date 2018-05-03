@@ -15,16 +15,14 @@ public class FengdaiOldDao {
 	private JdbcTemplate jdbcTemplate;
 
 	public String  getremarkViaRelate(String relateid) {
-		String sql = "select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='"+relateid+"' ORDER BY create_date DESC LIMIT 1";
-//		System.out.println(sql);
+		
 		logger.info("sql执行结果为：",jdbcTemplate.queryForMap(sql));
 		return (String) jdbcTemplate.queryForMap(sql).get("remarks");
 	}
 
 
 	public String  getremarkViaRelateNew(String relateid) {
-		String sql = "select remarks FROM fengdai_finance.mc_business WHERE relate_id ='"+relateid+"' ORDER BY create_date DESC LIMIT 1";
-//		System.out.println(sql);
+		
 		logger.info("sql执行结果为：",jdbcTemplate.queryForMap(sql));
 		return (String) jdbcTemplate.queryForMap(sql).get("remarks");
 	}
