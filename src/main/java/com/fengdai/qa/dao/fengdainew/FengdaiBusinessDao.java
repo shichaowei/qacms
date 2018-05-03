@@ -15,29 +15,26 @@ public class FengdaiBusinessDao {
 	private JdbcTemplate jdbcTemplate;
 
 	public String  getremarkViaRelate(String relateid) {
-		String sql = "select remarks FROM fengdai_mqnotify.mc_business WHERE relate_id ='"+relateid+"' ORDER BY create_date DESC LIMIT 1";
-//		System.out.println(sql);
+		
 		logger.info("sql执行结果为：",jdbcTemplate.queryForMap(sql));
 		return (String) jdbcTemplate.queryForMap(sql).get("remarks");
 	}
 
 
 	public String  getremarkViaRelateNew(String relateid) {
-		String sql = "select remarks FROM fengdai_finance.mc_business WHERE relate_id ='"+relateid+"' ORDER BY create_date DESC LIMIT 1";
-//		System.out.println(sql);
+		
 		logger.info("sql执行结果为：",jdbcTemplate.queryForMap(sql));
 		return (String) jdbcTemplate.queryForMap(sql).get("remarks");
 	}
 
-	public String getmongodbid(String loanapplyid) {
-		String sql="SELECT apply_info_mongo_id FROM fengdai_riskcontrol.loan_apply WHERE id=?";
+	public String getmongodbid(String loanapplyid) {String sql="SELECT apply_info_mongo_id FROM fengdai_riskcontrol.loan_apply WHERE id=?";
 		String result =jdbcTemplate.queryForObject(sql, String.class, loanapplyid);
 		logger.info("sql执行结果为：",result);
 		return result;
 	}
 
 	public String getfieldname(String fieldid) {
-		String sql="SELECT name FROM fengdai_riskcontrol.apply_field_lib WHERE id=?";
+		
 		String result =jdbcTemplate.queryForObject(sql, String.class, fieldid);
 		logger.info("sql执行结果为：",result);
 		return result;
